@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { Fira_Sans } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+import "./globals.css";
+import "./reset.css";
+
+const firaSans = Fira_Sans({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "APAJAC - Sistema De Gerenciamento",
@@ -16,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>{children}</body>
+      <body className={firaSans.className}>{children}</body>
     </html>
   );
 }

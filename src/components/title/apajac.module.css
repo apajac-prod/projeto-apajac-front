@@ -1,0 +1,16 @@
+.apajac {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.apajac > h2 {
+  text-transform: uppercase;
+  font-size: 3rem;
+  color: #fff;
+}
+
+.apajac > img {
+  border-radius: 10px;
+}
