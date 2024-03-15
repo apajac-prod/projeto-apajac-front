@@ -63,9 +63,10 @@
   padding: 2px;
   box-sizing: border-box;
   padding-left: 10px;
+  padding-right: 10px;
 }
 
-.loginForm input[type="button"] {
+.loginForm input[type="submit"] {
   background-color: #5992cd;
   text-transform: uppercase;
   color: #fff;
@@ -77,3 +78,26 @@
   margin: auto;
   cursor: pointer;
 }
+
+.loginError {
+  position: absolute;
+  transform: translateY(-40px);
+  border: none;
+  border-radius: 3px;
+  background-color: red;
+  color: #fff;
+  padding: 5px;
+  font-size: 0.9rem;
+}
+
+.errors {
+  position: absolute;
+  transform: translateY(70px);
+  font-size: 0.9rem;
+  color: red;
+}
+
+/* .inputError {
+  position: absolute;
+}
+ */
