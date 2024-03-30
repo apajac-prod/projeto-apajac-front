@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  width: 80%;
+  margin: auto;
+  justify-content: center;
+  flex-direction: column;
+  padding: 60px 0;
+}
+
+.categoria:not(:last-child) {
+  margin-bottom: 60px;
+}

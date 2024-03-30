@@ -1,0 +1,21 @@
+.menuCategoria {
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.divisor {
+  background-color: #fff;
+  width: 650px;
+  height: 5px;
+  border-radius: 10px;
+}
+
+.cards {
+  margin-top: 20px;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: wrap;
+  display: flex;
+  box-sizing: border-box;
+}
