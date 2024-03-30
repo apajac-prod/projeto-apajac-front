@@ -1,0 +1,10 @@
+.container {
+  width: 100vw;
+  height: 35px;
+  background-color: #5992cd;
+  text-align: center;
+}
+
+.container > p {
+  line-height: 35px;
+}
