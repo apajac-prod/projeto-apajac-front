@@ -42,29 +42,39 @@
 .loginForm {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
-.loginForm > input {
+.loginForm input {
   border: none;
   background-color: #5a92ce66;
   border-radius: 5px;
   width: 200px;
   text-align: center;
+
+  padding: 2px;
+  padding-left: 10px;
+  padding-right: 30px;
+  box-sizing: border-box;
 }
 
-.loginForm input[type="text"] {
-  margin-bottom: 20px;
-  padding: 2px;
-  padding-left: 10px;
-  padding-right: 10px;
-  box-sizing: border-box;
+.input_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.loginForm input[type="password"] {
-  margin-bottom: 40px;
-  padding: 2px;
-  box-sizing: border-box;
-  padding-left: 10px;
-  padding-right: 10px;
+
+.input_container input {
+  margin-bottom: 0;
+  padding-right: 30px;
+}
+
+.input_container img {
+  transform: translateX(-25px);
+}
+
+.show_password_icon {
+  cursor: pointer;
 }
 
 .loginForm input[type="submit"] {
@@ -78,6 +88,7 @@
   width: 100px;
   margin: auto;
   cursor: pointer;
+  margin-top: 40px;
 }
 
 @keyframes loginErrorAnimation {
