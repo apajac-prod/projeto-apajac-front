@@ -7,4 +7,30 @@ body {
   min-height: 100vh;
   max-width: 100vw;
   overflow-x: hidden;
+
+  /* Make sure that header and footer stay in its position */
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  background-color: #b7d2ee;
+}
+
+.submitBtn {
+  min-width: 100px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #5992cd;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  color: #5992cd;
+  background-color: #fff;
+  outline: 1px solid #5992cd;
 }

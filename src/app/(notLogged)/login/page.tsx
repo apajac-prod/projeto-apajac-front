@@ -27,9 +27,7 @@ const loginSchema: yup.ObjectSchema<loginForm> = yup.object({
   password: yup.string().required("Insira sua senha"),
 });
 
-type Props = {};
-
-const Login = (props: Props) => {
+const Login = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);

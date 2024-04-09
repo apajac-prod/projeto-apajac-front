@@ -42,7 +42,10 @@
 .loginForm {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
+  position: relative;
 }
 
 .loginForm input {
@@ -89,6 +92,13 @@
   margin: auto;
   cursor: pointer;
   margin-top: 40px;
+  transition: 0.6s;
+  border: 2px solid #5992cd;
+}
+
+.loginForm input[type="submit"]:hover {
+  background-color: #fff;
+  color: #5992cd;
 }
 
 @keyframes loginErrorAnimation {
@@ -121,7 +131,6 @@
 
 .errors {
   position: absolute;
-  transform: translateY(70px);
   font-size: 0.9rem;
   color: red;
 }

@@ -9,7 +9,7 @@ export default function loggedLayout({
   return (
     <>
       <Header />
-      {children}
+      <main>{children}</main>
       <Footer />
     </>
   );
