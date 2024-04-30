@@ -45,12 +45,12 @@ function FormAcolhido({ editId = null }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const multistepController = useMultistepForm(
     [
-      <StepAcolhido />,
-      <StepMae />,
-      <StepPai />,
-      <StepResponsavel />,
-      <StepComposicaoFamiliar />,
-      <StepFinalizar />,
+      <StepAcolhido key={0} />,
+      <StepMae key={1} />,
+      <StepPai key={2} />,
+      <StepResponsavel key={3} />,
+      <StepComposicaoFamiliar key={4} />,
+      <StepFinalizar key={5} />,
     ],
     null
   );
