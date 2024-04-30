@@ -7,6 +7,10 @@
   margin: 0 auto;
 }
 
+.container form {
+  min-width: 450px;
+}
+
 .formRow {
   width: 100%;
   display: flex;
@@ -15,21 +19,32 @@
   margin: 10px 0;
 }
 
+.formCommentsRow {
+  margin-top: 20px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formCommentsRow label {
+  text-align: center;
+}
+
 .formRow label {
-  width: 160px;
   margin-right: 10px;
 }
 
 .formRow input,
-.formRow select {
+.formRow textarea {
+  padding: 0;
   padding: 0.2rem;
-  background-color: #d9d9d9;
+  background-color: #fff;
   border: none;
   border-radius: 5px;
 }
 
-.formRow input {
-  width: 250px;
+.formRow select {
+  box-sizing: content-box;
+  text-align: center;
 }
 
 .formRow svg {
@@ -56,6 +71,11 @@
   margin: 60px 0;
 }
 
+.buttons_disabled {
+  background-color: #969696;
+  pointer-events: none;
+}
+
 .error_message {
   font-size: 0.9rem;
   color: #ff0000;
@@ -74,8 +94,4 @@
   color: #ff0000;
   font-size: 0.9rem;
   vertical-align: top;
-}
-
-.employmentRelationshipDesc {
-  margin-left: 10px;
 }

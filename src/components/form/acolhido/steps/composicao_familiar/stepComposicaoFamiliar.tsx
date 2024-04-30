@@ -1,5 +1,5 @@
-import SubTitle from "../subTitle";
-import styles from "./composicao_familiar.module.css";
+import SubTitle from "../../subTitle";
+import styles from "./stepComposicaoFamiliar.module.css";
 
 import * as icon from "react-flaticons";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -12,7 +12,7 @@ import { restoreInputValue } from "@/functions/restoreInputs";
 
 import { ComposicaoFamiliar } from "@/types/formAcolhido.type";
 
-const FormComposicaoFamiliar = () => {
+const StepComposicaoFamiliar = () => {
   const multistepController = useContext(MultistepFormContext);
 
   //Yup validation schema
@@ -22,40 +22,51 @@ const FormComposicaoFamiliar = () => {
         yup.object({
           name: yup
             .string()
+            .required("Obrigatório inserir o nome do familiar")
+            .transform((_, val: string) => val.toUpperCase())
             .trim()
-            .required("Obrigatório inserir o nome")
-            .trim()
-            .typeError("Verifique se inseriu corretamente o nome"),
+            .min(3, "Nome precisa ter no mínimo 3 caracteres")
+            .max(255, "Quantidade máxima permitida de carácteres: 255")
+            .typeError("Insira o nome do familiar"),
 
           relationship: yup
             .string()
-            .trim()
             .required("Obrigatório inserir o parentesco")
+            .trim()
+            .max(50, "Quantidade máxima permitida de carácteres: 50")
             .typeError("Verifique se inseriu corretamente o parentesco"),
 
           age: yup
-            .number()
-            .min(1, "A idade não pode ser menor ou igual a zero")
-            .integer("A idade precisa ser um número inteiro")
-            .transform((_, val) => (val === Number(val) ? val : null))
-            .nullable()
-            .typeError("Verifique se inseriu corretamente a idade"),
+            .string()
+            .transform((_, val) => (val == "" ? null : String(val)))
+            .test(
+              "age_check",
+              "Verifique se inseriu corretamente a idade",
+              function (value) {
+                if (value && (Number(value) >= 130 || Number(value) <= 0))
+                  return false;
+                return true;
+              }
+            )
+            .nullable(),
 
           ocupation: yup
             .string()
             .trim()
-            .optional()
+            .max(50, "Quantidade máxima permitida de carácteres: 50")
             .transform((_, val) => (val === "" ? null : val))
             .nullable()
-            .typeError("Verifique se inseriu corretamente a idade"),
+            .typeError("Verifique se inseriu corretamente a ocupação"),
 
           comments: yup
             .string()
             .trim()
-            .optional()
-            .transform((_, val) => (val === "" ? null : val))
+            .max(1000, "Quantidade máxima permitida de carácteres: 1000")
+            .transform((_, val) =>
+              val && (val === "" || val.trim()) === "" ? null : val
+            )
             .nullable()
-            .typeError("Verifique se inseriu corretamente a idade"),
+            .typeError("Verifique se inseriu corretamente as observações"),
         })
       ),
     });
@@ -97,6 +108,16 @@ const FormComposicaoFamiliar = () => {
     remove(index);
   }
 
+  //Allow only numbers
+  function handleAgeChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const insertedValue = event.target.value;
+    const allowOnlyNumbersRgx = /^[0-9]*$/;
+
+    //If not number, remove the inserted letter
+    if (!allowOnlyNumbersRgx.test(insertedValue) && insertedValue != "")
+      event.target.value = insertedValue.slice(0, -1);
+  }
+
   function next(data: any) {
     multistepController?.setCurrentStepData(data);
     multistepController?.next();
@@ -136,6 +157,14 @@ const FormComposicaoFamiliar = () => {
                 Nome
               </label>
               <input
+                className={`${
+                  !multistepController?.getActiveStatus() && "disable_input"
+                }`}
+                tabIndex={
+                  !multistepController?.getActiveStatus() ? -1 : undefined
+                }
+                type="text"
+                style={{ textTransform: "uppercase" }}
                 {...register(`familyComposition.${index}.name` as const)}
               />
             </div>
@@ -154,6 +183,12 @@ const FormComposicaoFamiliar = () => {
                 Parentesco
               </label>
               <input
+                className={`${
+                  !multistepController?.getActiveStatus() && "disable_input"
+                }`}
+                tabIndex={
+                  !multistepController?.getActiveStatus() ? -1 : undefined
+                }
                 {...register(
                   `familyComposition.${index}.relationship` as const
                 )}
@@ -172,7 +207,17 @@ const FormComposicaoFamiliar = () => {
               <label htmlFor={`familyComposition.${index}.age` as const}>
                 Idade
               </label>
-              <input {...register(`familyComposition.${index}.age` as const)} />
+              <input
+                className={`${
+                  !multistepController?.getActiveStatus() && "disable_input"
+                }`}
+                tabIndex={
+                  !multistepController?.getActiveStatus() ? -1 : undefined
+                }
+                {...register(`familyComposition.${index}.age` as const, {
+                  onChange: (e) => handleAgeChange(e),
+                })}
+              />
             </div>
             {errors.familyComposition &&
               errors.familyComposition[index]?.age && (
@@ -186,6 +231,12 @@ const FormComposicaoFamiliar = () => {
                 Ocupação
               </label>
               <input
+                className={`${
+                  !multistepController?.getActiveStatus() && "disable_input"
+                }`}
+                tabIndex={
+                  !multistepController?.getActiveStatus() ? -1 : undefined
+                }
                 {...register(`familyComposition.${index}.ocupation` as const)}
               />
             </div>
@@ -201,6 +252,12 @@ const FormComposicaoFamiliar = () => {
                 Observações
               </label>
               <textarea
+                className={`${
+                  !multistepController?.getActiveStatus() && "disable_input"
+                }`}
+                tabIndex={
+                  !multistepController?.getActiveStatus() ? -1 : undefined
+                }
                 {...register(`familyComposition.${index}.comments` as const)}
                 cols={29}
                 rows={5}
@@ -213,25 +270,30 @@ const FormComposicaoFamiliar = () => {
                 </p>
               )}
 
-            <button
-              className={`${styles.remove_family} ${styles.family_btn}`}
-              onClick={() => removeFamily(index)}
-              type="button"
-            >
-              Remover familiar
-              <icon.RemoveUser />
-            </button>
+            {multistepController?.getActiveStatus() && (
+              <button
+                type="button"
+                className={`${styles.remove_family} ${styles.family_btn}`}
+                onClick={() => removeFamily(index)}
+                tabIndex={-1}
+              >
+                Remover familiar
+                <icon.RemoveUser />
+              </button>
+            )}
           </div>
         ))}
 
-        <button
-          className={`${styles.add_family} ${styles.family_btn}`}
-          onClick={() => addFamily()}
-          type="button"
-        >
-          Adicionar familiar
-          <icon.UserAdd />
-        </button>
+        {multistepController?.getActiveStatus() && (
+          <button
+            className={`${styles.add_family} ${styles.family_btn}`}
+            onClick={() => addFamily()}
+            type="button"
+          >
+            Adicionar familiar
+            <icon.UserAdd />
+          </button>
+        )}
 
         <div className={styles.buttons}>
           <button
@@ -253,7 +315,7 @@ const FormComposicaoFamiliar = () => {
     </div>
   );
 };
-export default FormComposicaoFamiliar;
+export default StepComposicaoFamiliar;
 
 const FamilyTitle = ({
   index,

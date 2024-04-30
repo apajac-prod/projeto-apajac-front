@@ -5,6 +5,11 @@
   text-align: center;
 }
 
+.container > p > img {
+  width: 600px;
+  height: 600px;
+}
+
 .container > p {
   line-height: 35px;
 }

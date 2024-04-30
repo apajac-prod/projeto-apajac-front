@@ -1,6 +1,7 @@
 import {axios} from "@/api/api";
-import { acolhidoToApi } from "./middleware/acolhido";
+import { acolhidoToApi } from "./middleware/formAcolhido";
 import toast from "react-hot-toast";
+import { ListAcolhido, apiToListAcolhido } from "./middleware/listAcolhido";
 
 const HTTP_STATUS = {
     OK: 200,
@@ -12,10 +13,14 @@ const HTTP_STATUS = {
 }
 
 type ToastOptions = {
-    noToast?: boolean;
-    loadingMessage?: string;
-    successMessage?: string;
-    errorMessage?: string;
+    noToast?: boolean|undefined;
+    loadingMessage?: string|undefined;
+    successMessage?: string|undefined;
+    errorMessage?: string|undefined;
+    duration?: {
+      sucess?: number|undefined;
+      error?: number|undefined;
+    }
 }
 
 type CustomError = {
@@ -51,10 +56,10 @@ function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
             marginTop: "5%",
           },
           success: {
-            duration: 5000,
+            duration: toastOptions?.duration?.sucess ?? 5000,
           },
           error: {
-            duration: 7000,
+            duration: toastOptions?.duration?.error ?? 7000,
           },
         }
       );
@@ -149,6 +154,16 @@ export const createAcolhido = (acolhidoData: any) => {
     return postRequest("acolhido", data, toastOptions);
 }
 
+export const updateAcolhido = (acolhidoData: any) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Alterando acolhido ...",
+    successMessage: "Acolhido alterado com sucesso!",
+    errorMessage: "Não foi possível alterar este acolhido."
+  }
+  const data = acolhidoToApi(acolhidoData)
+  return postRequest("acolhido", data, toastOptions);
+}
+
 export const getAcolhidoById = (acolhidoId: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando informações do acolhido ...",
@@ -169,8 +184,35 @@ export const updateAcolhidoStatus = (id: string, status: boolean) => {
   const toastOptions: ToastOptions = {
     loadingMessage: status ? "Ativando acolhido ..." : "Desativando acolhido ...",
     successMessage: `Acolhido ${status ? "ativado" : "desativado"} com sucesso!`,
-    errorMessage: "Não foi possível alterar o status do acolhido."
+    errorMessage: "Houve um problema ao alterar o status do acolhido."
   }
 
   return putRequest(`/acolhido/${id}/status_acolhido/${status}`, undefined, toastOptions);
+}
+
+// List acolhido response properties, to perform a sort.
+type Sort = "id"|"name"|"responsible"|"status"|"age"|undefined;
+
+export const getAcolhidos = (page: number, sort: Sort = undefined) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Carregando acolhidos ...",
+    successMessage: "Acolhidos carregados com sucesso!",
+    errorMessage: "Não foi possível carregar os acolhidos."
+  }
+  
+  const convertedSort = new Map([
+    ["id", "id"],
+    ["name", "nome"],
+    ["responsible", "responsavel"],
+    ["status", "statusAcolhido"],
+    ["age", "idade"],
+  ])
+  const sortParameter = sort ? `&_sort=${convertedSort.get(sort)}` : "";
+
+  /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
+  // Conferir como passar os parametros de page e sort pra api
+  return getRequest(`lista-acolhidos?_page=${page}${sortParameter}`, toastOptions)
+  .then(({data}) => {
+    return apiToListAcolhido(data);
+  });
 }

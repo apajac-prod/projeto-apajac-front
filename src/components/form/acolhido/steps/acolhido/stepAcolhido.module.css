@@ -1,0 +1,127 @@
+.container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.formRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 10px 0;
+}
+
+.formRow label {
+  width: 160px;
+  margin-right: 10px;
+}
+
+.formRow input,
+.formRow select {
+  width: 250px;
+  padding: 0.2rem;
+
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+.formRow input:disabled,
+.formRow select:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.formRow select {
+  width: fit-content;
+}
+
+.sub_title {
+  margin: 20px auto 5px;
+}
+
+.input_small input {
+  width: 150px;
+}
+
+.input_tiny input {
+  width: 50px;
+}
+
+.input_big input {
+  width: 350px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  justify-content: space-between;
+  margin: 60px 0;
+}
+
+.error_message {
+  font-size: 0.9rem;
+  color: #ff0000;
+  margin-left: calc(160px + 10px);
+  margin-bottom: 30px;
+  max-width: 300px;
+}
+
+.container a {
+  font-size: 0.8rem;
+  margin-left: 10px;
+}
+
+.required::after {
+  content: "*";
+  color: #ff0000;
+  font-size: 0.9rem;
+  vertical-align: top;
+}
+
+.cep_error_message {
+  color: #5992cd;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  margin-left: 170px;
+  width: 50px;
+  height: 20px;
+  --g: radial-gradient(
+      farthest-side,
+      #0000 calc(95% - 3px),
+      #517bd1 calc(100% - 3px) 98%,
+      #0000 101%
+    )
+    no-repeat;
+  background: var(--g), var(--g), var(--g);
+  background-size: 15px 15px;
+  animation: l9 1s infinite alternate;
+}
+@keyframes l9 {
+  0% {
+    background-position: 0 50%, 50% 50%, 100% 50%;
+  }
+  20% {
+    background-position: 0 0, 50% 50%, 100% 50%;
+  }
+  40% {
+    background-position: 0 100%, 50% 0, 100% 50%;
+  }
+  60% {
+    background-position: 0 50%, 50% 100%, 100% 0;
+  }
+  80% {
+    background-position: 0 50%, 50% 50%, 100% 100%;
+  }
+  100% {
+    background-position: 0 50%, 50% 50%, 100% 50%;
+  }
+}

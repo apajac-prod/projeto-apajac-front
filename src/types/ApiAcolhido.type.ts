@@ -1,5 +1,6 @@
 export interface ApiAcolhido {
     id?: string;
+    statusAcolhido?: boolean;
     nome: string;
     dataNascimento: string;
     escolaridade: string;

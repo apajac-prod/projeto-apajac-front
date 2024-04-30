@@ -1,5 +1,7 @@
 import { ReactElement, createContext, useState } from "react";
 
+import _ from 'lodash';
+
 //Steps in order, to be used to generate the final object (below function getResultObject())
 const STEPS = [
     "acolhido",
@@ -10,13 +12,47 @@ const STEPS = [
     "finalizar"
 ]
 
-export function useMultistepForm(steps: ReactElement[]) {
+const _Copy = (x: any) => _.cloneDeep(x);
+
+export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any> | null) {
+    const [safeToLeave, setSafeToLeave] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
+    const [id, setId] = useState<string|null>(null);
+    const [isActive, setIsActive] = useState(true);
     const [stepsData, setStepsData] = useState<any>(
-        steps.map(() => {
-            return {cache: null, data: null}
+        steps.map((_, index) => {
+            return {cache: null, data: acolhidoData ? acolhidoData[index] : null}
         })
     )
+
+    function canLeave() {
+        return safeToLeave;
+    }
+
+    function setCanLeave(status: boolean) {
+        setSafeToLeave(status);
+    }
+
+    function getId() {
+        return id;
+    }
+
+    function getActiveStatus() {
+        return isActive;
+    }
+
+    function setActiveStatus(status: boolean) {
+        setIsActive(status);
+    }
+
+    function changeActiveStatus() {
+        setIsActive((status) => !status)
+    }
+    function loadData(data: Array<any>) {
+        data.map((step, index) => {
+            setData(index, step);
+        })
+    }
 
     function next() {
         setCurrentStepIndex((currentStep) => {
@@ -37,23 +73,27 @@ export function useMultistepForm(steps: ReactElement[]) {
     }
 
     function setData(index: number, data: any){
+        console.log("setData init ", data);
         setStepsData((currentValue: any) => {
-            let newArray = currentValue;
+            let newArray = (currentValue);
             newArray[index].data = data;
-            return currentValue;
+            console.log("setData final ", newArray);
+            return newArray;
         })
+        /* setStepsData((currentValue: any) => currentValue[index].data = data) */
     }
-
+    
     function getData(index: number){
         return stepsData[index].data;
     }
-
+    
     function setCache(index: number, data: any){
         setStepsData((currentValue: any) => {
-            let newArray = currentValue;
+            let newArray = (currentValue);
             newArray[index].cache = data;
-            return currentValue;
+            return newArray;
         })
+        /* setStepsData((currentValue: any) => currentValue[index].cache = data) */
     }
 
     function getCache(index: number){
@@ -77,19 +117,31 @@ export function useMultistepForm(steps: ReactElement[]) {
     }
 
     function getResultObject() {
-
-        const dataArray: Array<any> = stepsData.map((element: {data: any}, index: number) => {
-            if(STEPS[index] == "composicaoFamiliar"){
-                return element.data.familyComposition;
+        console.log("Objeto completo (data + cache)", stepsData);
+        
+        let result = (_Copy(stepsData).map((element: {data: any}, index: number) => {
+            if (index == 0){
+                return {id: getId(), ... element.data};
             }
-            return element.data;
-        });
+            return element.data
+        }));
+        
+        /* if (id){
+            result[0] = {... result[0], id};
+        } */
 
-        const result = dataArray.reduce((acc:{[key:string]:object},curr, index)=> (acc[STEPS[index]]=curr,acc),{});
-
+        console.log("Objeto somente data", result);
         return result;
     }
     return {
+        canLeave,
+        setCanLeave,
+        setId,
+        getId,
+        getActiveStatus,
+        setActiveStatus,
+        changeActiveStatus,
+        loadData,
         currentStepIndex,
         step: steps[currentStepIndex],
         getData,

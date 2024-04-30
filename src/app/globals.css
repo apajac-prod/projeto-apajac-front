@@ -34,3 +34,9 @@ body {
   background-color: #fff;
   outline: 1px solid #5992cd;
 }
+
+.disable_input {
+  background-color: #ddd !important;
+  color: #6d6d6d;
+  pointer-events: none;
+}

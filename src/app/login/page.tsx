@@ -45,7 +45,7 @@ const Login = () => {
 
   // Handling the form
   const onSubmit = (data: loginForm) => {
-    if (data.loginApajac === "admin" && data.password === "123456") {
+    if (data.loginApajac === "admin" && data.password === "admin") {
       // Cookie
       router.push("/menu");
     } else {

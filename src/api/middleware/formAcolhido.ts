@@ -53,6 +53,7 @@ export function acolhidoToApi(acolhido: AcolhidoInput): ApiAcolhido {
     // const dataToApi: { [key: string]: any} = {
     let dataToApi: ApiAcolhido = {
         id: data.acolhido.id ?? null,
+        statusAcolhido: data.acolhido.status ?? null,
         nome: data.acolhido.name,
         dataNascimento: birthdate.toJSON(),
         escolaridade: data.acolhido.educationLevel,
@@ -208,6 +209,8 @@ export function apiToAcolhido(data: ApiAcolhido) {
 
     const acolhido = [
         {
+            id: data.id || null,
+            status: data.statusAcolhido || null,
             address: data.endereco.endereco,
             addressNumber: data.endereco.numero,
             anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",

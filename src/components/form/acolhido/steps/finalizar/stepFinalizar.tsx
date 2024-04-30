@@ -1,25 +1,31 @@
-import SubTitle from "../subTitle";
-import styles from "./finalizar.module.css";
+import { useRouter } from "next/navigation";
+
+import SubTitle from "../../subTitle";
+import styles from "./stepFinalizar.module.css";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { flushSync } from "react-dom";
 
 import * as yup from "yup";
 import { MultistepFormContext } from "@/hooks/useMultistepForm";
 import { restoreInputValue } from "@/functions/restoreInputs";
 
 import { Finalizar } from "@/types/formAcolhido.type";
+import { createAcolhido, updateAcolhido } from "@/api/endpoints";
 
-const FormFinalizar = () => {
+const StepFinalizar = () => {
+  const router = useRouter();
   const multistepController = useContext(MultistepFormContext);
+  const [disableButtons, setDisableButtons] = useState<boolean>(false);
 
   //Yup validation schema
   const finalizeSchema: yup.ObjectSchema<Finalizar> = yup.object({
     comments: yup
       .string()
-      .trim()
+      .max(1000, "Quantidade máxima permitida de carácteres: 1000")
       .transform((_, val) => (val === "" ? null : val))
       .nullable()
       .typeError("Verifique se inseriu corretamente as informações"),
@@ -39,8 +45,30 @@ const FormFinalizar = () => {
   });
 
   function registerAcolhido(data: any) {
-    multistepController?.setCurrentStepData(data);
-    console.log(multistepController?.getResultObject());
+    flushSync(() => {
+      multistepController?.setCurrentStepData(data);
+    });
+
+    setDisableButtons(true);
+    if (multistepController?.getId()) {
+      updateAcolhido(multistepController?.getResultObject())
+        .then(() => {
+          window.onbeforeunload = () => null; // Removes the exit confirmation
+          router.push("/menu");
+        })
+        .finally(() => {
+          setDisableButtons(false);
+        });
+    } else {
+      createAcolhido(multistepController?.getResultObject())
+        .then(() => {
+          window.onbeforeunload = () => null; // Removes the exit confirmation
+          router.push("/menu");
+        })
+        .finally(() => {
+          setDisableButtons(false);
+        });
+    }
   }
 
   function back(data: any) {
@@ -69,7 +97,15 @@ const FormFinalizar = () => {
         autoComplete="off"
       >
         <div className={`${styles.formRow} ${styles.formCommentsRow}`}>
-          <textarea {...register("comments")} cols={60} rows={10} />
+          <textarea
+            className={`${
+              !multistepController?.getActiveStatus() && "disable_input"
+            }`}
+            tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
+            {...register("comments")}
+            cols={60}
+            rows={10}
+          />
         </div>
         {errors.comments && (
           <p className={styles.error_message}>
@@ -79,14 +115,21 @@ const FormFinalizar = () => {
 
         <div className={styles.buttons}>
           <button
-            className="submitBtn"
+            className={`submitBtn ${
+              (disableButtons || !multistepController?.getActiveStatus()) &&
+              styles.buttons_disabled
+            }`}
+            disabled={disableButtons}
             onClick={handleSubmit((data) => registerAcolhido(data))}
           >
-            Finalizar Cadastro
+            {multistepController?.getId
+              ? "Finalizar alterações"
+              : "Finalizar Cadastro"}
           </button>
           <button
-            className="submitBtn"
+            className={`submitBtn ${disableButtons && styles.buttons_disabled}`}
             type="button"
+            disabled={disableButtons}
             onClick={() => back(getValues())}
           >
             Voltar
@@ -96,4 +139,4 @@ const FormFinalizar = () => {
     </div>
   );
 };
-export default FormFinalizar;
+export default StepFinalizar;

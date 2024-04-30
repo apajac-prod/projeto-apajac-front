@@ -8,7 +8,7 @@
 .backgroundDiv {
   width: fit-content;
   border-radius: 10px;
-  background-color: #fff;
+  background-color: #eee;
   padding: 10px;
 }
 
@@ -23,7 +23,7 @@
 
 .connection {
   z-index: -1;
-  background-color: #fff;
+  background-color: #eee;
   width: 30px;
   height: 5px;
 }
