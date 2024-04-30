@@ -3,6 +3,7 @@ import { Fira_Sans } from "next/font/google";
 
 import "./globals.css";
 import "./reset.css";
+import { Toaster } from "react-hot-toast";
 
 const firaSans = Fira_Sans({ subsets: ["latin"], weight: "400" });
 
@@ -18,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={firaSans.className}>{children}</body>
+      <body className={firaSans.className}>
+        <Toaster />
+        {children}
+      </body>
     </html>
   );
 }

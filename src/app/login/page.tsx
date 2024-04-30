@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement } from 'react'
+import type { ReactElement } from "react";
 
 import styles from "./page.module.css";
 
@@ -8,11 +8,12 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import TitleApajac from "@/components/title/apajac";
+import TitleApajac from "@/components/titles/apajac/apajac";
 
 import { useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 // Login Form Object
 type loginForm = {
@@ -26,10 +27,9 @@ const loginSchema: yup.ObjectSchema<loginForm> = yup.object({
   password: yup.string().required("Insira sua senha"),
 });
 
-type Props = {};
-
-const Login = (props: Props) => {
+const Login = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const loginErrorRef = useRef<HTMLParagraphElement>(null);
 
@@ -45,7 +45,7 @@ const Login = (props: Props) => {
 
   // Handling the form
   const onSubmit = (data: loginForm) => {
-    if (data.loginApajac === "admin" && data.password === "123456") {
+    if (data.loginApajac === "admin" && data.password === "admin") {
       // Cookie
       router.push("/menu");
     } else {
@@ -78,17 +78,39 @@ const Login = (props: Props) => {
         )}
 
         <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
-          <input
-            {...register("loginApajac")}
-            type="text"
-            placeholder="Insira seu usuário"
-          />
+          <div className={styles.input_container}>
+            <input
+              {...register("loginApajac")}
+              type="text"
+              placeholder="Insira seu usuário"
+            />
+            <Image
+              src="/icons/person_24x24.png"
+              alt="Ícone de usuário"
+              width={16}
+              height={16}
+            />
+          </div>
 
-          <input
-            {...register("password")}
-            type="password"
-            placeholder="Insira sua senha"
-          />
+          <div className={styles.input_container}>
+            <input
+              {...register("password")}
+              type={showPassword ? "text" : "password"}
+              placeholder="Insira sua senha"
+            />
+            <Image
+              className={styles.show_password_icon}
+              src={
+                showPassword
+                  ? "/icons/invisible_30x30.png"
+                  : "/icons/visible_30x30.png"
+              }
+              alt="Exibir a senha"
+              width={18}
+              height={18}
+              onClick={() => setShowPassword((currentValue) => !currentValue)}
+            />
+          </div>
 
           <div className={styles.errors}>
             {errors.loginApajac && (
@@ -110,4 +132,4 @@ export default Login;
 
 Login.getLayout = function getLayout(children: ReactElement) {
   return children;
-}
+};

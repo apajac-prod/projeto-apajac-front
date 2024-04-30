@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: content-box;
+}
+
+.backgroundDiv {
+  width: fit-content;
+  border-radius: 10px;
+  background-color: #eee;
+  padding: 10px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.connection {
+  z-index: -1;
+  background-color: #eee;
+  width: 30px;
+  height: 5px;
+}
+
+.completed {
+  background-color: #5992cd;
+}
+
+.completed > p {
+  color: #fff;
+}
+
+.currentStep {
+  outline: 3px solid #0e6ba1;
+}
