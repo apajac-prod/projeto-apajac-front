@@ -1,0 +1,146 @@
+.background {
+  top: 0;
+  left: 0;
+  position: absolute;
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: hsla(0, 0%, 100%, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.backgroundClose {
+  top: 0;
+  left: 0;
+  position: absolute;
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  margin: 20px 0;
+  min-width: 600px;
+  min-height: 600px;
+  max-height: 90vh;
+  max-width: 100vh;
+  overflow: scroll;
+  background-color: #b7d2ee;
+  border: 5px solid #fff;
+  position: relative;
+}
+
+.closeModal {
+  position: absolute;
+  right: 25px;
+  top: 20px;
+  cursor: pointer;
+  color: red;
+  font-weight: 800;
+  border: 1px solid red;
+}
+
+.title {
+  margin: 24px auto;
+}
+
+.data > div {
+  margin: 20px;
+}
+
+.data > div > div {
+  display: flex;
+  gap: 12px;
+}
+
+.data > div div > p:first-child:not(.phones p) {
+  font-weight: 800;
+}
+
+.data > div div > p {
+  margin: 6px 0;
+}
+
+.edit {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin: 12px auto;
+  width: fit-content;
+}
+
+.familyLabel {
+  font-weight: 800;
+  text-decoration: underline;
+  margin-bottom: 6px;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comments > p {
+  margin-bottom: -10px;
+}
+
+.comments > textarea {
+  width: 300px;
+}
+
+.familyMember {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.familyMember p {
+  line-height: 0.6rem;
+}
+
+.familyMember div {
+  display: flex;
+  gap: 12px;
+}
+
+.familyComments {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.familyComments > p {
+  margin-top: 20px;
+  margin-bottom: -10px;
+}
+
+.familyComments > textarea {
+  width: 150px;
+}
+
+.phones div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 500px;
+}
+
+.phones > p:first-child {
+  font-weight: 800;
+}
+
+.phoneSeparator {
+  color: #fff;
+}
+
+.familySeparator {
+  width: 200px;
+  height: 3px;
+  background-color: #fff;
+}
