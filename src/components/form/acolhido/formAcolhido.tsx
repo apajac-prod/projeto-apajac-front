@@ -66,6 +66,7 @@ function FormAcolhido({ editId = null }: Props) {
           multistepController.setActiveStatus(data.statusAcolhido);
         })
         .catch(() => {
+          window.onbeforeunload = () => null; // Removes the exit confirmation
           setTimeout(() => router.push("/menu"), 3000);
         })
         .finally(() => {

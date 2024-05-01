@@ -1,5 +1,5 @@
 type ListAcolhidoApi = {
-    id: number;
+    id: string;
     nome: string;
     idade: number;
     responsavel: string;
@@ -7,7 +7,7 @@ type ListAcolhidoApi = {
 }
 
 export type ListAcolhido = {
-    id: number;
+    id: string;
     name: string;
     age: number;
     responsible: string;
