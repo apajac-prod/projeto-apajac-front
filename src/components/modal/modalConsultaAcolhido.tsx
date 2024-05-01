@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { modalConsultaAcolhidoContext } from "@/hooks/modalConsultaAcolhido";
+import { useModalConsultaAcolhidoContext } from "@/hooks/useModalConsultaAcolhido";
 import * as icon from "react-flaticons";
 import styles from "./modalConsultaAcolhido.module.css";
 import FormTitle from "../titles/form/form";
@@ -8,7 +8,7 @@ import { apiToConsultaAcolhido } from "@/api/middleware/consultaAcolhido";
 import { useRouter } from "next/navigation";
 
 export const ModalConsultaAcolhido = () => {
-  const modal = useContext(modalConsultaAcolhidoContext);
+  const modal = useContext(useModalConsultaAcolhidoContext);
   const [acolhidoData, setAcolhidoData] = useState<null | ReturnType<
     typeof apiToConsultaAcolhido
   >>(null);

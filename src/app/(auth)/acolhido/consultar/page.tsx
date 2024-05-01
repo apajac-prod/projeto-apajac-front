@@ -8,9 +8,9 @@ import { getAcolhidoById, getAcolhidos } from "@/api/endpoints";
 import { ListAcolhido } from "@/api/middleware/listAcolhido";
 import { ModalConsultaAcolhido } from "@/components/modal/modalConsultaAcolhido";
 import {
-  modalConsultaAcolhido,
-  modalConsultaAcolhidoContext as modalContext,
-} from "@/hooks/modalConsultaAcolhido";
+  useModalConsultaAcolhido,
+  useModalConsultaAcolhidoContext as useModalContext,
+} from "@/hooks/useModalConsultaAcolhido";
 
 type SortBy = "id" | "name" | "status" | "responsible" | "age";
 
@@ -18,7 +18,7 @@ export default function ConsultarAcolhido() {
   const [acolhidos, setAcolhidos] = useState<ListAcolhido[] | null>(null);
   const [page, setPage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<SortBy>("name");
-  const modal = modalConsultaAcolhido();
+  const modal = useModalConsultaAcolhido();
   useEffect(() => {
     console.log(`Request, page=${page} ; sortBy=${sortBy}`);
     getAcolhidos(page, sortBy).then((response) => {
@@ -116,9 +116,9 @@ export default function ConsultarAcolhido() {
         Próx Pág (substituir por infinity scroll)
       </button>
       {modal && modal.isOpen && modal.id && (
-        <modalContext.Provider value={modal}>
+        <useModalContext.Provider value={modal}>
           <ModalConsultaAcolhido />
-        </modalContext.Provider>
+        </useModalContext.Provider>
       )}
     </div>
   );
