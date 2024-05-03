@@ -57,6 +57,16 @@ interface Endereco {
 }
 
 export function apiToConsultaAcolhido (data: Api) {
+
+  function convertOccupation(occupation: string){
+    if (!occupation) return null;
+    
+    if (occupation === "do_lar") return "Do Lar";
+    if(occupation === "desempregado") return "Desempregado";
+    if(occupation === "desconhecido") return "Desconhecido";
+    if(occupation === "outro") return "Outro";
+  }
+
     return {
         status: data.statusAcolhido,
         id: data.id,
@@ -85,7 +95,7 @@ export function apiToConsultaAcolhido (data: Api) {
             phones: data.familiares[0].contatos?.map((phone) => {
                 return phone?.contato
             }),
-            occupation: data.familiares[0]?.ocupacao,
+            occupation: convertOccupation(data.familiares[0]?.ocupacao),
             placeOfWork: data.familiares[0]?.localTrabalho,
             salary: data.familiares[0]?.salario,
             employmentRelationship: data.familiares[0]?.vinculoEmpregaticio
@@ -95,7 +105,7 @@ export function apiToConsultaAcolhido (data: Api) {
         father: data.familiares && {
             name: data.familiares[1]?.nome,
                 phones: data.familiares[1]?.contatos?.map((phone) => phone.contato),
-                occupation: data.familiares[1]?.ocupacao,
+                occupation: convertOccupation(data.familiares[1]?.ocupacao),
                 placeOfWork: data.familiares[1]?.localTrabalho,
                 salary: data.familiares[1]?.salario,
                 employmentRelationship: data.familiares[1]?.vinculoEmpregaticio

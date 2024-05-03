@@ -23,10 +23,9 @@
 
 .modal {
   margin: 20px 0;
-  min-width: 600px;
+  width: 600px;
   min-height: 600px;
   max-height: 90vh;
-  max-width: 100vh;
   overflow: scroll;
   background-color: #b7d2ee;
   border: 5px solid #fff;
@@ -100,7 +99,8 @@
 }
 
 .familyMember p {
-  line-height: 0.6rem;
+  line-height: 0rem;
+  margin: 0;
 }
 
 .familyMember div {
