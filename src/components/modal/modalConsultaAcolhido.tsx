@@ -55,7 +55,12 @@ export const ModalConsultaAcolhido = () => {
             <div>
               <div style={{ alignContent: "center" }}>
                 <p>Status: </p>
-                <p style={{ color: "green" }}>ATIVO</p>
+                {acolhidoData &&
+                  (acolhidoData.status ? (
+                    <p style={{ color: "green" }}>ATIVO</p>
+                  ) : (
+                    <p style={{ color: "red" }}>INATIVO</p>
+                  ))}
               </div>
               <div>
                 <p>Nome:</p>
@@ -81,19 +86,30 @@ export const ModalConsultaAcolhido = () => {
               </div>
               <div>
                 <p>Escolaridade:</p>
-                {acolhidoData && <p>{acolhidoData.educationLevel}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.educationLevel ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>Encaminhado para: </p>
-                {acolhidoData && <p>{acolhidoData.forwardedTo}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.forwardedTo ?? "Não informado"}</p>
+                )}
               </div>
               <div>
-                <p>Outra(s) instituição(ões)</p>
-                {acolhidoData && <p>{acolhidoData.whichInstitution}</p>}
+                <p>Cadastro em outra(s) instituição(ões)</p>
+                {acolhidoData && acolhidoData.anyInstitutionRegister ? (
+                  <p>{acolhidoData.whichInstitution}</p>
+                ) : (
+                  <p>Não possui</p>
+                )}
               </div>
+
               <div>
                 <p>Informações fornecidas por: </p>
-                {acolhidoData && <p>{acolhidoData.informationProvidedBy}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.informationProvidedBy ?? "Não informado"}</p>
+                )}
               </div>
             </div>
 
@@ -101,27 +117,39 @@ export const ModalConsultaAcolhido = () => {
             <div>
               <div>
                 <p>CEP: </p>
-                {acolhidoData && <p>{acolhidoData.address.cep}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.address.cep ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>Endereço: </p>
-                {acolhidoData && <p>{acolhidoData.address.address}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.address.address ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>Número: </p>
-                {acolhidoData && <p>{acolhidoData.address.number}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.address.number ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>Bairro: </p>
-                {acolhidoData && <p>{acolhidoData.address.district}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.address.district ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>Cidade: </p>
-                {acolhidoData && <p>{acolhidoData.address.city}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.address.city ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>UF: </p>
-                {acolhidoData && <p>{acolhidoData.address.fu}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.address.fu ?? "Não informado"}</p>
+                )}
               </div>
             </div>
 
@@ -129,11 +157,15 @@ export const ModalConsultaAcolhido = () => {
             <div>
               <div>
                 <p>Escola: </p>
-                {acolhidoData && <p>{acolhidoData.school}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.school ?? "Não informado"}</p>
+                )}
               </div>
               <div>
                 <p>Telefone: </p>
-                {acolhidoData && acolhidoData.schoolPhone}
+                {acolhidoData && (
+                  <p>{acolhidoData.schoolPhone ?? "Não informado"}</p>
+                )}
               </div>
             </div>
 
@@ -141,7 +173,9 @@ export const ModalConsultaAcolhido = () => {
             <div>
               <div>
                 <p>Responsável: </p>
-                {acolhidoData && <p>{acolhidoData.responsible.name}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.responsible.name ?? "Não informado"}</p>
+                )}
               </div>
               <div className={styles.phones}>
                 <p>Contato: </p>
@@ -164,7 +198,9 @@ export const ModalConsultaAcolhido = () => {
             <div>
               <div>
                 <p>Mãe: </p>
-                {acolhidoData && <p>{acolhidoData.mother.name}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.mother.name ?? "Não informado"}</p>
+                )}
               </div>
               <div className={styles.phones}>
                 <p>Contato: </p>
@@ -185,27 +221,33 @@ export const ModalConsultaAcolhido = () => {
                 <p>Ocupação: </p>
                 {acolhidoData && <p>{acolhidoData.mother.occupation}</p>}
               </div>
-              <div>
-                <p>Local de trabalho: </p>
-                {acolhidoData && <p>{acolhidoData.mother.placeOfWork}</p>}
-              </div>
-              <div>
-                <p>Salário: </p>
-                {acolhidoData && <p>{acolhidoData.mother.salary}</p>}
-              </div>
-              <div>
-                <p>Vínculo empregatício: </p>
-                {acolhidoData && (
+              {acolhidoData && acolhidoData.mother.placeOfWork && (
+                <div>
+                  <p>Local de trabalho: </p>
+                  <p>{acolhidoData.mother.placeOfWork}</p>
+                </div>
+              )}
+              {acolhidoData && acolhidoData.mother.salary && (
+                <div>
+                  <p>Salário: </p>
+                  <p>{acolhidoData.mother.salary}</p>
+                </div>
+              )}
+              {acolhidoData && acolhidoData.mother.employmentRelationship && (
+                <div>
+                  <p>Vínculo empregatício: </p>
                   <p>{acolhidoData.mother.employmentRelationship}</p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {/* fatherData */}
             <div>
               <div>
                 <p>Pai: </p>
-                {acolhidoData && <p>{acolhidoData.father.name}</p>}
+                {acolhidoData && (
+                  <p>{acolhidoData.father.name ?? "Não informado"}</p>
+                )}
               </div>
               <div className={styles.phones}>
                 <p>Contato: </p>
@@ -226,20 +268,24 @@ export const ModalConsultaAcolhido = () => {
                 <p>Ocupação: </p>
                 {acolhidoData && <p>{acolhidoData.father.occupation}</p>}
               </div>
-              <div>
-                <p>Local de trabalho: </p>
-                {acolhidoData && <p>{acolhidoData.father.placeOfWork}</p>}
-              </div>
-              <div>
-                <p>Salário: </p>
-                {acolhidoData && <p>{acolhidoData.father.salary}</p>}
-              </div>
-              <div>
-                <p>Vínculo empregatício: </p>
-                {acolhidoData && (
+              {acolhidoData && acolhidoData.father.placeOfWork && (
+                <div>
+                  <p>Local de trabalho: </p>
+                  <p>{acolhidoData.father.placeOfWork}</p>
+                </div>
+              )}
+              {acolhidoData && acolhidoData.father.salary && (
+                <div>
+                  <p>Salário: </p>
+                  <p>{acolhidoData.father.salary}</p>
+                </div>
+              )}
+              {acolhidoData && acolhidoData.father.employmentRelationship && (
+                <div>
+                  <p>Vínculo empregatício: </p>
                   <p>{acolhidoData.father.employmentRelationship}</p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {/* familyCompositionData */}
@@ -253,23 +299,39 @@ export const ModalConsultaAcolhido = () => {
                     )}
                     <div>
                       <p>Nome: </p>
-                      {acolhidoData && <p>{familyMember.name}</p>}
+                      {acolhidoData && (
+                        <p>{familyMember.name ?? "Não informado"}</p>
+                      )}
+                    </div>
+                    <div>
+                      <p>Parentesco: </p>
+                      {acolhidoData && (
+                        <p>{familyMember.relationship ?? "Não informado"}</p>
+                      )}
                     </div>
                     <div>
                       <p>Idade: </p>
-                      {acolhidoData && <p>{familyMember.birthYear}</p>}
+                      {acolhidoData && (
+                        <p>{familyMember.birthYear ?? "Não informado"}</p>
+                      )}
                     </div>
                     <div>
                       <p>Ocupação: </p>
-                      {acolhidoData && <p>{familyMember.occupation}</p>}
+                      {acolhidoData && (
+                        <p>{familyMember.occupation ?? "Não informado"}</p>
+                      )}
                     </div>
 
                     {familyMember.comments && (
                       <div className={styles.familyComments}>
                         <p>Observações</p>
-                        <textarea name="obs" cols={20} rows={5} disabled={true}>
-                          {familyMember.comments}
-                        </textarea>
+                        <textarea
+                          name="obs"
+                          cols={20}
+                          rows={5}
+                          disabled={true}
+                          value={familyMember.comments}
+                        ></textarea>
                       </div>
                     )}
                   </div>
@@ -285,6 +347,11 @@ export const ModalConsultaAcolhido = () => {
                   cols={15}
                   rows={5}
                   disabled={true}
+                  value={
+                    acolhidoData && acolhidoData.comments
+                      ? acolhidoData.comments
+                      : "Nenhuma observação adicionada"
+                  }
                 ></textarea>
               </div>
             </div>

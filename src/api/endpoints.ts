@@ -193,7 +193,10 @@ export const updateAcolhidoStatus = (id: string, status: boolean) => {
 // List acolhido response properties, to perform a sort.
 type Sort = "id"|"name"|"responsible"|"status"|"age"|undefined;
 
-export const getAcolhidos = (page: number, sort: Sort = undefined) => {
+export const getListaAcolhidos = (page: number, sort: Sort = undefined, orderByAsc: boolean = true) => {
+
+  const SIZE = 100; //Qty of elements in each page per request
+
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando acolhidos ...",
     successMessage: "Acolhidos carregados com sucesso!",
@@ -205,14 +208,20 @@ export const getAcolhidos = (page: number, sort: Sort = undefined) => {
     ["name", "nome"],
     ["responsible", "responsavel"],
     ["status", "statusAcolhido"],
-    ["age", "idade"],
+    ["age", "dataNascimento"],
   ])
-  const sortParameter = sort ? `&_sort=${convertedSort.get(sort)}` : "";
+
+  if (sort === "age") orderByAsc = !orderByAsc
+
+  const order = orderByAsc ? "asc" : "desc";
+
+  const sortParameter = sort ? `&sort=${convertedSort.get(sort)},${order}` : "";
 
   /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  return getRequest(`lista-acolhidos?_page=${page}${sortParameter}`, toastOptions)
+  return getRequest(`lista-acolhidos?page=${page}&size=${SIZE}${sortParameter}`, toastOptions)
   .then(({data}) => {
-    return apiToListAcolhido(data);
+    console.log("before data:", data)
+    return {acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage};
   });
 }
