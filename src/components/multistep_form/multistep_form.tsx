@@ -1,5 +1,5 @@
 import { MouseEventHandler, ReactElement } from "react";
-import { STEPS } from "@/data/stepsCadastroAcolhido.array";
+import { STEPS } from "@/constants/stepsCadastroAcolhido.array";
 
 //Multistep component
 import formStyles from "./form.module.css";

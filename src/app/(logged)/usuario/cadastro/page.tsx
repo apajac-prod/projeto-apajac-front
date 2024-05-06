@@ -6,16 +6,16 @@ import { useForm } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import SubTitle from '@/components/form/subTitle';
+import SubTitle from '@/components/form/acolhido/subTitle';
 import styles from './page.module.css';
 
 import FormTitle from '@/components/titles/form/form';
-import { formTitleIcons } from '@/components/titles/form/formTitleIcons';
+import { formTitleIcons } from "@/components/titles/form/formTitleIcons";
 
 import { restoreInputValue } from '@/functions/restoreInputs';
 import { MultistepFormContext } from '@/hooks/useMultistepForm';
 import { ChangeEvent, useContext, useState } from 'react';
-import Login from '@/app/(notLogged)/login/page';
+import Login from '@/app/login/page';
 import { error } from 'console';
 import Image from 'next/image';
 import { flushSync } from 'react-dom';
@@ -196,7 +196,7 @@ function CadastroUsuario()  {
                 <FormTitle
                     className={styles.title}
                     title="Cadastrar Usuário"
-                    icon={formTitleIcons.person}
+                    Icon={formTitleIcons.person}
                 />
             </div>
 
@@ -339,13 +339,6 @@ export default CadastroUsuario;
 
 //Trecho para colocar no endpoint
 /*
-export const createUsuario = (usuarioData: any) => {
-    const toastOptions: ToastOptions = {
-        loadingMessage: "Cadastrando usuário...",
-        successMessage: "Usuário cadastrado com sucesso!",
-        errorMessage: "Não foi possível cadastrar o usuário." 
-    }
-    return postRequest("usuario", data, toastOptions);
-}
+
 
 */
