@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
 import * as yup from "yup";
@@ -17,31 +18,21 @@ import { ChangeEvent, useContext, useState } from 'react';
 import Login from '@/app/(notLogged)/login/page';
 import { error } from 'console';
 import Image from 'next/image';
+import { flushSync } from 'react-dom';
 
-import { Slide, ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-function successRegisterToast(){
-    toast.success('Novo usuário cadastrado!', {
-        
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored',
-        transition: Slide,
-        
-    })
-}
+import { createUsuario, updateUsuario } from "@/api/endpoints";
 
 
-function CadastroUsuario(){
+
+
+function CadastroUsuario()  {
+    const router = useRouter();
+    const [disableButtons, setDisableButtons] = useState<boolean>(false);
+ 
     const [permissions, setPermissions] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const multistepController = useContext(MultistepFormContext);
+    
 
 
     // name validation
@@ -140,12 +131,33 @@ function CadastroUsuario(){
 
 
 
-    function next(data: any){
-        console.log("Next", data);
-        successRegisterToast();
-        multistepController?.setCurrentStepData(data);
-        multistepController?.next(); 
+    function registerUsuario(data: any) {
+        flushSync(() => {        
+            multistepController?.setCurrentStepData(data);
+        });
+
+        setDisableButtons(true);
+        if (multistepController?.getId()) {
+            updateUsuario(multistepController?.getResultObject())
+                .then(() => {
+                    window.onbeforeunload = () => null;
+                    router.push("/menu");
+                })
+                .finally(() => {
+                    setDisableButtons(false);
+                });
+        }   else {
+            createUsuario(multistepController?.getResultObject())
+                .then(() => {
+                    window.onbeforeunload = () => null;
+                    router.push("/menu"); 
+                })
+                .finally(() => {
+                    setDisableButtons(false);
+                });
+        }
     }
+
 
     function back(data: any) {
         if (
@@ -192,7 +204,9 @@ function CadastroUsuario(){
                 <p className={styles.required_message}>* Campos obrigatórios</p>
             </div>
 
-            <form onSubmit={handleSubmit((data) => next(data))} autoComplete="off"> 
+            <form 
+                onSubmit={handleSubmit((data) => registerUsuario(data))}
+                autoComplete="off"> 
 
                 <div className={`${styles.formRow} ${styles.input_big}`}>
                     <label htmlFor="name" className={styles.required}>
@@ -287,12 +301,26 @@ function CadastroUsuario(){
 
                 
                 <div className={styles.buttons}>
-                    <button className="submitBtn" onClick={handleSubmit((data) => next(data))}>
-                        Cadastrar
+                    <button
+                        className={`submitBtn ${
+                            (disableButtons || !multistepController?.getActiveStatus()) &&
+                            styles.buttons_disabled
+                        }`}
+                        disabled={disableButtons}
+                        onClick={handleSubmit((data) => registerUsuario(data))}
+                    >
+                        {multistepController?.getId
+                            ? "Finalizar alterações"
+                            : "Finalizar Cadastro"}                        
                     </button>
-                    <ToastContainer />
+                    
 
-                    <button className="submitBtn" type="button" onClick={() => back(getValues())}>
+                    <button
+                        className={`submitBtn ${disableButtons && styles.buttons_disabled}`} 
+                        type="button"
+                        disabled={disableButtons} 
+                        onClick={() => back(getValues())}
+                    >
                         Voltar
                     </button>
                 </div>
@@ -306,3 +334,18 @@ function CadastroUsuario(){
 }
 
 export default CadastroUsuario;
+
+
+
+//Trecho para colocar no endpoint
+/*
+export const createUsuario = (usuarioData: any) => {
+    const toastOptions: ToastOptions = {
+        loadingMessage: "Cadastrando usuário...",
+        successMessage: "Usuário cadastrado com sucesso!",
+        errorMessage: "Não foi possível cadastrar o usuário." 
+    }
+    return postRequest("usuario", data, toastOptions);
+}
+
+*/
