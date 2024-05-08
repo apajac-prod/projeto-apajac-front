@@ -12,8 +12,10 @@ const HTTP_STATUS = {
     UNAUTHORIZED: 401,
 }
 
-type ToastOptions = {
+export type ToastOptions = {
     noToast?: boolean|undefined;
+    dismissAnyPreviousToast?: boolean|undefined;
+    id?: string|undefined;
     loadingMessage?: string|undefined;
     successMessage?: string|undefined;
     errorMessage?: string|undefined;
@@ -31,38 +33,40 @@ type CustomError = {
 }
 
 function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
-    toast.promise<void>(
-        promise,
-        {
-          loading: toastOptions?.loadingMessage ?? "Carregando informações ...",
-          success: () => {
-            return toastOptions?.successMessage ?? "Informações carregadas com sucesso!";
-          },
-          error: (err: CustomError) => {
-            let displayErrorMessage = err.customMessage;
-            if (err.customMessage && err.messageFromApi) displayErrorMessage += "\n";
-            if (err.messageFromApi) displayErrorMessage += `Cód: ${err.status} | ${err.messageFromApi}`;
-
-            return displayErrorMessage!
-          },
+  toastOptions && !!toastOptions.dismissAnyPreviousToast && toast.dismiss();  //Dismiss any previous toast that is displayed in screen
+  toast.promise<void>(
+      promise,
+      {
+        loading: toastOptions?.loadingMessage ?? "Carregando informações ...",
+        success: () => {
+          return toastOptions?.successMessage ?? "Informações carregadas com sucesso!";
         },
-        {
-          style: {
-            backgroundColor: "#5992cd",
-            outline: "2px #fff solid",
-            color: "#fff",
-            minWidth: "400px",
-            minHeight: "60px",
-            marginTop: "5%",
-          },
-          success: {
-            duration: toastOptions?.duration?.sucess ?? 5000,
-          },
-          error: {
-            duration: toastOptions?.duration?.error ?? 7000,
-          },
-        }
-      );
+        error: (err: CustomError) => {
+          let displayErrorMessage = err.customMessage;
+          if (err.customMessage && err.messageFromApi) displayErrorMessage += "\n";
+          if (err.messageFromApi) displayErrorMessage += `Cód: ${err.status} | ${err.messageFromApi}`;
+
+          return displayErrorMessage!
+        },
+      },
+      {
+        style: {
+          backgroundColor: "#5992cd",
+          outline: "2px #fff solid",
+          color: "#fff",
+          minWidth: "400px",
+          minHeight: "60px",
+          marginTop: "5%",
+        },
+        success: {
+          duration: toastOptions?.duration?.sucess ?? 1500,
+        },
+        error: {
+          duration: toastOptions?.duration?.error ?? 5000,
+        },
+        id: toastOptions?.id ?? "default"
+      }
+    );
 }
 
 const getRequest = (endpoint: string, toastOptions?: ToastOptions) => {
@@ -193,14 +197,15 @@ export const updateAcolhidoStatus = (id: string, status: boolean) => {
 // List acolhido response properties, to perform a sort.
 type Sort = "id"|"name"|"responsible"|"status"|"age"|undefined;
 
-export const getListaAcolhidos = (page: number, sort: Sort = undefined, orderByAsc: boolean = true) => {
+export const getListaAcolhidos = async (page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
 
-  const SIZE = 100; //Qty of elements in each page per request
+  const SIZE = 50; //Qty of elements in each page per request
 
-  const toastOptions: ToastOptions = {
-    loadingMessage: "Carregando acolhidos ...",
-    successMessage: "Acolhidos carregados com sucesso!",
-    errorMessage: "Não foi possível carregar os acolhidos."
+  const tOptions: ToastOptions = {
+    id: "getListaAcolhidos",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos ...",
+    successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
   }
   
   const convertedSort = new Map([
@@ -219,9 +224,39 @@ export const getListaAcolhidos = (page: number, sort: Sort = undefined, orderByA
 
   /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  return getRequest(`lista-acolhidos?page=${page}&size=${SIZE}${sortParameter}`, toastOptions)
-  .then(({data}) => {
-    console.log("before data:", data)
-    return {acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage};
-  });
+  const { data } = await getRequest(`lista-acolhidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  console.log("before data:", data);
+  return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
+}
+
+export const getListaAcolhidosPorNome = async (name: string, page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
+
+  const SIZE = 50; //Qty of elements in each page per request
+
+  const tOptions: ToastOptions = {
+    id: "getListaAcolhidosPorNome",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos por nome...",
+    successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
+  }
+  
+  const convertedSort = new Map([
+    ["id", "id"],
+    ["name", "nome"],
+    ["responsible", "responsavel"],
+    ["status", "statusAcolhido"],
+    ["age", "dataNascimento"],
+  ])
+
+  if (sort === "age") orderByAsc = !orderByAsc
+
+  const order = orderByAsc ? "asc" : "desc";
+
+  const sortParameter = sort ? `&sort=${convertedSort.get(sort)},${order}` : "";
+
+  /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
+  // Conferir como passar os parametros de page e sort pra api
+  const { data } = await getRequest(`lista-acolhidos-por-nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  console.log("before data:", data);
+  return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
 }
