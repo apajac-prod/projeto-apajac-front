@@ -9,6 +9,7 @@
   /*   min-width: 35%; */
   width: 100%;
   flex-basis: 300px;
+  min-height: 300px;
   flex: 1;
   background-color: #5992cd;
 }
