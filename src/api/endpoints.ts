@@ -23,6 +23,7 @@ export type ToastOptions = {
       sucess?: number|undefined;
       error?: number|undefined;
     }
+    position?: "bottom-center"|"bottom-left"|"bottom-right"|"top-center"|"top-left"|"top-right";
 }
 
 type CustomError = {
@@ -56,7 +57,7 @@ function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
           color: "#fff",
           minWidth: "400px",
           minHeight: "60px",
-          marginTop: "5%",
+          margin: "5%",
         },
         success: {
           duration: toastOptions?.duration?.sucess ?? 1500,
@@ -64,7 +65,8 @@ function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
         error: {
           duration: toastOptions?.duration?.error ?? 5000,
         },
-        id: toastOptions?.id ?? "default"
+        id: toastOptions?.id ?? "default",
+        position: toastOptions?.position ?? "top-center",
       }
     );
 }
@@ -172,6 +174,7 @@ export const getAcolhidoById = (acolhidoId: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando informações do acolhido ...",
     successMessage: "Informações carregadas com sucesso!",
+    position: "bottom-center"
   }
   return getRequest(`acolhido/por_id/${acolhidoId}`, toastOptions);
 }
@@ -203,6 +206,7 @@ export const getListaAcolhidos = async (page: number, sort: Sort = undefined, or
 
   const tOptions: ToastOptions = {
     id: "getListaAcolhidos",
+    position: "bottom-center",
     loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos ...",
     successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
     errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
@@ -235,6 +239,7 @@ export const getListaAcolhidosPorNome = async (name: string, page: number, sort:
 
   const tOptions: ToastOptions = {
     id: "getListaAcolhidosPorNome",
+    position: "bottom-center",
     loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos por nome...",
     successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
     errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
