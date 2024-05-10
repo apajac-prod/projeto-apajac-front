@@ -52,20 +52,20 @@ const StepComposicaoFamiliar = () => {
 
           ocupation: yup
             .string()
-            .trim()
             .max(50, "Quantidade máxima permitida de carácteres: 50")
             .transform((_, val) => (val === "" ? null : val))
             .nullable()
+            .trim()
             .typeError("Verifique se inseriu corretamente a ocupação"),
 
           comments: yup
             .string()
-            .trim()
             .max(1000, "Quantidade máxima permitida de carácteres: 1000")
             .transform((_, val) =>
               val && (val === "" || val.trim()) === "" ? null : val
             )
             .nullable()
+            .trim()
             .typeError("Verifique se inseriu corretamente as observações"),
         })
       ),
@@ -243,7 +243,7 @@ const StepComposicaoFamiliar = () => {
             {errors.familyComposition &&
               errors.familyComposition[index]?.ocupation && (
                 <p className={styles.error_message}>
-                  {String(errors.familyComposition![index]?.ocupation)}
+                  {String(errors.familyComposition![index]?.ocupation?.message)}
                 </p>
               )}
 
@@ -266,7 +266,7 @@ const StepComposicaoFamiliar = () => {
             {errors.familyComposition &&
               errors.familyComposition[index]?.comments && (
                 <p className={styles.error_message}>
-                  {String(errors.familyComposition![index]?.comments)}
+                  {String(errors.familyComposition![index]?.comments?.message)}
                 </p>
               )}
 

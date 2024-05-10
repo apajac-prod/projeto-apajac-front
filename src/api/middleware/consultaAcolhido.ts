@@ -58,6 +58,9 @@ interface Endereco {
 
 export function apiToConsultaAcolhido (data: Api) {
 
+  console.log("API sent:", data.dataNascimento);
+  console.log("Converted to:", new Date(data.dataNascimento));
+
   function convertOccupation(occupation: string){
     if (!occupation) return null;
     

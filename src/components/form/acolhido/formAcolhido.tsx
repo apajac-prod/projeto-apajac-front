@@ -140,10 +140,13 @@ function FormAcolhido({ editId = null }: Props) {
             {editId && (
               <button
                 className={`submitBtn ${
+                  multistepController.isLoading && "disableBtn"
+                } ${
                   multistepController.getActiveStatus()
                     ? styles.deactivate
                     : styles.activate
                 }`}
+                disabled={multistepController.isLoading}
                 type="button"
                 onClick={() => changeStatusAcolhido()}
               >

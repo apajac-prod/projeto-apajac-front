@@ -19,7 +19,7 @@ import { createAcolhido, updateAcolhido } from "@/api/endpoints";
 const StepFinalizar = () => {
   const router = useRouter();
   const multistepController = useContext(MultistepFormContext);
-  const [disableButtons, setDisableButtons] = useState<boolean>(false);
+  // const [disableButtons, setDisableButtons] = useState<boolean>(false);
 
   //Yup validation schema
   const finalizeSchema: yup.ObjectSchema<Finalizar> = yup.object({
@@ -49,7 +49,8 @@ const StepFinalizar = () => {
       multistepController?.setCurrentStepData(data);
     });
 
-    setDisableButtons(true);
+    // setDisableButtons(true);
+    multistepController?.setIsLoading(true);
     if (multistepController?.getId()) {
       updateAcolhido(multistepController?.getResultObject())
         .then(() => {
@@ -57,7 +58,8 @@ const StepFinalizar = () => {
           router.push("/menu");
         })
         .finally(() => {
-          setDisableButtons(false);
+          multistepController?.setIsLoading(false);
+          //setDisableButtons(false);
         });
     } else {
       createAcolhido(multistepController?.getResultObject())
@@ -66,7 +68,8 @@ const StepFinalizar = () => {
           router.push("/menu");
         })
         .finally(() => {
-          setDisableButtons(false);
+          multistepController?.setIsLoading(false);
+          //setDisableButtons(false);
         });
     }
   }
@@ -116,10 +119,11 @@ const StepFinalizar = () => {
         <div className={styles.buttons}>
           <button
             className={`submitBtn ${
-              (disableButtons || !multistepController?.getActiveStatus()) &&
+              (multistepController?.isLoading ||
+                !multistepController?.getActiveStatus()) &&
               styles.buttons_disabled
             }`}
-            disabled={disableButtons}
+            disabled={multistepController?.isLoading}
             onClick={handleSubmit((data) => registerAcolhido(data))}
           >
             {multistepController?.getId
@@ -127,9 +131,11 @@ const StepFinalizar = () => {
               : "Finalizar Cadastro"}
           </button>
           <button
-            className={`submitBtn ${disableButtons && styles.buttons_disabled}`}
+            className={`submitBtn ${
+              multistepController?.isLoading && "disableBtn"
+            }`}
             type="button"
-            disabled={disableButtons}
+            disabled={multistepController?.isLoading}
             onClick={() => back(getValues())}
           >
             Voltar

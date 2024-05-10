@@ -96,11 +96,11 @@ const StepPais = ({ who }: Props) => {
 
     placeOfWork: yup
       .string()
-      .trim()
       .min(2, "Quantidade mínima necessária de caracteres: 2")
       .max(255, "Quantidade máxima permitida de carácteres: 255")
       .transform((_, val) => (val === "" ? null : val))
       .nullable()
+      .trim()
       .typeError("Verifique se inseriu corretamente o local de trabalho"),
 
     salary: yup
