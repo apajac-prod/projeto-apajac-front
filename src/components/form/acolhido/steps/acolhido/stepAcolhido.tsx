@@ -256,7 +256,6 @@ function StepAcolhido() {
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     setFocus,
     formState: { errors },

@@ -19,6 +19,7 @@ export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any>
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [id, setId] = useState<string|null>(null);
     const [isActive, setIsActive] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [stepsData, setStepsData] = useState<any>(
         steps.map((_, index) => {
             return {cache: null, data: acolhidoData ? acolhidoData[index] : null}
@@ -134,6 +135,8 @@ export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any>
         return result;
     }
     return {
+        isLoading,
+        setIsLoading,
         canLeave,
         setCanLeave,
         setId,

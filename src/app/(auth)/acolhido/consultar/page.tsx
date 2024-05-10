@@ -42,7 +42,14 @@ export default function ConsultarAcolhido() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) setPage((oldValue) => oldValue + 1);
+        if (entries[0].isIntersecting) {
+          setToastOptions({
+            loadingMessage: "Carregando mais acolhidos...",
+            successMessage: "Acolhidos carregados com sucesso!",
+            errorMessage: "Não foi possível carregar os acolhidos.",
+          });
+          setPage((oldValue) => oldValue + 1);
+        }
       },
       {
         root: null,
