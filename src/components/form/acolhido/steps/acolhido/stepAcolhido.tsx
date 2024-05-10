@@ -107,7 +107,6 @@ function StepAcolhido() {
 
     school: yup
       .string()
-      .trim()
       .transform((_, val) => (val === "" ? null : val))
       .nullable()
       .test(
@@ -124,6 +123,7 @@ function StepAcolhido() {
           return true;
         }
       )
+      .trim()
       .max(255, "Quantidade máxima permitida de carácteres: 255")
       .typeError("Verifique se inseriu corretamente o nome da escola"),
 
@@ -246,11 +246,11 @@ function StepAcolhido() {
 
     complement: yup
       .string()
-      .trim()
       .min(2, "Complemento precisa ter ao menos 2 caracteres")
       .max(255, "Quantidade máxima permitida de carácteres: 255")
       .transform((_, val) => (val === "" ? null : val))
-      .nullable(),
+      .nullable()
+      .trim(),
   });
 
   const {
