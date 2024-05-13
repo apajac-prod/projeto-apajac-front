@@ -1,15 +1,14 @@
-import styles from "./not-found.module.css";
+import styles from "./em_construcao.module.css";
 
 import Link from "next/link";
 
 import TitleApajac from "@/components/titles/apajac/apajac";
 
-const NotFound = () => {
+const EmConstrucao = () => {
   return (
     <div className={styles.container}>
       <h1>Oops...</h1>
-      <p>404 not found</p>
-      <h2>Não encontramos a página que você procura...</h2>
+      <h2>Esta página ainda está em construção ...</h2>
       <Link href="/menu">
         <h3>Clique aqui para voltar a página inicial</h3>
       </Link>
@@ -17,4 +16,4 @@ const NotFound = () => {
     </div>
   );
 };
-export default NotFound;
+export default EmConstrucao;
