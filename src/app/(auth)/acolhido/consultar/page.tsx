@@ -3,8 +3,12 @@
 import FormTitle from "@/components/titles/form/form";
 import * as icon from "react-flaticons";
 import styles from "./page.module.css";
-import { useEffect, useRef, useState } from "react";
-import { getListaAcolhidos } from "@/api/endpoints";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  ToastOptions,
+  getListaAcolhidos,
+  getListaAcolhidosPorNome,
+} from "@/api/endpoints";
 import { ListAcolhido } from "@/api/middleware/listAcolhido";
 import { ModalConsultaAcolhido } from "@/components/modal/modalConsultaAcolhido";
 import {
@@ -21,10 +25,16 @@ export default function ConsultarAcolhido() {
   const [acolhidos, setAcolhidos] = useState<ListAcolhido[]>([]);
   const [page, setPage] = useState<number>(0);
   const [isLastPage, setIslastPage] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean | undefined>(undefined);
   const [sortBy, setSortBy] = useState<SortBy>("name");
   const [orderByAsc, setOrderByAsc] = useState(true);
-  const [searchByName, setSearchByName] = useState<string | null>(null);
+  const [searchByName, setSearchByName] = useState<string | undefined>(
+    undefined
+  );
+  const [toastOptions, setToastOptions] = useState<ToastOptions | undefined>(
+    undefined
+  );
+  const inputNameRef = useRef<HTMLInputElement | null>(null);
   const observerRef = useRef(null);
 
   const modal = useModalConsultaAcolhido();
@@ -32,8 +42,14 @@ export default function ConsultarAcolhido() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading)
+        if (entries[0].isIntersecting) {
+          setToastOptions({
+            loadingMessage: "Carregando mais acolhidos...",
+            successMessage: "Acolhidos carregados com sucesso!",
+            errorMessage: "Não foi possível carregar os acolhidos.",
+          });
           setPage((oldValue) => oldValue + 1);
+        }
       },
       {
         root: null,
@@ -53,16 +69,61 @@ export default function ConsultarAcolhido() {
     console.log(`Request, page=${page} ; sortBy=${sortBy}`);
     console.log("isLastPage", isLastPage);
     if (isLastPage) return;
+
     setIsLoading(true);
-    getListaAcolhidos(page, sortBy, orderByAsc)
-      .then(({ acolhidos, isLastPage: lastPage }) => {
-        setAcolhidos((oldArray) => [...oldArray, ...acolhidos]);
-        setIslastPage(lastPage);
-      })
-      .finally(() => setIsLoading(false));
-  }, [page, sortBy, orderByAsc]);
+    console.log("searchByName:", searchByName);
+
+    if (!!searchByName) {
+      getListaAcolhidosPorNome(
+        searchByName,
+        page,
+        sortBy,
+        orderByAsc,
+        toastOptions
+      )
+        .then(({ acolhidos, isLastPage: lastPage }) => {
+          setAcolhidos((oldArray) => [...oldArray, ...acolhidos]);
+          setIslastPage(lastPage);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      getListaAcolhidos(page, sortBy, orderByAsc, toastOptions)
+        .then(({ acolhidos, isLastPage: lastPage }) => {
+          setAcolhidos((oldArray) => [...oldArray, ...acolhidos]);
+          setIslastPage(lastPage);
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [page, sortBy, orderByAsc, searchByName]);
+
+  function handleNameChange(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const inputName = inputNameRef.current;
+
+    if (inputName && inputName.value != searchByName) {
+      if (inputName.value == "" && searchByName == undefined) return;
+      if (inputName.value == "" && searchByName != undefined) {
+        setSearchByName(undefined);
+        setToastOptions(undefined);
+      } else {
+        setSearchByName(inputName.value);
+        setToastOptions({
+          loadingMessage: "Carregando acolhidos com base no nome inserido...",
+          successMessage: "Acolhidos carregados com sucesso!",
+          errorMessage: "Não foi possível carregar os acolhidos.",
+        });
+      }
+      setAcolhidos([]);
+      setIslastPage(false);
+      setOrderByAsc(true);
+      setSortBy("name");
+      setPage(0);
+    }
+  }
 
   function handleSortChange(clickedSortBy: SortBy) {
+    if (isLoading) return;
+
     setAcolhidos([]);
 
     if (sortBy == clickedSortBy) {
@@ -72,6 +133,11 @@ export default function ConsultarAcolhido() {
       return;
     }
 
+    setToastOptions({
+      loadingMessage: "Reorganizando a tabela com base na coluna clicada...",
+      successMessage: "Tabela reorganizada com sucesso!",
+      errorMessage: "Não foi possível reorganizar a tabela.",
+    });
     setSortBy(clickedSortBy);
     setOrderByAsc(true);
     setIslastPage(false);
@@ -94,13 +160,17 @@ export default function ConsultarAcolhido() {
       <form
         className={styles.search}
         onSubmit={(e) => {
-          e.preventDefault();
-          alert("busca por nome!");
+          handleNameChange(e);
         }}
       >
         <label htmlFor="search_input">Nome</label>
-        <input type="text" minLength={3} />
-        <input type="submit" className="submitBtn" value="Pesquisar" />
+        <input type="text" minLength={3} ref={inputNameRef} />
+        <input
+          type="submit"
+          className={`submitBtn ${isLoading ? styles.disabled : ""}`}
+          value="Pesquisar"
+          disabled={isLoading}
+        />
       </form>
 
       <table className={styles.table}>

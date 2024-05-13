@@ -42,8 +42,13 @@ input {
   outline: 1px solid #5992cd;
 }
 
+.disableBtn {
+  background-color: #969696 !important;
+  pointer-events: none !important;
+}
+
 .disable_input {
   background-color: #ddd !important;
-  color: #6d6d6d;
-  pointer-events: none;
+  color: #6d6d6d !important;
+  pointer-events: none !important;
 }

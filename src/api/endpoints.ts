@@ -15,8 +15,10 @@ const HTTP_STATUS = {
     UNAUTHORIZED: 401,
 }
 
-type ToastOptions = {
+export type ToastOptions = {
     noToast?: boolean|undefined;
+    dismissAnyPreviousToast?: boolean|undefined;
+    id?: string|undefined;
     loadingMessage?: string|undefined;
     successMessage?: string|undefined;
     errorMessage?: string|undefined;
@@ -24,6 +26,7 @@ type ToastOptions = {
       sucess?: number|undefined;
       error?: number|undefined;
     }
+    position?: "bottom-center"|"bottom-left"|"bottom-right"|"top-center"|"top-left"|"top-right";
 }
 
 type CustomError = {
@@ -34,38 +37,41 @@ type CustomError = {
 }
 
 function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
-    toast.promise<void>(
-        promise,
-        {
-          loading: toastOptions?.loadingMessage ?? "Carregando informações ...",
-          success: () => {
-            return toastOptions?.successMessage ?? "Informações carregadas com sucesso!";
-          },
-          error: (err: CustomError) => {
-            let displayErrorMessage = err.customMessage;
-            if (err.customMessage && err.messageFromApi) displayErrorMessage += "\n";
-            if (err.messageFromApi) displayErrorMessage += `Cód: ${err.status} | ${err.messageFromApi}`;
-
-            return displayErrorMessage!
-          },
+  toastOptions && !!toastOptions.dismissAnyPreviousToast && toast.dismiss();  //Dismiss any previous toast that is displayed in screen
+  toast.promise<void>(
+      promise,
+      {
+        loading: toastOptions?.loadingMessage ?? "Carregando informações ...",
+        success: () => {
+          return toastOptions?.successMessage ?? "Informações carregadas com sucesso!";
         },
-        {
-          style: {
-            backgroundColor: "#5992cd",
-            outline: "2px #fff solid",
-            color: "#fff",
-            minWidth: "400px",
-            minHeight: "60px",
-            marginTop: "5%",
-          },
-          success: {
-            duration: toastOptions?.duration?.sucess ?? 5000,
-          },
-          error: {
-            duration: toastOptions?.duration?.error ?? 7000,
-          },
-        }
-      );
+        error: (err: CustomError) => {
+          let displayErrorMessage = err.customMessage;
+          if (err.customMessage && err.messageFromApi) displayErrorMessage += "\n";
+          if (err.messageFromApi) displayErrorMessage += `Cód: ${err.status} | ${err.messageFromApi}`;
+
+          return displayErrorMessage!
+        },
+      },
+      {
+        style: {
+          backgroundColor: "#5992cd",
+          outline: "2px #fff solid",
+          color: "#fff",
+          minWidth: "400px",
+          minHeight: "60px",
+          margin: "5%",
+        },
+        success: {
+          duration: toastOptions?.duration?.sucess ?? 1500,
+        },
+        error: {
+          duration: toastOptions?.duration?.error ?? 5000,
+        },
+        id: toastOptions?.id ?? "default",
+        position: toastOptions?.position ?? "top-center",
+      }
+    );
 }
 
 const getRequest = (endpoint: string, toastOptions?: ToastOptions) => {
@@ -171,6 +177,7 @@ export const getAcolhidoById = (acolhidoId: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando informações do acolhido ...",
     successMessage: "Informações carregadas com sucesso!",
+    position: "bottom-center"
   }
   return getRequest(`acolhido/por_id/${acolhidoId}`, toastOptions);
 }
@@ -196,14 +203,16 @@ export const updateAcolhidoStatus = (id: string, status: boolean) => {
 // List acolhido response properties, to perform a sort.
 type Sort = "id"|"name"|"responsible"|"status"|"age"|undefined;
 
-export const getListaAcolhidos = (page: number, sort: Sort = undefined, orderByAsc: boolean = true) => {
+export const getListaAcolhidos = async (page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
 
-  const SIZE = 100; //Qty of elements in each page per request
+  const SIZE = 50; //Qty of elements in each page per request
 
-  const toastOptions: ToastOptions = {
-    loadingMessage: "Carregando acolhidos ...",
-    successMessage: "Acolhidos carregados com sucesso!",
-    errorMessage: "Não foi possível carregar os acolhidos."
+  const tOptions: ToastOptions = {
+    id: "getListaAcolhidos",
+    position: "bottom-center",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos ...",
+    successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
   }
   
   const convertedSort = new Map([
@@ -222,74 +231,32 @@ export const getListaAcolhidos = (page: number, sort: Sort = undefined, orderByA
 
   /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  return getRequest(`lista-acolhidos?page=${page}&size=${SIZE}${sortParameter}`, toastOptions)
-  .then(({data}) => {
-    console.log("before data:", data)
-    return {acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage};
-  });
+  const { data } = await getRequest(`lista-acolhidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  console.log("before data:", data);
+  return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
 }
 
+export const getListaAcolhidosPorNome = async (name: string, page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
 
-// usuario ///////////////////////////////////////////////////////////////
+  const SIZE = 50; //Qty of elements in each page per request
 
-export const createUsuario = (usuarioData: any) => {
-  const toastOptions: ToastOptions = {
-      loadingMessage: "Cadastrando usuário...",
-      successMessage: "Usuário cadastrado com sucesso!",
-      errorMessage: "Não foi possível cadastrar o usuário." 
-  }
-  const data = usuarioToApi(usuarioData)
-  return postRequest("usuario", data, toastOptions);
-}
-
-export const updateUsuario = (usuarioData: any) => {
-  const toastOptions: ToastOptions = {
-    loadingMessage: "Alterando usuário ...",
-    successMessage: "Usuário alterado com sucesso!",
-    errorMessage: "Não foi possível alterar este usuário."
-  }
-  const data = usuarioToApi(usuarioData)
-  return postRequest("usuario", data, toastOptions);
-}
-
-export const getUsuarioById = (usuarioId: string) => {
-  const toastOptions: ToastOptions = {
-    loadingMessage: "Carregando informações do usuario ...",
-    successMessage: "Informações carregadas com sucesso!",
-  }
-  return getRequest(`usuario/por_id/${usuarioId}`, toastOptions);
-}
-
-export const updateUsuarioStatus = (id: string, status: boolean) => {
-  const toastOptions: ToastOptions = {
-    loadingMessage: status ? "Ativando usuario ..." : "Desativando usuario ...",
-    successMessage: `Usuario ${status ? "ativado" : "desativado"} com sucesso!`,
-    errorMessage: "Houve um problema ao alterar o status do acolhido."
-  }
-
-  return putRequest(`/usuario/${id}/status_usuario/${status}`, undefined, toastOptions);
-}
-
-
-// List usuario response properties, to perform a sort.
-
-
-export const getListaUsuarios = (page: number, sort: Sort = undefined, orderByAsc: boolean = true) => {
-
-  const SIZE = 100; //Qty of elements in each page per request
-
-  const toastOptions: ToastOptions = {
-    loadingMessage: "Carregando acolhidos ...",
-    successMessage: "Acolhidos carregados com sucesso!",
-    errorMessage: "Não foi possível carregar os acolhidos."
+  const tOptions: ToastOptions = {
+    id: "getListaAcolhidosPorNome",
+    position: "bottom-center",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos por nome...",
+    successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
   }
   
   const convertedSort = new Map([
     ["id", "id"],
     ["name", "nome"],
-    
+    ["responsible", "responsavel"],
+    ["status", "statusAcolhido"],
+    ["age", "dataNascimento"],
   ])
 
+  if (sort === "age") orderByAsc = !orderByAsc
 
   const order = orderByAsc ? "asc" : "desc";
 
@@ -297,12 +264,7 @@ export const getListaUsuarios = (page: number, sort: Sort = undefined, orderByAs
 
   /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  return getRequest(`lista-usuarios?page=${page}&size=${SIZE}${sortParameter}`, toastOptions)
-  .then(({data}) => {
-    console.log("before data:", data)
-    return {usuarios: apiToListUsuario(data.usuarios), isLastPage: data.isLastPage};
-  });
+  const { data } = await getRequest(`lista-acolhidos-por-nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  console.log("before data:", data);
+  return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
 }
-
-
-//usuario/////////////////////////////////////////////////////////////////////

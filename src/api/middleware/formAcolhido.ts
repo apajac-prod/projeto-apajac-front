@@ -2,6 +2,8 @@ import { Acolhido, Pais, Responsavel, ComposicaoFamiliar, Finalizar } from "@/ty
 
 import { ApiAcolhido, Contato, Familiares } from "@/types/ApiAcolhido.type";
 
+import dateToOutputString from "@/functions/dateToOutputString";
+
 //Steps in order, to be used to generate the final object (below function getResultObject())
 const STEPS = [
     "acolhido",
@@ -45,6 +47,7 @@ export function acolhidoToApi(acolhido: AcolhidoInput): ApiAcolhido {
 
     // Parse Datestring to Date:
     const birthdate = new Date(Date.parse(data.acolhido.birthdate.replaceAll("/","-").split("-").reverse().join()))
+    console.log(birthdate);
 
     console.log("data:",data)
     console.log("data.acolhido.birthdate:", data.acolhido.birthdate);
@@ -214,7 +217,7 @@ export function apiToAcolhido(data: ApiAcolhido) {
             address: data.endereco.endereco,
             addressNumber: data.endereco.numero,
             anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",
-            birthdate: new Date(data.dataNascimento).toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"}).split(",")[0],
+            birthdate: dateToOutputString(new Date(data.dataNascimento)),
             city: data.endereco.cidade,
             complement: data.endereco.complemento,
             district: data.endereco.bairro,

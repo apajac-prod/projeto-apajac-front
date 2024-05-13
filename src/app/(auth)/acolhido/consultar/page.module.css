@@ -86,3 +86,8 @@
 .data p {
   overflow: visible;
 }
+
+.disabled {
+  background-color: #969696;
+  pointer-events: none;
+}
