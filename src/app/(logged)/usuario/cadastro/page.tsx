@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation";
 import { useForm } from 'react-hook-form';
 
 import * as yup from "yup";
@@ -10,7 +10,7 @@ import SubTitle from '@/components/form/acolhido/subTitle';
 import styles from './page.module.css';
 
 import FormTitle from '@/components/titles/form/form';
-import { formTitleIcons } from "@/components/titles/form/formTitleIcons";
+import { formTitleIcons } from '@/types/formTitleIcon.type';
 
 import { restoreInputValue } from '@/functions/restoreInputs';
 import { MultistepFormContext } from '@/hooks/useMultistepForm';
@@ -27,13 +27,15 @@ import { createUsuario, updateUsuario } from "@/api/endpoints";
 
 function CadastroUsuario()  {
     const router = useRouter();
-    const [disableButtons, setDisableButtons] = useState<boolean>(false);
- 
-    const [permissions, setPermissions] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const multistepController = useContext(MultistepFormContext);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [disableButtons, setDisableButtons] = useState<boolean>(false);
     
 
+    const [permissions, setPermissions] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    
 
     // name validation
     const [name, setName] = useState("")
@@ -196,7 +198,7 @@ function CadastroUsuario()  {
                 <FormTitle
                     className={styles.title}
                     title="Cadastrar Usuário"
-                    Icon={formTitleIcons.person}
+                    
                 />
             </div>
 
@@ -307,7 +309,10 @@ function CadastroUsuario()  {
                             styles.buttons_disabled
                         }`}
                         disabled={disableButtons}
-                        onClick={handleSubmit((data) => registerUsuario(data))}
+                        onClick={handleSubmit
+                            ((data) => registerUsuario(data),
+                            (erro) => console.log("Erro detectado:", erro)                        
+                        )}
                     >
                         {multistepController?.getId
                             ? "Finalizar alterações"
@@ -337,8 +342,4 @@ export default CadastroUsuario;
 
 
 
-//Trecho para colocar no endpoint
-/*
 
-
-*/

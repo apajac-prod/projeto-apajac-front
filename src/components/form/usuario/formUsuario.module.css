@@ -1,0 +1,37 @@
+.title {
+    margin: 32px auto;
+  }
+  
+  .required_message {
+    margin: 30px 0;
+    text-align: center;
+    color: #ff0000;
+    font-style: italic;
+  }
+  
+  .loader {
+    margin: 120px auto 0;
+  }
+  
+  .deactivate {
+    background-color: #ff0000;
+    display: block;
+    margin: 0 auto 40px;
+  }
+  
+  .deactivate:hover {
+    color: #ff0000;
+    outline: 1px solid #ff0000;
+  }
+  
+  .activate {
+    background-color: #008607;
+    display: block;
+    margin: 0 auto 40px;
+  }
+  
+  .activate:hover {
+    color: #008607;
+    outline: 1px solid #008607;
+  }
+  

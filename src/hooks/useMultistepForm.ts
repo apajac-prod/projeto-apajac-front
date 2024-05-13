@@ -14,6 +14,7 @@ const STEPS = [
 
 const _Copy = (x: any) => _.cloneDeep(x);
 
+
 export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any> | null) {
     const [safeToLeave, setSafeToLeave] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -166,3 +167,5 @@ export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any>
 }
 
 export const MultistepFormContext = createContext<ReturnType<typeof useMultistepForm> | undefined>(undefined);
+
+
