@@ -1,0 +1,27 @@
+.container {
+  margin: 0 auto;
+}
+
+.container p {
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+
+.container h1 {
+  margin-top: 100px;
+  font-size: 4rem;
+  font-weight: 600;
+}
+
+.container > h2 {
+  margin-top: 60px;
+  font-size: 2rem;
+}
+
+.container h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 40px;
+  margin-bottom: 100px;
+  text-decoration: underline;
+}

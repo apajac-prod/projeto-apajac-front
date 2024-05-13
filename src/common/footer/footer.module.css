@@ -1,11 +1,28 @@
 .container {
   margin-top: auto;
   width: 100vw;
-  height: 35px;
+  padding: 16px;
   background-color: #5992cd;
   text-align: center;
+  color: #fff;
 }
 
-.container > p {
-  line-height: 35px;
+.copyright {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.copyright span {
+  font-size: 22px;
+  line-height: 20px;
+  margin-bottom: -4px;
+}
+
+.container a {
+  text-decoration: underline;
+  color: #fff;
+  font-weight: 600;
 }
