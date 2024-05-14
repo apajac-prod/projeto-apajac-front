@@ -1,9 +1,11 @@
 .container {
   width: 100vw;
-  height: 50px;
+  min-height: 50px;
   box-sizing: border-box;
   padding: 0 12px;
   display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #5992cd;
 }
 
@@ -17,15 +19,16 @@
   border-radius: 10px;
 }
 
-.container div {
-  height: 50px;
-  min-width: 115px;
-  align-self: flex-end;
-  justify-self: flex-end;
+.logoutContainer {
+  padding: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 4px;
+}
+
+.logoutContainer > p {
+  white-space: nowrap;
 }
 
 .container > p {
@@ -37,6 +40,7 @@
 
 .title {
   width: 100%;
+  padding: 12px;
 }
 
 .title,
