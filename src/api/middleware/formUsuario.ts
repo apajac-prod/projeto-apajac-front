@@ -2,7 +2,7 @@
 import { ApiUsuario } from "@/types/ApiUsuario.type";
 
 
-//Format object to what API expects
+/* //Format object to what API expects
 export function usuarioToApi(usuario: ApiUsuario) {
     console.log("usuario before all conversion:", usuario);
 
@@ -12,29 +12,38 @@ export function usuarioToApi(usuario: ApiUsuario) {
         
     });
    
+} */
+
+export type Usuario = {
+    name: string | undefined;
+    permissions: string | undefined;
+    login: string | undefined;
+    password?: string | undefined;
+    repeatPassword?: string | undefined;
 }
 
-export function apiToUsuario(data: ApiUsuario) {
+export type UsuarioApi = {
+    nome: string | undefined;
+    role: string | undefined;
+    login: string | undefined;
+}
 
-    type Usuario = {
-        name: string | undefined;
-        role: string | undefined;
-        login: string | undefined;
-        password: string | undefined;
-    }
+export function usuarioToApi(data: Usuario) {
 
-    const usuario = [
-        {
-            
-            name: data.nome,
-            role: data.role,
+    return {
+            nome: data.name,
+            role: data.permissions,
             login: data.login,
-            password: data.password
-              
+            password: data.password    
         }
-    ]
-
-    return usuario;
 }
 
+export function apiToUsuario(data: UsuarioApi) {
+
+    return {
+            name: data.nome,
+            permissions: data.role,
+            login: data.login,   
+        }
+}
 

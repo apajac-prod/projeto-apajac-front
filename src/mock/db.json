@@ -1,4 +1,58 @@
 {
+
+    "usuario_por_id":
+    [
+        {
+            "id": 0,
+            "nome": "Usuario 0",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          },
+          {
+            "id": 1,
+            "nome": "Usuario 1",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          },
+          {
+            "id": 2,
+            "nome": "Usuario 2",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          },
+          {
+            "id": 3,
+            "nome": "Usuario 3",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          },
+          {
+            "id": 4,
+            "nome": "Usuario 4",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          },
+          {
+            "id": 5,
+            "nome": "Usuario 5",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          },
+          {
+            "id": 6,
+            "nome": "Usuario 6",
+            "role": "Role1",
+            "login": "login",
+            "status": true
+          }
+    ],
+
     "lista-acolhidos":
     [
         {

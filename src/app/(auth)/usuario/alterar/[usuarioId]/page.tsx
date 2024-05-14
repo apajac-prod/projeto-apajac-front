@@ -9,7 +9,6 @@ type Props = {
 };
 
 const AlterarUsuario = ({ params: { usuarioId } }: Props) => {
-  return <FormUsuario editId={usuarioId} />;
+  return <FormUsuario id={usuarioId}/>;
 };
-
 export default AlterarUsuario;

@@ -1,134 +1,250 @@
 "use client";
 
-import { ReactElement, useEffect, useState } from "react";
-
 import { useRouter } from "next/navigation";
-("next/navigation");
+import { useForm } from "react-hook-form";
 
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import styles from "./formUsuario.module.css";
 
 import FormTitle from "@/components/titles/form/form";
-import * as icon from "react-flaticons";
 
-//FormHeader Index components
+import { useEffect, useState } from "react";
+import Image from "next/image";
+
+import { createUsuario, getUsuario } from "@/api/endpoints";
 import {
-  MultistepFormHeader,
-  StepHeader,
-} from "@/components/multistep_form/multistep_form";
-
-
-//Custom hooks
-import { MultistepFormContext, useMultistepForm } from "@/hooks/useMultistepForm";
-
-
-
-
-
-
-import { getUsuarioById, updateUsuarioStatus } from "@/api/endpoints";
-import Loader from "@/common/loader/loader";
-import { apiToUsuario } from "@/api/middleware/formUsuario";
-
-
-/* const [usuarioPromise, setUsuarioPromise] */
+  Usuario,
+  UsuarioApi,
+  apiToUsuario,
+} from "@/api/middleware/formUsuario";
 
 type Props = {
-  editId?: string | null;
+  id?: string;
 };
 
-function FormUsuario({ editId = null }: Props) {
+function FormUsuario({ id }: Props) {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const multistepController = useMultistepForm(
-    [
-     <FormUsuario key={0} />,
-     
-    ],
-    null
-  );
+
+  const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
+
+  const [disableButtons, setDisableButtons] = useState<boolean>(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  // name validation
+  const [name, setName] = useState("");
 
   useEffect(() => {
-    if (editId) {
-      setIsLoading(true);
-      getUsuarioById(editId)
-        .then(({ data }) => {
-          console.log("data da requisição:", data);
-          multistepController.loadData(apiToUsuario(data));
-          multistepController.setId(data.id);
-          multistepController.setActiveStatus(data.statusUsuario);
-        })
-        .catch(() => {
-          window.onbeforeunload = () => null; // Removes the exit confirmation
-          setTimeout(() => router.push("/menu"), 3000);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+    if (id) {
+      getUsuario(id).then((data: any) => {
+        console.log("data", data);
+        const responseUsuario: Usuario = apiToUsuario(data);
+        console.log(responseUsuario);
+        setUsuario(responseUsuario);
+      });
     }
   }, []);
 
-  function changeStatusUsuario() {
-    const activeStatus = multistepController.getActiveStatus();
-    if (
-      activeStatus &&
-      !confirm(
-        "Deseja realmente desativar este usuario?\nAlterações não salvas poderão ser perdidas."
+  //Yup validation schema
+  const usuarioSchema: yup.ObjectSchema<Usuario> = yup.object({
+    name: yup
+      .string()
+      .trim()
+      .required("Obrigatório inserir o nome do usuário")
+      .matches(
+        /(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$/,
+        "Inserir nome e sobrenome com espaço entre eles! Letras iniciais maiuscúla e não serão aceitos caracteres especiais."
       )
-    )
-      return;
-    editId &&
-      updateUsuarioStatus(editId, !activeStatus).then(() => {
-        if (multistepController.getActiveStatus()) {
-          window.onbeforeunload = () => null; // Removes the exit confirmation
-          window.location.reload();
-        }
-        multistepController.changeActiveStatus();
+      .min(3, "Inserir um nome com pelo menos 3 caracteres")
+      .max(255, "Limíte maximo de 255 caracteres")
+      .typeError("Insira o nome do usuário"),
+
+    login: yup
+      .string()
+      .trim()
+      .required("Obrigatório inserir um login")
+      .min(3, "Inserir um login com pelo menos 3 caracteres")
+      .max(10, "Login deve ter no máximo 10 caracteres")
+      .typeError("Insira um login"),
+
+    password: yup
+      .string()
+      .trim()
+      .required("Obrigatório inserir uma senha")
+      .min(6, "A senha deve ter pelo menos 6 caracteres")
+      .max(10, "A senha deve ter no máximo 10 caracteres")
+
+      .typeError("Insira um password"),
+
+    repeatPassword: yup
+      .string()
+      .trim()
+      .required("Obrigatório inserir a senha novamente")
+      .typeError("Repita a senha")
+      .oneOf([yup.ref("password")], "A senha não é igual"),
+
+    permissions: yup
+      .string()
+      .trim()
+      .required("Obrigatório selecionar uma opção")
+      .oneOf(["profile_1", "profile_2"], "Obrigatório selecionar uma opção"),
+  });
+
+  // Setting the form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: usuario ? usuario.name : "",
+      login: usuario ? usuario.login : "",
+      password: "",
+      repeatPassword: "",
+      permissions: usuario ? usuario.permissions : "",
+    },
+    mode: "onBlur",
+    resolver: yupResolver(usuarioSchema),
+  });
+
+  function registerUsuario(data: any) {
+    console.log("data", data);
+    setDisableButtons(true);
+    createUsuario(data)
+      .then(() => {
+        window.onbeforeunload = () => null;
+        router.push("/menu");
+      })
+      .finally(() => {
+        setDisableButtons(false);
       });
   }
 
-  useEffect(() => {
-    if (multistepController.getActiveStatus()) {
-      window.onbeforeunload = () => true;
-    } else {
-      window.onbeforeunload = () => null;
-    }
-  }, [multistepController.getActiveStatus()]);
-
   return (
     <div className={styles.container}>
-      <FormTitle
-        className={styles.title}
-        title={editId ? "Alterar Usuario" : "Cadastrar Usuario"}
-        Icon={icon.User}
-      />
-     
+      <div>
+        <FormTitle className={styles.title} title="Cadastrar Usuário" />
+      </div>
 
+      <div>
         <p className={styles.required_message}>* Campos obrigatórios</p>
+      </div>
 
-        {editId && isLoading ? (
-          <Loader className={styles.loader} />
-        ) : (
-          <>
-
-            {editId && (
-              <button
-                className={`submitBtn ${
-                  multistepController.getActiveStatus()
-                    ? styles.deactivate
-                    : styles.activate
-                }`}
-                type="button"
-                onClick={() => changeStatusUsuario()}
-              >
-                {multistepController.getActiveStatus()
-                  ? "Desativar Usuario"
-                  : "Ativar Usuario"}
-              </button>
-            )}
-          </>
+      <form
+        onSubmit={handleSubmit((data) => registerUsuario(data))}
+        autoComplete="off"
+      >
+        <div className={`${styles.formRow} ${styles.input_big}`}>
+          <label htmlFor="name" className={styles.required}>
+            Nome
+          </label>
+          <input
+            type="text"
+            id="name"
+            {...register("name")}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            //
+          />
+        </div>
+        {errors.name && (
+          <p className={styles.error_message}>{String(errors.name.message)} </p>
         )}
-      
+
+        <div className={styles.formRow}>
+          <label htmlFor="login" className={styles.required}>
+            Login
+          </label>
+          <input type="text" id="login" {...register("login")} />
+        </div>
+        {errors.login && (
+          <p className={styles.error_message}>
+            {String(errors.login.message)}{" "}
+          </p>
+        )}
+
+        <div className={`${styles.formRow} ${styles.input_small}`}>
+          <label htmlFor="password" className={styles.required}>
+            Senha
+          </label>
+          <input
+            {...register("password")}
+            type={showPassword ? "text" : "password"}
+            id="password"
+          />
+          <Image
+            className={styles.show_password_icon}
+            src={
+              showPassword
+                ? "/icons/invisible_30x30.png"
+                : "/icons/visible_30x30.png"
+            }
+            alt="Exibir a senha"
+            width={18}
+            height={18}
+            onClick={() => setShowPassword((currentValue) => !currentValue)}
+          />
+        </div>
+        {errors.password && (
+          <p className={styles.error_message}>
+            {String(errors.password.message)}{" "}
+          </p>
+        )}
+
+        <div className={`${styles.formRow} ${styles.input_small}`}>
+          <label htmlFor="repeatPassword" className={styles.required}>
+            Repita a senha
+          </label>
+          <input
+            {...register("repeatPassword")}
+            type={showPassword ? "text" : "password"}
+            id="repeatPassword"
+          />
+        </div>
+        {errors.repeatPassword && (
+          <p className={styles.error_message}>
+            {String(errors.repeatPassword.message)}
+          </p>
+        )}
+
+        <div className={styles.formRow}>
+          <label htmlFor="permissions" className={styles.required}>
+            Permissões
+          </label>
+          <select
+            defaultValue={""}
+            {...register("permissions")}
+            id="permissions"
+          >
+            <option value="" hidden></option>
+            <option value="profile_1">Perfil_1</option>
+            <option value="profile_2">Perfil_2</option>
+          </select>
+        </div>
+        {errors.permissions && (
+          <p className={styles.error_message}>
+            {String(errors.permissions.message)}
+          </p>
+        )}
+
+        <div className={styles.buttons}>
+          <button
+            className={`submitBtn ${disableButtons && styles.buttons_disabled}`}
+            disabled={disableButtons}
+            onClick={handleSubmit(
+              (data) => registerUsuario(data),
+              (erro) => console.log("Erro detectado:", erro)
+            )}
+          >
+            {id ? "Alterar cadastro" : "Finalizar cadastro"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
+
 export default FormUsuario;

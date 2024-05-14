@@ -9,7 +9,7 @@ const Menu = () => {
     <div className={styles.container}>
       <MenuCategoria title={"Cadastrar"} className={styles.categoria}>
         <MenuCard title={"Cadastrar acolhido"} link="/acolhido/cadastrar" />
-        <MenuCard title={"Exemplo de card"} link="/exemplo_card" />
+        <MenuCard title={"Cadastrar usuário"} link="/usuario/cadastro" />
       </MenuCategoria>
 
       <MenuCategoria title={"Consultar"} className={styles.categoria}>
