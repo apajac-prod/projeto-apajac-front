@@ -3,6 +3,7 @@ import { Fira_Sans } from "next/font/google";
 
 import "./globals.css";
 import "./reset.css";
+import "@flaticon/flaticon-uicons/css/all/all.css";
 import { Toaster } from "react-hot-toast";
 
 const firaSans = Fira_Sans({ subsets: ["latin"], weight: "400" });
