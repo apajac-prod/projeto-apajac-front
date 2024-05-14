@@ -10,6 +10,7 @@ const NotFound = () => {
       <h1>Oops...</h1>
       <p>404 not found</p>
       <h2>Não encontramos a página que você procura...</h2>
+      <i className="fi fi-rr-404"></i>
       <Link href="/menu">
         <h3>Clique aqui para voltar a página inicial</h3>
       </Link>
