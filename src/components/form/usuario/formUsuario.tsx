@@ -9,89 +9,90 @@ import styles from "./formUsuario.module.css";
 
 import FormTitle from "@/components/titles/form/form";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import { createUsuario, getUsuario } from "@/api/endpoints";
-import {
-  Usuario,
-  UsuarioApi,
-  apiToUsuario,
-} from "@/api/middleware/formUsuario";
+import { createUsuario, updateUsuario } from "@/api/endpoints";
+import { Usuario } from "@/types/formUsuario.type";
 
 type Props = {
-  id?: string;
+  usuario?: Usuario;
 };
 
-function FormUsuario({ id }: Props) {
+function FormUsuario({ usuario }: Props) {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
-
-  const [disableButtons, setDisableButtons] = useState<boolean>(false);
-
   const [showPassword, setShowPassword] = useState(false);
 
-  // name validation
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    if (id) {
-      getUsuario(id).then((data: any) => {
-        console.log("data", data);
-        const responseUsuario: Usuario = apiToUsuario(data);
-        console.log(responseUsuario);
-        setUsuario(responseUsuario);
-      });
-    }
-  }, []);
+  const adminRef = useRef<HTMLInputElement | null>(null);
+  const alterarAcolhidoRef = useRef<HTMLInputElement | null>(null);
+  const cadastrarAcolhidoRef = useRef<HTMLInputElement | null>(null);
+  const consultarAcolhidoRef = useRef<HTMLInputElement | null>(null);
 
   //Yup validation schema
-  const usuarioSchema: yup.ObjectSchema<Usuario> = yup.object({
-    name: yup
-      .string()
-      .trim()
-      .required("Obrigatório inserir o nome do usuário")
-      .matches(
-        /(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$/,
-        "Inserir nome e sobrenome com espaço entre eles! Letras iniciais maiuscúla e não serão aceitos caracteres especiais."
-      )
-      .min(3, "Inserir um nome com pelo menos 3 caracteres")
-      .max(255, "Limíte maximo de 255 caracteres")
-      .typeError("Insira o nome do usuário"),
+  const usuarioSchema: yup.ObjectSchema<Omit<Usuario, "roles" | "id">> =
+    yup.object({
+      name: yup
+        .string()
+        .trim()
+        .required("Obrigatório inserir o nome do usuário")
+        .matches(
+          /(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$/,
+          "Inserir nome e sobrenome com espaço entre eles! Letras iniciais maiuscúla e não serão aceitos caracteres especiais."
+        )
+        .min(3, "Inserir um nome com pelo menos 3 caracteres")
+        .max(255, "Limíte maximo de 255 caracteres")
+        .typeError("Insira o nome do usuário"),
 
-    login: yup
-      .string()
-      .trim()
-      .required("Obrigatório inserir um login")
-      .min(3, "Inserir um login com pelo menos 3 caracteres")
-      .max(10, "Login deve ter no máximo 10 caracteres")
-      .typeError("Insira um login"),
+      login: yup
+        .string()
+        .trim()
+        .required("Obrigatório inserir um login")
+        .min(3, "Inserir um login com pelo menos 3 caracteres")
+        .max(15, "Login deve ter no máximo 15 caracteres")
+        .typeError("Insira um login"),
 
-    password: yup
-      .string()
-      .trim()
-      .required("Obrigatório inserir uma senha")
-      .min(6, "A senha deve ter pelo menos 6 caracteres")
-      .max(10, "A senha deve ter no máximo 10 caracteres")
+      password: yup
+        .string()
+        .test("password_check", function (value) {
+          const min = 6;
+          const max = 20;
 
-      .typeError("Insira um password"),
+          if (!value || value == "") return true;
 
-    repeatPassword: yup
-      .string()
-      .trim()
-      .required("Obrigatório inserir a senha novamente")
-      .typeError("Repita a senha")
-      .oneOf([yup.ref("password")], "A senha não é igual"),
+          if (value.length < min)
+            return this.createError({
+              message: `A senha precisa ter no mínimo ${min} caracteres.`,
+              path: "password",
+            });
 
-    permissions: yup
-      .string()
-      .trim()
-      .required("Obrigatório selecionar uma opção")
-      .oneOf(["profile_1", "profile_2"], "Obrigatório selecionar uma opção"),
-  });
+          if (value.length > max)
+            return this.createError({
+              message: `A senha precisa ter no máximo ${max} caracteres.`,
+              path: "password",
+            });
+
+          if (value.split("").includes(" "))
+            return this.createError({
+              message: "A senha não pode conter espaços",
+              path: "password",
+            });
+
+          return true;
+        })
+        .transform((_, val) => (val === "" ? null : val))
+        .nullable()
+        .typeError("Insira um password"),
+
+      repeatPassword: yup
+        .string()
+        .transform((_, val) => (val === "" ? null : val))
+        .nullable()
+        .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.")
+        .typeError("Repita a senha"),
+    });
 
   // Setting the form
   const {
@@ -104,23 +105,90 @@ function FormUsuario({ id }: Props) {
       login: usuario ? usuario.login : "",
       password: "",
       repeatPassword: "",
-      permissions: usuario ? usuario.permissions : "",
     },
     mode: "onBlur",
     resolver: yupResolver(usuarioSchema),
   });
 
+  useEffect(() => {
+    window.onbeforeunload = () => true;
+  }, []);
+
   function registerUsuario(data: any) {
-    console.log("data", data);
-    setDisableButtons(true);
-    createUsuario(data)
-      .then(() => {
-        window.onbeforeunload = () => null;
-        router.push("/menu");
-      })
-      .finally(() => {
-        setDisableButtons(false);
-      });
+    const dataWithRoles = { ...data, roles: getRoles() };
+    console.log("dataWithRoles", dataWithRoles);
+    setIsLoading(true);
+    if (usuario) {
+      const dataWithId = { id: usuario.id, ...dataWithRoles };
+      updateUsuario(dataWithId)
+        .then(() => {
+          window.onbeforeunload = () => null;
+          router.push("/menu");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      createUsuario(dataWithRoles)
+        .then(() => {
+          window.onbeforeunload = () => null;
+          router.push("/menu");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }
+
+  function handlePermissionCheck({ target }: any) {
+    const permissionClicked = target && target.name;
+    const checked = target && target.checked;
+
+    if (!checked) return;
+
+    if (permissionClicked === "alterar_acolhido") {
+      consultarAcolhidoRef!.current!.checked = true;
+    }
+
+    if (permissionClicked === "admin" && checked) {
+      if (
+        !confirm(
+          "Tem certeza de que esse usuário será um Administrador?\nEle poderá alterar a senha de outros usuários e terá acesso completo à todas as funções da aplicação."
+        )
+      ) {
+        target.checked = false;
+        return;
+      }
+      alterarAcolhidoRef!.current!.checked = true;
+      cadastrarAcolhidoRef!.current!.checked = true;
+      consultarAcolhidoRef!.current!.checked = true;
+    }
+  }
+
+  function getRoles() {
+    let roles = [];
+    if (adminRef && adminRef.current && adminRef.current.checked)
+      roles.push("admin");
+    if (
+      alterarAcolhidoRef &&
+      alterarAcolhidoRef.current &&
+      alterarAcolhidoRef.current.checked
+    )
+      roles.push("alterar_acolhido");
+    if (
+      consultarAcolhidoRef &&
+      consultarAcolhidoRef.current &&
+      consultarAcolhidoRef.current.checked
+    )
+      roles.push("consultar_acolhido");
+    if (
+      cadastrarAcolhidoRef &&
+      cadastrarAcolhidoRef.current &&
+      cadastrarAcolhidoRef.current.checked
+    )
+      roles.push("cadastrar_acolhido");
+
+    return roles;
   }
 
   return (
@@ -141,32 +209,23 @@ function FormUsuario({ id }: Props) {
           <label htmlFor="name" className={styles.required}>
             Nome
           </label>
-          <input
-            type="text"
-            id="name"
-            {...register("name")}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            //
-          />
+          <input type="text" id="name" {...register("name")} />
         </div>
         {errors.name && (
           <p className={styles.error_message}>{String(errors.name.message)} </p>
         )}
 
-        <div className={styles.formRow}>
+        <div className={`${styles.formRow} ${styles.input_small}`}>
           <label htmlFor="login" className={styles.required}>
             Login
           </label>
           <input type="text" id="login" {...register("login")} />
         </div>
         {errors.login && (
-          <p className={styles.error_message}>
-            {String(errors.login.message)}{" "}
-          </p>
+          <p className={styles.error_message}>{String(errors.login.message)}</p>
         )}
 
-        <div className={`${styles.formRow} ${styles.input_small}`}>
+        <div className={styles.formRow}>
           <label htmlFor="password" className={styles.required}>
             Senha
           </label>
@@ -174,6 +233,7 @@ function FormUsuario({ id }: Props) {
             {...register("password")}
             type={showPassword ? "text" : "password"}
             id="password"
+            placeholder={usuario ? "Digite para trocar a senha" : undefined}
           />
           <Image
             className={styles.show_password_icon}
@@ -190,11 +250,11 @@ function FormUsuario({ id }: Props) {
         </div>
         {errors.password && (
           <p className={styles.error_message}>
-            {String(errors.password.message)}{" "}
+            {String(errors.password.message)}
           </p>
         )}
 
-        <div className={`${styles.formRow} ${styles.input_small}`}>
+        <div className={styles.formRow}>
           <label htmlFor="repeatPassword" className={styles.required}>
             Repita a senha
           </label>
@@ -202,6 +262,7 @@ function FormUsuario({ id }: Props) {
             {...register("repeatPassword")}
             type={showPassword ? "text" : "password"}
             id="repeatPassword"
+            placeholder={usuario ? "Digite para trocar a senha" : undefined}
           />
         </div>
         {errors.repeatPassword && (
@@ -211,35 +272,91 @@ function FormUsuario({ id }: Props) {
         )}
 
         <div className={styles.formRow}>
-          <label htmlFor="permissions" className={styles.required}>
-            Permissões
-          </label>
-          <select
-            defaultValue={""}
-            {...register("permissions")}
-            id="permissions"
-          >
-            <option value="" hidden></option>
-            <option value="profile_1">Perfil_1</option>
-            <option value="profile_2">Perfil_2</option>
-          </select>
+          <label className={styles.required}>Permissões</label>
+
+          <div className={styles.permissions}>
+            <div className={`${styles.permission_admin} ${styles.permission}`}>
+              <label htmlFor="admin">Administrador</label>
+              <input
+                type="checkbox"
+                name="admin"
+                value="admin"
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={adminRef}
+                defaultChecked={
+                  usuario && usuario.roles && usuario.roles.includes("admin")
+                    ? true
+                    : undefined
+                }
+              />
+            </div>
+
+            <div className={styles.permission}>
+              <label htmlFor="alterar_acolhido">Alterar acolhido</label>
+              <input
+                type="checkbox"
+                name="alterar_acolhido"
+                value="alterar_acolhido"
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={alterarAcolhidoRef}
+                defaultChecked={
+                  usuario &&
+                  usuario.roles &&
+                  usuario.roles.includes("alterar_acolhido")
+                    ? true
+                    : undefined
+                }
+              />
+            </div>
+
+            <div className={styles.permission}>
+              <label htmlFor="consultar_acolhido">Consultar acolhido</label>
+              <input
+                type="checkbox"
+                name="consultar_acolhido"
+                value="consultar_acolhido"
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={consultarAcolhidoRef}
+                defaultChecked={
+                  usuario &&
+                  usuario.roles &&
+                  usuario.roles.includes("consultar_acolhido")
+                    ? true
+                    : undefined
+                }
+              />
+            </div>
+
+            <div className={styles.permission}>
+              <label htmlFor="cadastrar_acolhido">Cadastrar acolhido</label>
+              <input
+                type="checkbox"
+                name="cadastrar_acolhido"
+                value="cadastrar_acolhido"
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={cadastrarAcolhidoRef}
+                defaultChecked={
+                  usuario &&
+                  usuario.roles &&
+                  usuario.roles.includes("cadastrar_acolhido")
+                    ? true
+                    : undefined
+                }
+              />
+            </div>
+          </div>
         </div>
-        {errors.permissions && (
-          <p className={styles.error_message}>
-            {String(errors.permissions.message)}
-          </p>
-        )}
+        {/* {errors.roles && (
+          <p className={styles.error_message}>{String(errors.roles.message)}</p>
+        )} */}
 
         <div className={styles.buttons}>
           <button
-            className={`submitBtn ${disableButtons && styles.buttons_disabled}`}
-            disabled={disableButtons}
-            onClick={handleSubmit(
-              (data) => registerUsuario(data),
-              (erro) => console.log("Erro detectado:", erro)
-            )}
+            className={`submitBtn ${isLoading && styles.buttons_disabled}`}
+            disabled={isLoading}
+            onClick={handleSubmit((data) => registerUsuario(data))}
           >
-            {id ? "Alterar cadastro" : "Finalizar cadastro"}
+            {usuario ? "Alterar cadastro" : "Finalizar cadastro"}
           </button>
         </div>
       </form>

@@ -277,14 +277,14 @@ export const createUsuario = (usuarioData: any) => {
   return postRequest("usuario", data, toastOptions);
 }
 
-export const getUsuario = (id: string) => {
+export const getUsuario = async (id: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando usuário ...",
     successMessage: "Usuário carregado com sucesso!",
     errorMessage: "Não foi possível carregar este usuário."
   }
-  
-  return getRequest(`usuario_por_id/${id}`, toastOptions);
+  const { data } = await getRequest(`usuario/por_id/${id}`, toastOptions); 
+  return apiToUsuario(data);
 }
 
 export const updateUsuario = (usuarioData: any) => {
@@ -294,5 +294,5 @@ export const updateUsuario = (usuarioData: any) => {
     errorMessage: "Não foi possível atualizar este usuário."
   }
   const data = usuarioToApi(usuarioData)
-  return postRequest("usuario_por_id", data, toastOptions);
+  return postRequest("usuario", data, toastOptions);
 }
