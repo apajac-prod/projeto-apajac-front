@@ -2,6 +2,7 @@ import {axios} from "@/api/api";
 import { acolhidoToApi } from "./middleware/formAcolhido";
 import toast from "react-hot-toast";
 import { ListAcolhido, apiToListAcolhido } from "./middleware/listAcolhido";
+import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 
 const HTTP_STATUS = {
     OK: 200,
@@ -264,4 +265,34 @@ export const getListaAcolhidosPorNome = async (name: string, page: number, sort:
   const { data } = await getRequest(`lista-acolhidos-por-nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
   console.log("before data:", data);
   return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
+}
+
+export const createUsuario = (usuarioData: any) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Cadastrando usuário ...",
+    successMessage: "Usuário cadastrado com sucesso!",
+    errorMessage: "Não foi possível cadastrar este usuário."
+  }
+  const data = usuarioToApi(usuarioData)
+  return postRequest("usuario", data, toastOptions);
+}
+
+export const getUsuario = async (id: string) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Carregando usuário ...",
+    successMessage: "Usuário carregado com sucesso!",
+    errorMessage: "Não foi possível carregar este usuário."
+  }
+  const { data } = await getRequest(`usuario/por_id/${id}`, toastOptions); 
+  return apiToUsuario(data);
+}
+
+export const updateUsuario = (usuarioData: any) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Atualizando usuário ...",
+    successMessage: "Usuário atualizado com sucesso!",
+    errorMessage: "Não foi possível atualizar este usuário."
+  }
+  const data = usuarioToApi(usuarioData)
+  return postRequest("usuario", data, toastOptions);
 }
