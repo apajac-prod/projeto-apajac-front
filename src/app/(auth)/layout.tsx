@@ -19,7 +19,7 @@ export const SessionContext = createContext<SessionContextType | undefined>(
   undefined
 );
 
-export default function loggedLayout({
+export default function LoggedLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
