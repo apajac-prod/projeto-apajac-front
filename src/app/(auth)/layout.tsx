@@ -3,21 +3,9 @@
 import Header from "@/common/header/header";
 import Footer from "@/common/footer/footer";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginUser } from "@/types/login";
-
-type SessionContextType = {
-  sessionInfo: {
-    name: string | undefined;
-    login: string | undefined;
-    roles: Array<string> | undefined;
-  };
-  setSessionInfo: Function;
-};
-
-export const SessionContext = createContext<SessionContextType | undefined>(
-  undefined
-);
+import { SessionContext } from "@/contexts/sessionContext";
 
 export default function LoggedLayout({
   children,

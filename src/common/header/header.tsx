@@ -5,7 +5,7 @@ import styles from "./header.module.css";
 import { useRouter } from "next/navigation";
 import * as icon from "react-flaticons";
 import { useContext } from "react";
-import { SessionContext } from "@/app/(auth)/layout";
+import { SessionContext } from "@/contexts/sessionContext";
 
 const HOME_PATH = "/menu";
 
