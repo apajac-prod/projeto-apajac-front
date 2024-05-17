@@ -1,5 +1,6 @@
 export type Usuario = {
   id?: string;
+  status: boolean;
   name: string | undefined;
   roles: string[] | undefined;
   login: string | undefined;
@@ -9,6 +10,7 @@ export type Usuario = {
 
 export type UsuarioApi = {
   id: string;
+  status: boolean;
   nome: string | undefined;
   roles: string[] | undefined;
   login: string | undefined;

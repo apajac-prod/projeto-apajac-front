@@ -341,7 +341,7 @@ export const ModalConsultaAcolhido = () => {
         </div>
 
         <div
-          className={`submitBtn ${styles.edit}`}
+          className={`button_submit ${styles.edit}`}
           onClick={() => router.push(`alterar/${modal?.id}`)}
         >
           <p>Alterar acolhido</p>

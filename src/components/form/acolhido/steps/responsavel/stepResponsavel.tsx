@@ -330,13 +330,13 @@ const StepResponsavel = () => {
 
         <div className={styles.buttons}>
           <button
-            className="submitBtn"
+            className="button_submit"
             onClick={handleSubmit((data) => next(data))}
           >
             Avançar
           </button>
           <button
-            className="submitBtn"
+            className="button_submit"
             type="button"
             onClick={() => back(getValues())}
           >

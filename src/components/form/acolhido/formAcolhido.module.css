@@ -18,24 +18,6 @@
   margin: 120px auto 0;
 }
 
-.deactivate {
-  background-color: #ff0000;
-  display: block;
+.statusBtn {
   margin: 0 auto 40px;
-}
-
-.deactivate:hover {
-  color: #ff0000;
-  outline: 1px solid #ff0000;
-}
-
-.activate {
-  background-color: #008607;
-  display: block;
-  margin: 0 auto 40px;
-}
-
-.activate:hover {
-  color: #008607;
-  outline: 1px solid #008607;
 }

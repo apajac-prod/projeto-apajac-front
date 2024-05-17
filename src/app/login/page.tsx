@@ -10,10 +10,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import TitleApajac from "@/components/titles/apajac/apajac";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { login } from "@/api/endpoints";
 
 // Login Form Object
 type loginForm = {
@@ -45,17 +46,21 @@ const Login = () => {
 
   // Handling the form
   const onSubmit = (data: loginForm) => {
-    if (data.loginApajac === "admin" && data.password === "admin") {
-      // Cookie
-      router.push("/menu");
-    } else {
-      if (loginErrorRef.current) {
-        loginErrorRef.current.classList.remove(styles.loginErrorAnimation);
-        loginErrorRef.current.offsetWidth;
-        loginErrorRef.current.classList.add(styles.loginErrorAnimation);
-        console.log(loginErrorRef.current.classList);
-      }
-    }
+    login(data.loginApajac, data.password)
+      .then((data) => {
+        console.log("data", data);
+        localStorage.setItem("session", JSON.stringify(data));
+        /* session!.setSessionInfo(data); */
+        router.push("/menu");
+      })
+      .catch(() => {
+        if (loginErrorRef.current) {
+          loginErrorRef.current.classList.remove(styles.loginErrorAnimation);
+          loginErrorRef.current.offsetWidth;
+          loginErrorRef.current.classList.add(styles.loginErrorAnimation);
+          console.log(loginErrorRef.current.classList);
+        }
+      });
     setLoginError(true);
   };
 

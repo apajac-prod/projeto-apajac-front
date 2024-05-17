@@ -297,14 +297,14 @@ const StepComposicaoFamiliar = () => {
 
         <div className={styles.buttons}>
           <button
-            className="submitBtn"
+            className="button_submit"
             onClick={handleSubmit((data) => next(data))}
             type="submit"
           >
             Avançar
           </button>
           <button
-            className="submitBtn"
+            className="button_submit"
             onClick={() => back(getValues())}
             type="button"
           >

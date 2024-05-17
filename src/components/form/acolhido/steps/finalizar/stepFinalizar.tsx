@@ -118,7 +118,7 @@ const StepFinalizar = () => {
 
         <div className={styles.buttons}>
           <button
-            className={`submitBtn ${
+            className={`button_submit ${
               (multistepController?.isLoading ||
                 !multistepController?.getActiveStatus()) &&
               styles.buttons_disabled
@@ -131,8 +131,8 @@ const StepFinalizar = () => {
               : "Finalizar Cadastro"}
           </button>
           <button
-            className={`submitBtn ${
-              multistepController?.isLoading && "disableBtn"
+            className={`button_submit ${
+              multistepController?.isLoading && "disable_button"
             }`}
             type="button"
             disabled={multistepController?.isLoading}
