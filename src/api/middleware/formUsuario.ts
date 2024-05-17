@@ -15,6 +15,7 @@ export function apiToUsuario(data: UsuarioApi) {
 
     return {
             id: data.id,
+            status: data.status,
             name: data.nome,
             roles: data.roles,
             login: data.login 

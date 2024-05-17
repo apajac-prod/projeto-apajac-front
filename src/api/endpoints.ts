@@ -3,6 +3,7 @@ import { acolhidoToApi } from "./middleware/formAcolhido";
 import toast from "react-hot-toast";
 import { ListAcolhido, apiToListAcolhido } from "./middleware/listAcolhido";
 import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
+import { apiToLogin } from "./middleware/login";
 
 const HTTP_STATUS = {
     OK: 200,
@@ -192,7 +193,7 @@ export const updateAcolhidoStatus = (id: string, status: boolean) => {
   const toastOptions: ToastOptions = {
     loadingMessage: status ? "Ativando acolhido ..." : "Desativando acolhido ...",
     successMessage: `Acolhido ${status ? "ativado" : "desativado"} com sucesso!`,
-    errorMessage: "Houve um problema ao alterar o status do acolhido."
+    errorMessage: "Houve um problema ao alterar o status deste acolhido."
   }
 
   return putRequest(`/acolhido/${id}/status_acolhido/${status}`, undefined, toastOptions);
@@ -295,4 +296,30 @@ export const updateUsuario = (usuarioData: any) => {
   }
   const data = usuarioToApi(usuarioData)
   return postRequest("usuario", data, toastOptions);
+}
+
+export const updateUsuarioStatus = (id: string, status: boolean) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: status ? "Ativando usuário ..." : "Desativando usuário ...",
+    successMessage: `Usuário ${status ? "ativado" : "desativado"} com sucesso!`,
+    errorMessage: "Houve um problema ao alterar o status deste usuário."
+  }
+
+  return putRequest(`/usuario/${id}/status_usuario/${status}`, undefined, toastOptions);
+}
+
+export const login = async (username: string, password: string) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Efetuando login ...",
+    successMessage: "Login realizado com sucesso!",
+    errorMessage: "Houve um problema ao tentar efetuar login."
+  }
+
+  const data = {
+    login: username,
+    password: password
+  }
+
+  const { data: dataResponse } = await postRequest("/login", data, toastOptions);
+  return apiToLogin(dataResponse);
 }

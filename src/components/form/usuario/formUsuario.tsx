@@ -12,7 +12,11 @@ import FormTitle from "@/components/titles/form/form";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import { createUsuario, updateUsuario } from "@/api/endpoints";
+import {
+  createUsuario,
+  updateUsuario,
+  updateUsuarioStatus,
+} from "@/api/endpoints";
 import { Usuario } from "@/types/formUsuario.type";
 
 type Props = {
@@ -26,73 +30,76 @@ function FormUsuario({ usuario }: Props) {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const [isActive, setIsActive] = useState(usuario ? usuario.status : true);
+
   const adminRef = useRef<HTMLInputElement | null>(null);
   const alterarAcolhidoRef = useRef<HTMLInputElement | null>(null);
   const cadastrarAcolhidoRef = useRef<HTMLInputElement | null>(null);
   const consultarAcolhidoRef = useRef<HTMLInputElement | null>(null);
 
   //Yup validation schema
-  const usuarioSchema: yup.ObjectSchema<Omit<Usuario, "roles" | "id">> =
-    yup.object({
-      name: yup
-        .string()
-        .trim()
-        .required("Obrigatório inserir o nome do usuário")
-        .matches(
-          /(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$/,
-          "Inserir nome e sobrenome com espaço entre eles! Letras iniciais maiuscúla e não serão aceitos caracteres especiais."
-        )
-        .min(3, "Inserir um nome com pelo menos 3 caracteres")
-        .max(255, "Limíte maximo de 255 caracteres")
-        .typeError("Insira o nome do usuário"),
+  const usuarioSchema: yup.ObjectSchema<
+    Omit<Usuario, "roles" | "id" | "status">
+  > = yup.object({
+    name: yup
+      .string()
+      .trim()
+      .required("Obrigatório inserir o nome do usuário")
+      .matches(
+        /(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$/,
+        "Inserir nome e sobrenome com espaço entre eles! Letras iniciais maiuscúla e não serão aceitos caracteres especiais."
+      )
+      .min(3, "Inserir um nome com pelo menos 3 caracteres")
+      .max(255, "Limíte maximo de 255 caracteres")
+      .typeError("Insira o nome do usuário"),
 
-      login: yup
-        .string()
-        .trim()
-        .required("Obrigatório inserir um login")
-        .min(3, "Inserir um login com pelo menos 3 caracteres")
-        .max(15, "Login deve ter no máximo 15 caracteres")
-        .typeError("Insira um login"),
+    login: yup
+      .string()
+      .trim()
+      .required("Obrigatório inserir um login")
+      .min(3, "Inserir um login com pelo menos 3 caracteres")
+      .max(15, "Login deve ter no máximo 15 caracteres")
+      .typeError("Insira um login"),
 
-      password: yup
-        .string()
-        .test("password_check", function (value) {
-          const min = 6;
-          const max = 20;
+    password: yup
+      .string()
+      .test("password_check", function (value) {
+        const min = 6;
+        const max = 20;
 
-          if (!value || value == "") return true;
+        if (!value || value == "") return true;
 
-          if (value.length < min)
-            return this.createError({
-              message: `A senha precisa ter no mínimo ${min} caracteres.`,
-              path: "password",
-            });
+        if (value.length < min)
+          return this.createError({
+            message: `A senha precisa ter no mínimo ${min} caracteres.`,
+            path: "password",
+          });
 
-          if (value.length > max)
-            return this.createError({
-              message: `A senha precisa ter no máximo ${max} caracteres.`,
-              path: "password",
-            });
+        if (value.length > max)
+          return this.createError({
+            message: `A senha precisa ter no máximo ${max} caracteres.`,
+            path: "password",
+          });
 
-          if (value.split("").includes(" "))
-            return this.createError({
-              message: "A senha não pode conter espaços",
-              path: "password",
-            });
+        if (value.split("").includes(" "))
+          return this.createError({
+            message: "A senha não pode conter espaços",
+            path: "password",
+          });
 
-          return true;
-        })
-        .transform((_, val) => (val === "" ? null : val))
-        .nullable()
-        .typeError("Insira um password"),
+        return true;
+      })
+      .transform((_, val) => (val === "" ? null : val))
+      .nullable()
+      .typeError("Insira um password"),
 
-      repeatPassword: yup
-        .string()
-        .transform((_, val) => (val === "" ? null : val))
-        .nullable()
-        .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.")
-        .typeError("Repita a senha"),
-    });
+    repeatPassword: yup
+      .string()
+      .transform((_, val) => (val === "" ? null : val))
+      .nullable()
+      .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.")
+      .typeError("Repita a senha"),
+  });
 
   // Setting the form
   const {
@@ -144,7 +151,19 @@ function FormUsuario({ usuario }: Props) {
     const permissionClicked = target && target.name;
     const checked = target && target.checked;
 
-    if (!checked) return;
+    if (!checked) {
+
+      if (permissionClicked != "admin" && adminRef!.current!.checked)
+        adminRef!.current!.checked = false;
+
+      if (
+        permissionClicked == "consultar_acolhido" &&
+        alterarAcolhidoRef!.current!.checked
+      )
+        alterarAcolhidoRef!.current!.checked = false;
+        
+      return;
+    }
 
     if (permissionClicked === "alterar_acolhido") {
       consultarAcolhidoRef!.current!.checked = true;
@@ -153,7 +172,7 @@ function FormUsuario({ usuario }: Props) {
     if (permissionClicked === "admin" && checked) {
       if (
         !confirm(
-          "Tem certeza de que esse usuário será um Administrador?\nEle poderá alterar a senha de outros usuários e terá acesso completo à todas as funções da aplicação."
+          "Tem certeza de que este usuário será um Administrador?\nEle poderá alterar a senha de outros usuários e terá acesso completo à todas as funções da aplicação."
         )
       ) {
         target.checked = false;
@@ -191,6 +210,31 @@ function FormUsuario({ usuario }: Props) {
     return roles;
   }
 
+  function toggleUsuarioStatus() {
+    const previousStatus = isActive;
+    if (
+      previousStatus &&
+      !confirm(
+        "Deseja desativar este usuário?\nQualquer mudança não salva será perdida."
+      )
+    )
+      return;
+
+    setIsLoading(true);
+    updateUsuarioStatus(usuario!.id!, !isActive)
+      .then(() => {
+        setIsActive((oldValue) => !oldValue);
+        if (previousStatus) {
+          // If it was active, you are deactivating
+          window.onbeforeunload = () => null; // Removes the exit confirmation
+          /* window.location.reload(); */
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
   return (
     <div className={styles.container}>
       <div>
@@ -209,7 +253,12 @@ function FormUsuario({ usuario }: Props) {
           <label htmlFor="name" className={styles.required}>
             Nome
           </label>
-          <input type="text" id="name" {...register("name")} />
+          <input
+            type="text"
+            id="name"
+            className={`${!isActive && "disable_input"}`}
+            {...register("name")}
+          />
         </div>
         {errors.name && (
           <p className={styles.error_message}>{String(errors.name.message)} </p>
@@ -219,7 +268,12 @@ function FormUsuario({ usuario }: Props) {
           <label htmlFor="login" className={styles.required}>
             Login
           </label>
-          <input type="text" id="login" {...register("login")} />
+          <input
+            type="text"
+            id="login"
+            className={`${!isActive && "disable_input"}`}
+            {...register("login")}
+          />
         </div>
         {errors.login && (
           <p className={styles.error_message}>{String(errors.login.message)}</p>
@@ -230,10 +284,11 @@ function FormUsuario({ usuario }: Props) {
             Senha
           </label>
           <input
-            {...register("password")}
             type={showPassword ? "text" : "password"}
             id="password"
             placeholder={usuario ? "Digite para trocar a senha" : undefined}
+            className={`${!isActive && "disable_input"}`}
+            {...register("password")}
           />
           <Image
             className={styles.show_password_icon}
@@ -259,10 +314,11 @@ function FormUsuario({ usuario }: Props) {
             Repita a senha
           </label>
           <input
-            {...register("repeatPassword")}
             type={showPassword ? "text" : "password"}
             id="repeatPassword"
             placeholder={usuario ? "Digite para trocar a senha" : undefined}
+            className={`${!isActive && "disable_input"}`}
+            {...register("repeatPassword")}
           />
         </div>
         {errors.repeatPassword && (
@@ -278,6 +334,8 @@ function FormUsuario({ usuario }: Props) {
             <div className={`${styles.permission_admin} ${styles.permission}`}>
               <label htmlFor="admin">Administrador</label>
               <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
                 type="checkbox"
                 name="admin"
                 value="admin"
@@ -294,6 +352,8 @@ function FormUsuario({ usuario }: Props) {
             <div className={styles.permission}>
               <label htmlFor="alterar_acolhido">Alterar acolhido</label>
               <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
                 type="checkbox"
                 name="alterar_acolhido"
                 value="alterar_acolhido"
@@ -312,6 +372,8 @@ function FormUsuario({ usuario }: Props) {
             <div className={styles.permission}>
               <label htmlFor="consultar_acolhido">Consultar acolhido</label>
               <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
                 type="checkbox"
                 name="consultar_acolhido"
                 value="consultar_acolhido"
@@ -330,6 +392,8 @@ function FormUsuario({ usuario }: Props) {
             <div className={styles.permission}>
               <label htmlFor="cadastrar_acolhido">Cadastrar acolhido</label>
               <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
                 type="checkbox"
                 name="cadastrar_acolhido"
                 value="cadastrar_acolhido"
@@ -352,12 +416,26 @@ function FormUsuario({ usuario }: Props) {
 
         <div className={styles.buttons}>
           <button
-            className={`submitBtn ${isLoading && styles.buttons_disabled}`}
+            type="submit"
+            className={`button_submit ${isLoading && "disable_button"}`}
             disabled={isLoading}
             onClick={handleSubmit((data) => registerUsuario(data))}
           >
-            {usuario ? "Alterar cadastro" : "Finalizar cadastro"}
+            {usuario ? "Alterar cadastro" : "Cadastrar usuário"}
           </button>
+
+          {usuario && (
+            <button
+              type="button"
+              className={`${
+                isActive ? "button_deactivate" : "button_activate"
+              } ${isLoading && "disable_button"}`}
+              disabled={isLoading}
+              onClick={() => toggleUsuarioStatus()}
+            >
+              {isActive ? "Desativar usuário" : "Ativar usuário"}
+            </button>
+          )}
         </div>
       </form>
     </div>

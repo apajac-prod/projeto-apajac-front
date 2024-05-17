@@ -762,7 +762,7 @@ function StepAcolhido() {
 
         <div className={styles.buttons}>
           <button
-            className="submitBtn"
+            className="button_submit"
             onClick={handleSubmit(
               (data) => next(data),
               (erro) => console.log("Erro detectado:", erro)

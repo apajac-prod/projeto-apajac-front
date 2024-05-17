@@ -24,7 +24,7 @@ input {
   border-radius: 5px;
 }
 
-.submitBtn {
+.button_submit {
   min-width: 100px;
   font-weight: 600;
   color: #fff;
@@ -36,13 +36,13 @@ input {
   cursor: pointer;
 }
 
-.submitBtn:hover {
+.button_submit:hover {
   color: #5992cd;
   background-color: #fff;
   outline: 1px solid #5992cd;
 }
 
-.disableBtn {
+.disable_button {
   background-color: #969696 !important;
   pointer-events: none !important;
 }
@@ -51,4 +51,42 @@ input {
   background-color: #ddd !important;
   color: #6d6d6d !important;
   pointer-events: none !important;
+}
+
+.button_deactivate {
+  background-color: #ff0000;
+  display: block;
+  min-width: 100px;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+.button_deactivate:hover {
+  color: #ff0000;
+  background-color: #fff;
+  outline: 1px solid #ff0000;
+}
+
+.button_activate {
+  background-color: #008607;
+  display: block;
+  min-width: 100px;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+.button_activate:hover {
+  color: #008607;
+  background-color: #fff;
+  outline: 1px solid #008607;
 }
