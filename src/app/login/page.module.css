@@ -71,6 +71,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
 }
 
 .input_container input {
@@ -79,7 +80,7 @@
 }
 
 .input_container img {
-  transform: translateX(-25px);
+  margin-left: -25px;
 }
 
 .show_password_icon {
@@ -95,7 +96,6 @@
   padding: 6px 12px;
   border-radius: 10px;
   width: 100px;
-  margin: auto;
   cursor: pointer;
   margin-top: 40px;
   transition: 0.6s;
@@ -110,18 +110,20 @@
 @keyframes loginErrorAnimation {
   from {
     background-color: #fff;
-    transform: translateY(-50px);
+    bottom: 70px;
   }
 
   to {
     background-color: red;
-    transform: translateY(-40px);
+    bottom: 60px;
   }
 }
 
 .loginError {
   position: absolute;
-  transform: translateY(-40px);
+  bottom: 60px;
+  left: 5px;
+  right: 0;
   border: none;
   border-radius: 3px;
   background-color: red;
@@ -137,6 +139,7 @@
 
 .errors {
   position: absolute;
+  bottom: 55px;
   font-size: 0.9rem;
   color: red;
 }
