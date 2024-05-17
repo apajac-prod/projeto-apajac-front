@@ -53,15 +53,17 @@ const Login = () => {
         /* session!.setSessionInfo(data); */
         router.push("/menu");
       })
-      .catch(() => {
+      .catch((error) => {
+        if (!error.status) return;
+        console.log(error);
         if (loginErrorRef.current) {
           loginErrorRef.current.classList.remove(styles.loginErrorAnimation);
           loginErrorRef.current.offsetWidth;
           loginErrorRef.current.classList.add(styles.loginErrorAnimation);
           console.log(loginErrorRef.current.classList);
         }
+        setLoginError(true);
       });
-    setLoginError(true);
   };
 
   return (
@@ -73,16 +75,16 @@ const Login = () => {
       <div className={styles.loginContainer}>
         <h1>Login</h1>
 
-        {loginError && (
-          <p
-            className={`${styles.loginError} ${styles.loginErrorAnimation}`}
-            ref={loginErrorRef}
-          >
-            Usuário ou senha incorreto
-          </p>
-        )}
-
         <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
+          {loginError && (
+            <p
+              className={`${styles.loginError} ${styles.loginErrorAnimation}`}
+              ref={loginErrorRef}
+            >
+              Usuário ou senha incorreto
+            </p>
+          )}
+
           <div className={styles.input_container}>
             <input
               {...register("loginApajac")}

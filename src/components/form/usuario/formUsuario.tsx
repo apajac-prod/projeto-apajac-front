@@ -18,6 +18,7 @@ import {
   updateUsuarioStatus,
 } from "@/api/endpoints";
 import { Usuario } from "@/types/formUsuario.type";
+import containsUppercase from "@/functions/containsUppercase";
 
 type Props = {
   usuario?: Usuario;
@@ -43,20 +44,32 @@ function FormUsuario({ usuario }: Props) {
   > = yup.object({
     name: yup
       .string()
+      .required("Obrigatório inserir o nome do acolhido")
+      .transform((_, val: string) => val.toUpperCase())
       .trim()
-      .required("Obrigatório inserir o nome do usuário")
-      .matches(
-        /(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$/,
-        "Inserir nome e sobrenome com espaço entre eles! Letras iniciais maiuscúla e não serão aceitos caracteres especiais."
-      )
-      .min(3, "Inserir um nome com pelo menos 3 caracteres")
-      .max(255, "Limíte maximo de 255 caracteres")
-      .typeError("Insira o nome do usuário"),
+      .min(3, "Nome precisa ter no mínimo 3 caracteres")
+      .max(255, "Quantidade máxima permitida de carácteres: 255")
+      .typeError("Insira o nome do acolhido"),
 
     login: yup
       .string()
       .trim()
       .required("Obrigatório inserir um login")
+      .test("login_check", function (value) {
+        if (value.split("").includes(" "))
+          return this.createError({
+            message: "O login não pode conter espaços",
+            path: "login",
+          });
+
+        if (containsUppercase(value))
+          return this.createError({
+            message: "O login não pode conter letras maiúsculas",
+            path: "login",
+          });
+
+        return true;
+      })
       .min(3, "Inserir um login com pelo menos 3 caracteres")
       .max(15, "Login deve ter no máximo 15 caracteres")
       .typeError("Insira um login"),
@@ -152,7 +165,6 @@ function FormUsuario({ usuario }: Props) {
     const checked = target && target.checked;
 
     if (!checked) {
-
       if (permissionClicked != "admin" && adminRef!.current!.checked)
         adminRef!.current!.checked = false;
 
@@ -161,7 +173,7 @@ function FormUsuario({ usuario }: Props) {
         alterarAcolhidoRef!.current!.checked
       )
         alterarAcolhidoRef!.current!.checked = false;
-        
+
       return;
     }
 
@@ -256,6 +268,7 @@ function FormUsuario({ usuario }: Props) {
           <input
             type="text"
             id="name"
+            style={{ textTransform: "uppercase" }}
             className={`${!isActive && "disable_input"}`}
             {...register("name")}
           />
