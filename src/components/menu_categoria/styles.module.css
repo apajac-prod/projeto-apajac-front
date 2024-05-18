@@ -6,7 +6,7 @@
 
 .divisor {
   background-color: #fff;
-  width: 650px;
+  max-width: 650px;
   height: 5px;
   border-radius: 10px;
 }
@@ -14,8 +14,11 @@
 .cards {
   margin-top: 20px;
   width: 100%;
-  gap: 20px;
   flex-wrap: wrap;
   display: flex;
   box-sizing: border-box;
+}
+
+.card {
+  margin: 0 20px 20px 0;
 }

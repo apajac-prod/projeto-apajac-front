@@ -4,14 +4,17 @@ import styles from "./styles.module.css";
 type Props = {
   title: string;
   link: string;
+  show: boolean | undefined;
   icon?: string;
   className?: string;
 };
-const MenuCard = ({ title, icon, link, className }: Props) => {
+const MenuCard = ({ title, icon, link, className, show }: Props) => {
   let style = styles.card;
   if (className) {
     style += ` ${className}`;
   }
+
+  if (!show) return undefined;
 
   return (
     <Link href={link}>

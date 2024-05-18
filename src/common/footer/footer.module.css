@@ -6,6 +6,7 @@
   background-color: #5992cd;
   text-align: center;
   color: #fff;
+  box-sizing: border-box;
 }
 
 .copyright {
