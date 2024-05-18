@@ -10,7 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import TitleApajac from "@/components/titles/apajac/apajac";
 
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -50,7 +50,6 @@ const Login = () => {
       .then((data) => {
         console.log("data", data);
         localStorage.setItem("session", JSON.stringify(data));
-        /* session!.setSessionInfo(data); */
         router.push("/menu");
       })
       .catch((error) => {
