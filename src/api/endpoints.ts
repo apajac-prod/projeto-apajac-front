@@ -57,7 +57,7 @@ function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
           backgroundColor: "#5992cd",
           outline: "2px #fff solid",
           color: "#fff",
-          minWidth: "400px",
+          minWidth: "300px",
           minHeight: "60px",
           margin: "5%",
         },
