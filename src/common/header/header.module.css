@@ -4,6 +4,8 @@
   box-sizing: border-box;
   padding: 8px 12px;
   display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #5992cd;
 }
 
@@ -27,6 +29,10 @@
   flex-direction: column;
   justify-content: center;
   gap: 4px;
+}
+
+.logoutContainer > p {
+  white-space: nowrap;
 }
 
 .container > p {
