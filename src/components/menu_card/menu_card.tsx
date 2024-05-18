@@ -14,14 +14,14 @@ const MenuCard = ({ title, icon, link, className, show }: Props) => {
     style += ` ${className}`;
   }
 
+  if (!show) return undefined;
+
   return (
-    show && (
-      <Link href={link}>
-        <div className={style} card-title={title} key={title}>
-          <h3>{title}</h3>
-        </div>
-      </Link>
-    )
+    <Link href={link}>
+      <div className={style} card-title={title} key={title}>
+        <h3>{title}</h3>
+      </div>
+    </Link>
   );
 };
 export default MenuCard;

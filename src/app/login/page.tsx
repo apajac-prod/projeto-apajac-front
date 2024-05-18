@@ -10,7 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import TitleApajac from "@/components/titles/apajac/apajac";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -43,6 +43,11 @@ const Login = () => {
     mode: "onBlur",
     resolver: yupResolver(loginSchema),
   });
+
+  useEffect(() => {
+    const session = localStorage.getItem("session");
+    if (!!session) router.push("/menu");
+  }, []);
 
   // Handling the form
   const onSubmit = (data: loginForm) => {

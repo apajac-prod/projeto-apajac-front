@@ -40,9 +40,11 @@ const Menu = () => {
           title={"Consultar acolhido"}
           link="/acolhido/consultar"
           show={
-            session && session.sessionInfo.roles?.includes(ROLES.ADMINISTRADOR)
+            session &&
+            session.sessionInfo.roles?.includes(ROLES.CONSULTAR_ACOLHIDO)
           }
         />
+
         <MenuCard
           title={"Consultar usuários"}
           link="/em_construcao"

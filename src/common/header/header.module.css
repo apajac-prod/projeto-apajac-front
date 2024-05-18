@@ -1,8 +1,8 @@
 .container {
   width: 100vw;
-  height: 50px;
+  min-height: 50px;
   box-sizing: border-box;
-  padding: 0 12px;
+  padding: 8px 12px;
   display: flex;
   background-color: #5992cd;
 }
@@ -18,7 +18,7 @@
 }
 
 .container div {
-  height: 50px;
+  min-height: 50px;
   min-width: 115px;
   align-self: flex-end;
   justify-self: flex-end;
@@ -37,6 +37,7 @@
 
 .title {
   width: 100%;
+  padding: 8px 12px;
 }
 
 .title,
