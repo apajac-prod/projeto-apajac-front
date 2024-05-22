@@ -230,7 +230,7 @@ export const getListaAssistidos = async (page: number, sort: Sort = undefined, o
 
   /* return getRequest(`lista-assistidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista-assistidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  const { data } = await getRequest(`lista_assistidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
   console.log("before data:", data);
   return { assistidos: apiToListAssistido(data.assistidos), isLastPage: data.isLastPage };
 }
@@ -263,7 +263,7 @@ export const getListaAssistidosPorNome = async (name: string, page: number, sort
 
   /* return getRequest(`lista-assistidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista-assistidos-por-nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  const { data } = await getRequest(`lista_assistidos_por_nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
   console.log("before data:", data);
   return { assistidos: apiToListAssistido(data.assistidos), isLastPage: data.isLastPage };
 }

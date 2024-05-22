@@ -46,7 +46,7 @@ export function assistidoToApi(assistido: AssistidoInput): ApiAssistido {
     console.log("After phone array threatment", data);
 
     // Parse Datestring to Date:
-    const birthdate = new Date(Date.parse(data.assistidos.birthdate.replaceAll("/","-").split("-").reverse().join()))
+    const birthdate = new Date(Date.parse(data.assistido.birthdate.replaceAll("/","-").split("-").reverse().join()))
     console.log(birthdate);
 
     console.log("data:",data)
