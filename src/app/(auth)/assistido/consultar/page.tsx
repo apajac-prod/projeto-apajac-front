@@ -6,23 +6,23 @@ import styles from "./page.module.css";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   ToastOptions,
-  getListaAcolhidos,
-  getListaAcolhidosPorNome,
+  getListaAssistidos,
+  getListaAssistidosPorNome,
 } from "@/api/endpoints";
-import { ListAcolhido } from "@/api/middleware/listAcolhido";
-import { ModalConsultaAcolhido } from "@/components/modal/modalConsultaAcolhido";
+import { ListAssistido } from "@/api/middleware/listAssistido";
+import { ModalConsultaAssistido } from "@/components/modal/modalConsultaAssistido";
 import {
-  useModalConsultaAcolhido,
-  useModalConsultaAcolhidoContext as useModalContext,
-} from "@/hooks/useModalConsultaAcolhido";
+  useModalConsultaAssistido,
+  useModalConsultaAssistidoContext as useModalContext,
+} from "@/hooks/useModalConsultaAssistido";
 import Loader from "@/common/loader/loader";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
 
 type SortBy = "name" | "status" | "age"; // "responsible" removed due to back issues
 
-export default function ConsultarAcolhido() {
-  const [acolhidos, setAcolhidos] = useState<ListAcolhido[]>([]);
+export default function ConsultarAssistido() {
+  const [assistidos, setAssistidos] = useState<ListAssistido[]>([]);
   const [page, setPage] = useState<number>(0);
   const [isLastPage, setIslastPage] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(undefined);
@@ -37,16 +37,16 @@ export default function ConsultarAcolhido() {
   const inputNameRef = useRef<HTMLInputElement | null>(null);
   const observerRef = useRef(null);
 
-  const modal = useModalConsultaAcolhido();
+  const modal = useModalConsultaAssistido();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           setToastOptions({
-            loadingMessage: "Carregando acolhidos...",
-            successMessage: "Acolhidos carregados com sucesso!",
-            errorMessage: "Não foi possível carregar os acolhidos.",
+            loadingMessage: "Carregando assistidos...",
+            successMessage: "Assistidos carregados com sucesso!",
+            errorMessage: "Não foi possível carregar os assistidos.",
           });
           setPage((oldValue) => oldValue + 1);
         }
@@ -74,22 +74,22 @@ export default function ConsultarAcolhido() {
     console.log("searchByName:", searchByName);
 
     if (!!searchByName) {
-      getListaAcolhidosPorNome(
+      getListaAssistidosPorNome(
         searchByName,
         page,
         sortBy,
         orderByAsc,
         toastOptions
       )
-        .then(({ acolhidos, isLastPage: lastPage }) => {
-          setAcolhidos((oldArray) => [...oldArray, ...acolhidos]);
+        .then(({ assistidos, isLastPage: lastPage }) => {
+          setAssistidos((oldArray) => [...oldArray, ...assistidos]);
           setIslastPage(lastPage);
         })
         .finally(() => setIsLoading(false));
     } else {
-      getListaAcolhidos(page, sortBy, orderByAsc, toastOptions)
-        .then(({ acolhidos, isLastPage: lastPage }) => {
-          setAcolhidos((oldArray) => [...oldArray, ...acolhidos]);
+      getListaAssistidos(page, sortBy, orderByAsc, toastOptions)
+        .then(({ assistidos, isLastPage: lastPage }) => {
+          setAssistidos((oldArray) => [...oldArray, ...assistidos]);
           setIslastPage(lastPage);
         })
         .finally(() => setIsLoading(false));
@@ -108,12 +108,12 @@ export default function ConsultarAcolhido() {
       } else {
         setSearchByName(inputName.value);
         setToastOptions({
-          loadingMessage: "Carregando acolhidos com base no nome inserido...",
-          successMessage: "Acolhidos carregados com sucesso!",
-          errorMessage: "Não foi possível carregar os acolhidos.",
+          loadingMessage: "Carregando assistidos com base no nome inserido...",
+          successMessage: "Assistidos carregados com sucesso!",
+          errorMessage: "Não foi possível carregar os assistidos.",
         });
       }
-      setAcolhidos([]);
+      setAssistidos([]);
       setIslastPage(false);
       setOrderByAsc(true);
       setSortBy("name");
@@ -124,7 +124,7 @@ export default function ConsultarAcolhido() {
   function handleSortChange(clickedSortBy: SortBy) {
     if (isLoading) return;
 
-    setAcolhidos([]);
+    setAssistidos([]);
 
     if (sortBy == clickedSortBy) {
       setOrderByAsc((oldValue) => !oldValue);
@@ -152,7 +152,7 @@ export default function ConsultarAcolhido() {
   return (
     <div className={styles.container}>
       <FormTitle
-        title="Consultar Acolhidos"
+        title="Consultar Assistidos"
         Icon={icon.User}
         className={styles.title}
       />
@@ -215,35 +215,35 @@ export default function ConsultarAcolhido() {
           </tr>
         </thead>
         <tbody>
-          {acolhidos &&
-            acolhidos.map((acolhido) => {
+          {assistidos &&
+            assistidos.map((assistido) => {
               return (
                 <tr
-                  key={acolhido.id}
+                  key={assistido.id}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     modal.setIsOpen(true);
-                    modal.setId(acolhido.id);
+                    modal.setId(assistido.id);
                   }}
                 >
                   <td className={styles.name}>
-                    <p data-tippy-content={acolhido.name}>{acolhido.name}</p>
+                    <p data-tippy-content={assistido.name}>{assistido.name}</p>
                   </td>
                   <td className={styles.age}>
-                    <p>{acolhido.age}</p>
+                    <p>{assistido.age}</p>
                   </td>
                   <td className={styles.name}>
-                    <p data-tippy-content={acolhido.responsible}>
-                      {acolhido.responsible}
+                    <p data-tippy-content={assistido.responsible}>
+                      {assistido.responsible}
                     </p>
                   </td>
                   <td className={styles.status}>
                     <p
                       style={
-                        acolhido.status ? { color: "green" } : { color: "red" }
+                        assistido.status ? { color: "green" } : { color: "red" }
                       }
                     >
-                      {acolhido.status ? "ativo" : "inativo"}
+                      {assistido.status ? "ativo" : "inativo"}
                     </p>
                   </td>
                 </tr>
@@ -253,12 +253,12 @@ export default function ConsultarAcolhido() {
         </tbody>
       </table>
 
-      {isLastPage && acolhidos.length <= 0 && (
-        <p>Nenhum acolhido encontrado na base de dados.</p>
+      {isLastPage && assistidos.length <= 0 && (
+        <p>Nenhum assistido encontrado na base de dados.</p>
       )}
       {modal && modal.isOpen && modal.id && (
         <useModalContext.Provider value={modal}>
-          <ModalConsultaAcolhido />
+          <ModalConsultaAssistido />
         </useModalContext.Provider>
       )}
 

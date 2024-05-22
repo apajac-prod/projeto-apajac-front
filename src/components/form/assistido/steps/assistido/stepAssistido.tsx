@@ -4,15 +4,15 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputMask from "@mona-health/react-input-mask";
 
-import SubTitle from "@/components/form/acolhido/subTitle";
-import styles from "./stepAcolhido.module.css";
+import SubTitle from "@/components/form/assistido/subTitle";
+import styles from "./stepAssistido.module.css";
 import Link from "next/link";
 
 import { useState, useContext, ChangeEvent, useEffect } from "react";
 
 import { MultistepFormContext } from "@/hooks/useMultistepForm";
 import { restoreInputValue } from "@/functions/restoreInputs";
-import { Acolhido } from "@/types/formAcolhido.type";
+import { Assistido } from "@/types/formAssistido.type";
 
 import { unmaskCep, unmaskPhone } from "@/functions/unmaskInputs";
 
@@ -52,7 +52,7 @@ type CepError = {
   message: string;
 };
 
-function StepAcolhido() {
+function StepAssistido() {
   const multistepController = useContext(MultistepFormContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [disableAddressInputs, setDisableAddressInputs] =
@@ -67,15 +67,15 @@ function StepAcolhido() {
       : "(99) 9999-9999"
   );
   //Yup validation schema
-  const acolhidoSchema: yup.ObjectSchema<Acolhido> = yup.object({
+  const assistidoSchema: yup.ObjectSchema<Assistido> = yup.object({
     name: yup
       .string()
-      .required("Obrigatório inserir o nome do acolhido")
+      .required("Obrigatório inserir o nome do assistido")
       .transform((_, val: string) => val.toUpperCase())
       .trim()
       .min(3, "Nome precisa ter no mínimo 3 caracteres")
       .max(255, "Quantidade máxima permitida de carácteres: 255")
-      .typeError("Insira o nome do acolhido"),
+      .typeError("Insira o nome do assistido"),
 
     birthdate: yup
       .string()
@@ -213,7 +213,7 @@ function StepAcolhido() {
       .required("Obrigatório selecionar a unidade da federação")
       .oneOf(
         FEDERATION_UNITS,
-        "Só é possível cadastrar acolhidos do Estado de São Paulo"
+        "Só é possível cadastrar assistidos do Estado de São Paulo"
       ),
 
     city: yup
@@ -221,7 +221,7 @@ function StepAcolhido() {
       .trim()
       .min(2, "Cidade precisa ter ao menos 2 caracteres")
       .max(255, "Quantidade máxima permitida de carácteres: 255")
-      .oneOf(["Jacareí"], "Só é possível cadastrar acolhidos de Jacareí")
+      .oneOf(["Jacareí"], "Só é possível cadastrar assistidos de Jacareí")
       .required("Obrigatório inserir a cidade"),
 
     district: yup
@@ -304,7 +304,7 @@ function StepAcolhido() {
       complement: restoreInputValue("complement", multistepController || null),
     },
     mode: "onBlur",
-    resolver: yupResolver(acolhidoSchema),
+    resolver: yupResolver(assistidoSchema),
   });
 
   const [anyInstitutionRegister, setAnyInstitutionRegister] = useState(
@@ -392,7 +392,7 @@ function StepAcolhido() {
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit((data) => next(data))} autoComplete="off">
-        <SubTitle text="Dados do acolhido" className={styles.sub_title} />
+        <SubTitle text="Dados do assistido" className={styles.sub_title} />
 
         <div className={`${styles.formRow} ${styles.input_big}`}>
           <label htmlFor="name" className={styles.required}>
@@ -775,4 +775,4 @@ function StepAcolhido() {
     </div>
   );
 }
-export default StepAcolhido;
+export default StepAssistido;

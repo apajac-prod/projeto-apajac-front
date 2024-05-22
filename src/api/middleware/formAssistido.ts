@@ -1,12 +1,12 @@
-import { Acolhido, Pais, Responsavel, ComposicaoFamiliar, Finalizar } from "@/types/formAcolhido.type";
+import { Assistido, Pais, Responsavel, ComposicaoFamiliar, Finalizar } from "@/types/formAssistido.type";
 
-import { ApiAcolhido, Contato, Familiares } from "@/types/ApiAcolhido.type";
+import { ApiAssistido, Contato, Familiares } from "@/types/ApiAssistido.type";
 
 import dateToOutputString from "@/functions/dateToOutputString";
 
 //Steps in order, to be used to generate the final object (below function getResultObject())
 const STEPS = [
-    "acolhido",
+    "assistido",
     "mae",
     "pai",
     "responsavel",
@@ -16,14 +16,14 @@ const STEPS = [
 
 
 
-type AcolhidoInput = Array<
-    Acolhido | Pais | Responsavel | ComposicaoFamiliar | Finalizar>
+type AssistidoInput = Array<
+    Assistido | Pais | Responsavel | ComposicaoFamiliar | Finalizar>
 
 //Format object to what API expects
-export function acolhidoToApi(acolhido: AcolhidoInput): ApiAcolhido {
-    console.log("acolhido before all conversion:", acolhido);
+export function assistidoToApi(assistido: AssistidoInput): ApiAssistido {
+    console.log("assistido before all conversion:", assistido);
 
-    let data: any = acolhido.map((element: any, index: number) => {
+    let data: any = assistido.map((element: any, index: number) => {
         if (STEPS[index] == "composicaoFamiliar") {
             return element.familyComposition;
         }
@@ -31,7 +31,7 @@ export function acolhidoToApi(acolhido: AcolhidoInput): ApiAcolhido {
     });
     //Transform array to object
     data = data.reduce((acc:{[key:string]:object},curr: any, index: number)=> (acc[STEPS[index]]=curr,acc),{});
-    console.log("acolhidoToApi after reduce", data);
+    console.log("assistidoToApi after reduce", data);
 
     //Transform phone arrays to flat arrays
     const steps = ["mae", "pai", "responsavel"];
@@ -46,29 +46,29 @@ export function acolhidoToApi(acolhido: AcolhidoInput): ApiAcolhido {
     console.log("After phone array threatment", data);
 
     // Parse Datestring to Date:
-    const birthdate = new Date(Date.parse(data.acolhido.birthdate.replaceAll("/","-").split("-").reverse().join()))
+    const birthdate = new Date(Date.parse(data.assistidos.birthdate.replaceAll("/","-").split("-").reverse().join()))
     console.log(birthdate);
 
     console.log("data:",data)
-    console.log("data.acolhido.birthdate:", data.acolhido.birthdate);
+    console.log("data.assistido.birthdate:", data.assistido.birthdate);
     console.log("birthdate:", birthdate)
 
     // const dataToApi: { [key: string]: any} = {
-    let dataToApi: ApiAcolhido = {
-        id: data.acolhido.id ?? null,
-        statusAcolhido: data.acolhido.status ?? null,
-        nome: data.acolhido.name,
+    let dataToApi: ApiAssistido = {
+        id: data.assistido.id ?? null,
+        statusAssistido: data.assistido.status ?? null,
+        nome: data.assistido.name,
         dataNascimento: birthdate.toJSON(),
-        escolaridade: data.acolhido.educationLevel,
-        escola: data.acolhido.school,
-        telEscola: data.acolhido.schoolPhone,
-        cadastroInstituicao: data.acolhido.anyInstitutionRegister == "yes" ? true : false,
-        instituicao: data.acolhido.whichInstitution,
-        encaminhadoPara: data.acolhido.forwardedTo,
-        quemIndicouApajac: data.acolhido.whoRecommended,
-        informacoesFornecidasPor: data.acolhido.informationProvidedBy,
+        escolaridade: data.assistido.educationLevel,
+        escola: data.assistido.school,
+        telEscola: data.assistido.schoolPhone,
+        cadastroInstituicao: data.assistido.anyInstitutionRegister == "yes" ? true : false,
+        instituicao: data.assistido.whichInstitution,
+        encaminhadoPara: data.assistido.forwardedTo,
+        quemIndicouApajac: data.assistido.whoRecommended,
+        informacoesFornecidasPor: data.assistido.informationProvidedBy,
         endereco: {
-            cep: data.acolhido.postalCode, endereco: data.acolhido.address, numero: data.acolhido.addressNumber, bairro: data.acolhido.district, cidade: data.acolhido.city, uf: data.acolhido.fu, complemento: data.acolhido.complement
+            cep: data.assistido.postalCode, endereco: data.assistido.address, numero: data.assistido.addressNumber, bairro: data.assistido.district, cidade: data.assistido.city, uf: data.assistido.fu, complemento: data.assistido.complement
         },
         familiares: [
             {
@@ -112,12 +112,12 @@ export function acolhidoToApi(acolhido: AcolhidoInput): ApiAcolhido {
         })
     }
     
-    console.log("acolhidoToApi output", dataToApi);
-    console.log("ApiToAcolhido:", apiToAcolhido(dataToApi));
+    console.log("assistidoToApi output", dataToApi);
+    console.log("ApiToAssistido:", apiToAssistido(dataToApi));
     return dataToApi;
 }
 
-export function apiToAcolhido(data: ApiAcolhido) {
+export function apiToAssistido(data: ApiAssistido) {
 
     type Pais = {
             tipoParentesco: string | null;
@@ -210,10 +210,10 @@ export function apiToAcolhido(data: ApiAcolhido) {
     })
     
 
-    const acolhido = [
+    const assistido = [
         {
             id: data.id || null,
-            status: data.statusAcolhido || null,
+            status: data.statusAssistido || null,
             address: data.endereco.endereco,
             addressNumber: data.endereco.numero,
             anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",
@@ -262,5 +262,5 @@ export function apiToAcolhido(data: ApiAcolhido) {
             comments: data.observacoes
         }
     ]
-    return acolhido;
+    return assistido;
 }

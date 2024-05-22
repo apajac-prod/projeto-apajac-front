@@ -19,11 +19,11 @@ const Menu = () => {
     <div className={styles.container}>
       <MenuCategoria title={"Cadastrar"} className={styles.categoria}>
         <MenuCard
-          title={"Cadastrar acolhido"}
-          link="/acolhido/cadastrar"
+          title={"Cadastrar assistido"}
+          link="/assistido/cadastrar"
           show={
             session &&
-            session.sessionInfo.roles?.includes(ROLES.CADASTRAR_ACOLHIDO)
+            session.sessionInfo.roles?.includes(ROLES.CADASTRAR_ASSISTIDO)
           }
         />
         <MenuCard
@@ -37,11 +37,11 @@ const Menu = () => {
 
       <MenuCategoria title={"Consultar"} className={styles.categoria}>
         <MenuCard
-          title={"Consultar acolhido"}
-          link="/acolhido/consultar"
+          title={"Consultar assistido"}
+          link="/assistido/consultar"
           show={
             session &&
-            session.sessionInfo.roles?.includes(ROLES.CONSULTAR_ACOLHIDO)
+            session.sessionInfo.roles?.includes(ROLES.CONSULTAR_ASSISTIDO)
           }
         />
 

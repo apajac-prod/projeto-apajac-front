@@ -17,7 +17,7 @@ import { unmaskPhone, unmaskMoney } from "@/functions/unmaskInputs";
 
 import InputMask from "@mona-health/react-input-mask";
 
-import { Pais } from "@/types/formAcolhido.type";
+import { Pais } from "@/types/formAssistido.type";
 
 const OCUPATION = ["desempregado", "do_lar", "desconhecido", "outro"];
 const EMPLOYMENT_RELATIONSHIP = ["clt", "autonomo", "outro"];
@@ -49,12 +49,12 @@ const StepPais = ({ who }: Props) => {
   const paisSchema: yup.ObjectSchema<Pais> = yup.object({
     name: yup
       .string()
-      .required("Obrigatório inserir o nome do acolhido")
+      .required("Obrigatório inserir o nome do assistido")
       .transform((_, val: string) => val.toUpperCase())
       .trim()
       .min(3, "Nome precisa ter no mínimo 3 caracteres")
       .max(255, "Quantidade máxima permitida de carácteres: 255")
-      .typeError("Insira o nome do acolhido"),
+      .typeError("Insira o nome do assistido"),
 
     phones: yup.array(
       yup.object({

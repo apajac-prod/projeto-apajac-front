@@ -5,7 +5,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 ("next/navigation");
 
-import styles from "./formAcolhido.module.css";
+import styles from "./formAssistido.module.css";
 
 import FormTitle from "@/components/titles/form/form";
 import * as icon from "react-flaticons";
@@ -15,7 +15,7 @@ import {
   MultistepFormHeader,
   StepHeader,
 } from "@/components/multistep_form/multistep_form";
-import { STEPS } from "@/constants/stepsCadastroAcolhido.array";
+import { STEPS } from "@/constants/stepsCadastroAssistido.array";
 
 //Custom hooks
 import {
@@ -24,28 +24,28 @@ import {
 } from "@/hooks/useMultistepForm";
 
 // Steps
-import StepAcolhido from "./steps/acolhido/stepAcolhido";
+import StepAssistido from "./steps/assistido/stepAssistido";
 import { StepPai, StepMae } from "./steps/pais/stepPais";
 import StepResponsavel from "./steps/responsavel/stepResponsavel";
 import StepComposicaoFamiliar from "./steps/composicao_familiar/stepComposicaoFamiliar";
 import StepFinalizar from "./steps/finalizar/stepFinalizar";
 
-import { getAcolhidoById, updateAcolhidoStatus } from "@/api/endpoints";
+import { getAssistidoById, updateAssistidoStatus } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
-import { apiToAcolhido } from "@/api/middleware/formAcolhido";
+import { apiToAssistido } from "@/api/middleware/formAssistido";
 
-/* const [acolhidoPromise, setAcolhidoPromise] */
+/* const [assistidoPromise, setAssistidoPromise] */
 
 type Props = {
   editId?: string | null;
 };
 
-function FormAcolhido({ editId = null }: Props) {
+function FormAssistido({ editId = null }: Props) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const multistepController = useMultistepForm(
     [
-      <StepAcolhido key={0} />,
+      <StepAssistido key={0} />,
       <StepMae key={1} />,
       <StepPai key={2} />,
       <StepResponsavel key={3} />,
@@ -58,12 +58,12 @@ function FormAcolhido({ editId = null }: Props) {
   useEffect(() => {
     if (editId) {
       setIsLoading(true);
-      getAcolhidoById(editId)
+      getAssistidoById(editId)
         .then(({ data }) => {
           console.log("data da requisição:", data);
-          multistepController.loadData(apiToAcolhido(data));
+          multistepController.loadData(apiToAssistido(data));
           multistepController.setId(data.id);
-          multistepController.setActiveStatus(data.statusAcolhido);
+          multistepController.setActiveStatus(data.statusAssistido);
         })
         .catch(() => {
           window.onbeforeunload = () => null; // Removes the exit confirmation
@@ -75,17 +75,17 @@ function FormAcolhido({ editId = null }: Props) {
     }
   }, []);
 
-  function changeStatusAcolhido() {
+  function changeStatusAssistido() {
     const activeStatus = multistepController.getActiveStatus();
     if (
       activeStatus &&
       !confirm(
-        "Deseja realmente desativar este acolhido?\nAlterações não salvas poderão ser perdidas."
+        "Deseja realmente desativar este assistido?\nAlterações não salvas poderão ser perdidas."
       )
     )
       return;
     editId &&
-      updateAcolhidoStatus(editId, !activeStatus).then(() => {
+      updateAssistidoStatus(editId, !activeStatus).then(() => {
         if (multistepController.getActiveStatus()) {
           window.onbeforeunload = () => null; // Removes the exit confirmation
           window.location.reload();
@@ -106,7 +106,7 @@ function FormAcolhido({ editId = null }: Props) {
     <div className={styles.container}>
       <FormTitle
         className={styles.title}
-        title={editId ? "Alterar Acolhido" : "Cadastrar Acolhido"}
+        title={editId ? "Alterar Assistido" : "Cadastrar Assistido"}
         Icon={icon.User}
       />
       <div className={styles.steps}>
@@ -148,11 +148,11 @@ function FormAcolhido({ editId = null }: Props) {
                 }`}
                 disabled={multistepController.isLoading}
                 type="button"
-                onClick={() => changeStatusAcolhido()}
+                onClick={() => changeStatusAssistido()}
               >
                 {multistepController.getActiveStatus()
-                  ? "Desativar acolhido"
-                  : "Ativar acolhido"}
+                  ? "Desativar assistido"
+                  : "Ativar assistido"}
               </button>
             )}
           </>
@@ -161,4 +161,4 @@ function FormAcolhido({ editId = null }: Props) {
     </div>
   );
 }
-export default FormAcolhido;
+export default FormAssistido;

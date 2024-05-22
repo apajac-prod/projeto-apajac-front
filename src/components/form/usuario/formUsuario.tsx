@@ -35,9 +35,9 @@ function FormUsuario({ usuario }: Props) {
   const [isActive, setIsActive] = useState(usuario ? usuario.status : true);
 
   const adminRef = useRef<HTMLInputElement | null>(null);
-  const alterarAcolhidoRef = useRef<HTMLInputElement | null>(null);
-  const cadastrarAcolhidoRef = useRef<HTMLInputElement | null>(null);
-  const consultarAcolhidoRef = useRef<HTMLInputElement | null>(null);
+  const alterarAssistidoRef = useRef<HTMLInputElement | null>(null);
+  const cadastrarAssistidoRef = useRef<HTMLInputElement | null>(null);
+  const consultarAssistidoRef = useRef<HTMLInputElement | null>(null);
 
   //Yup validation schema
   const usuarioSchema: yup.ObjectSchema<
@@ -45,12 +45,12 @@ function FormUsuario({ usuario }: Props) {
   > = yup.object({
     name: yup
       .string()
-      .required("Obrigatório inserir o nome do acolhido")
+      .required("Obrigatório inserir o nome do assistido")
       .transform((_, val: string) => val.toUpperCase())
       .trim()
       .min(3, "Nome precisa ter no mínimo 3 caracteres")
       .max(255, "Quantidade máxima permitida de carácteres: 255")
-      .typeError("Insira o nome do acolhido"),
+      .typeError("Insira o nome do assistido"),
 
     login: yup
       .string()
@@ -173,16 +173,16 @@ function FormUsuario({ usuario }: Props) {
         adminRef!.current!.checked = false;
 
       if (
-        permissionClicked == ROLES.CONSULTAR_ACOLHIDO &&
-        alterarAcolhidoRef!.current!.checked
+        permissionClicked == ROLES.CONSULTAR_ASSISTIDO &&
+        alterarAssistidoRef!.current!.checked
       )
-        alterarAcolhidoRef!.current!.checked = false;
+        alterarAssistidoRef!.current!.checked = false;
 
       return;
     }
 
-    if (permissionClicked === ROLES.ALTERAR_ACOLHIDO) {
-      consultarAcolhidoRef!.current!.checked = true;
+    if (permissionClicked === ROLES.ALTERAR_ASSISTIDO) {
+      consultarAssistidoRef!.current!.checked = true;
     }
 
     if (permissionClicked === ROLES.ADMINISTRADOR && checked) {
@@ -194,9 +194,9 @@ function FormUsuario({ usuario }: Props) {
         target.checked = false;
         return;
       }
-      alterarAcolhidoRef!.current!.checked = true;
-      cadastrarAcolhidoRef!.current!.checked = true;
-      consultarAcolhidoRef!.current!.checked = true;
+      alterarAssistidoRef!.current!.checked = true;
+      cadastrarAssistidoRef!.current!.checked = true;
+      consultarAssistidoRef!.current!.checked = true;
     }
   }
 
@@ -205,23 +205,23 @@ function FormUsuario({ usuario }: Props) {
     if (adminRef && adminRef.current && adminRef.current.checked)
       roles.push(ROLES.ADMINISTRADOR);
     if (
-      alterarAcolhidoRef &&
-      alterarAcolhidoRef.current &&
-      alterarAcolhidoRef.current.checked
+      alterarAssistidoRef &&
+      alterarAssistidoRef.current &&
+      alterarAssistidoRef.current.checked
     )
-      roles.push(ROLES.ALTERAR_ACOLHIDO);
+      roles.push(ROLES.ALTERAR_ASSISTIDO);
     if (
-      consultarAcolhidoRef &&
-      consultarAcolhidoRef.current &&
-      consultarAcolhidoRef.current.checked
+      consultarAssistidoRef &&
+      consultarAssistidoRef.current &&
+      consultarAssistidoRef.current.checked
     )
-      roles.push(ROLES.CONSULTAR_ACOLHIDO);
+      roles.push(ROLES.CONSULTAR_ASSISTIDO);
     if (
-      cadastrarAcolhidoRef &&
-      cadastrarAcolhidoRef.current &&
-      cadastrarAcolhidoRef.current.checked
+      cadastrarAssistidoRef &&
+      cadastrarAssistidoRef.current &&
+      cadastrarAssistidoRef.current.checked
     )
-      roles.push(ROLES.CADASTRAR_ACOLHIDO);
+      roles.push(ROLES.CADASTRAR_ASSISTIDO);
 
     return roles;
   }
@@ -369,19 +369,19 @@ function FormUsuario({ usuario }: Props) {
             </div>
 
             <div className={styles.permission}>
-              <label htmlFor={ROLES.ALTERAR_ACOLHIDO}>Alterar acolhido</label>
+              <label htmlFor={ROLES.ALTERAR_ASSISTIDO}>Alterar assistido</label>
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
                 type="checkbox"
-                name={ROLES.ALTERAR_ACOLHIDO}
-                value={ROLES.ALTERAR_ACOLHIDO}
+                name={ROLES.ALTERAR_ASSISTIDO}
+                value={ROLES.ALTERAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
-                ref={alterarAcolhidoRef}
+                ref={alterarAssistidoRef}
                 defaultChecked={
                   usuario &&
                   usuario.roles &&
-                  usuario.roles.includes(ROLES.ALTERAR_ACOLHIDO)
+                  usuario.roles.includes(ROLES.ALTERAR_ASSISTIDO)
                     ? true
                     : undefined
                 }
@@ -389,21 +389,21 @@ function FormUsuario({ usuario }: Props) {
             </div>
 
             <div className={styles.permission}>
-              <label htmlFor={ROLES.CONSULTAR_ACOLHIDO}>
-                Consultar acolhido
+              <label htmlFor={ROLES.CONSULTAR_ASSISTIDO}>
+                Consultar assistido
               </label>
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
                 type="checkbox"
-                name={ROLES.CONSULTAR_ACOLHIDO}
-                value={ROLES.CONSULTAR_ACOLHIDO}
+                name={ROLES.CONSULTAR_ASSISTIDO}
+                value={ROLES.CONSULTAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
-                ref={consultarAcolhidoRef}
+                ref={consultarAssistidoRef}
                 defaultChecked={
                   usuario &&
                   usuario.roles &&
-                  usuario.roles.includes(ROLES.CONSULTAR_ACOLHIDO)
+                  usuario.roles.includes(ROLES.CONSULTAR_ASSISTIDO)
                     ? true
                     : undefined
                 }
@@ -411,21 +411,21 @@ function FormUsuario({ usuario }: Props) {
             </div>
 
             <div className={styles.permission}>
-              <label htmlFor={ROLES.CADASTRAR_ACOLHIDO}>
-                Cadastrar acolhido
+              <label htmlFor={ROLES.CADASTRAR_ASSISTIDO}>
+                Cadastrar assistido
               </label>
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
                 type="checkbox"
-                name={ROLES.CADASTRAR_ACOLHIDO}
-                value={ROLES.CADASTRAR_ACOLHIDO}
+                name={ROLES.CADASTRAR_ASSISTIDO}
+                value={ROLES.CADASTRAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
-                ref={cadastrarAcolhidoRef}
+                ref={cadastrarAssistidoRef}
                 defaultChecked={
                   usuario &&
                   usuario.roles &&
-                  usuario.roles.includes(ROLES.CADASTRAR_ACOLHIDO)
+                  usuario.roles.includes(ROLES.CADASTRAR_ASSISTIDO)
                     ? true
                     : undefined
                 }

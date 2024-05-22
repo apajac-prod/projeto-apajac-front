@@ -1,6 +1,6 @@
-export interface ApiAcolhido {
+export interface ApiAssistido {
     id?: string;
-    statusAcolhido?: boolean;
+    statusAssistido?: boolean;
     nome: string;
     dataNascimento: string;
     escolaridade: string;

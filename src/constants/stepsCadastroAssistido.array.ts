@@ -1,5 +1,5 @@
 export const STEPS = [
-    "Acolhido",
+    "Assistido",
     "Mãe",
     "Pai",
     "Responsável",

@@ -1,4 +1,4 @@
-export type Acolhido = {
+export type Assistido = {
     name: string | undefined;
     birthdate: Date | string | undefined;
     educationLevel: string | undefined;
