@@ -15,7 +15,7 @@
   familiares: Familiare[];
   composicaoFamiliar: ComposicaoFamiliar[];
   responsavel: Responsavel;
-  statusAcolhido: boolean;
+  statusAssistido: boolean;
 }
 
 interface Responsavel {
@@ -56,7 +56,7 @@ interface Endereco {
   uf: string;
 }
 
-export function apiToConsultaAcolhido (data: Api) {
+export function apiToConsultaAssistido (data: Api) {
 
   console.log("API sent:", data.dataNascimento);
   console.log("Converted to:", new Date(data.dataNascimento));
@@ -71,7 +71,7 @@ export function apiToConsultaAcolhido (data: Api) {
   }
 
     return {
-        status: data.statusAcolhido,
+        status: data.statusAssistido,
         id: data.id,
         name: data.nome,
         birthdate: new Date(data.dataNascimento),

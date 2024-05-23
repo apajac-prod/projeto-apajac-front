@@ -13,7 +13,7 @@ import { restoreInputValue } from "@/functions/restoreInputs";
 
 import { unmaskPhone } from "@/functions/unmaskInputs";
 
-import { Responsavel } from "@/types/formAcolhido.type";
+import { Responsavel } from "@/types/formAssistido.type";
 import InputMask from "@mona-health/react-input-mask";
 
 const MAX_PHONE_NUMBERS = 5; //Max phone inputs that can be added

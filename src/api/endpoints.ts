@@ -1,7 +1,7 @@
 import {axios} from "@/api/api";
-import { acolhidoToApi } from "./middleware/formAcolhido";
+import { assistidoToApi as assistidoToApi } from "./middleware/formAssistido";
 import toast from "react-hot-toast";
-import { ListAcolhido, apiToListAcolhido } from "./middleware/listAcolhido";
+import { ListAssistido, apiToListAssistido } from "./middleware/listAssistido";
 import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
 
@@ -152,33 +152,33 @@ const putRequest = (endpoint: string, data?: any, toastOptions?: ToastOptions) =
 }
 
 
-export const createAcolhido = (acolhidoData: any) => {
+export const createAssistido = (assistidoData: any) => {
     const toastOptions: ToastOptions = {
-      loadingMessage: "Cadastrando acolhido ...",
-      successMessage: "Acolhido cadastrado com sucesso!",
-      errorMessage: "Não foi possível cadastrar este acolhido."
+      loadingMessage: "Cadastrando assistido ...",
+      successMessage: "Assistido cadastrado com sucesso!",
+      errorMessage: "Não foi possível cadastrar este assistido."
     }
-    const data = acolhidoToApi(acolhidoData)
-    return postRequest("acolhido", data, toastOptions);
+    const data = assistidoToApi(assistidoData)
+    return postRequest("assistido", data, toastOptions);
 }
 
-export const updateAcolhido = (acolhidoData: any) => {
+export const updateAssistido = (assistidoData: any) => {
   const toastOptions: ToastOptions = {
-    loadingMessage: "Alterando acolhido ...",
-    successMessage: "Acolhido alterado com sucesso!",
-    errorMessage: "Não foi possível alterar este acolhido."
+    loadingMessage: "Alterando assistido ...",
+    successMessage: "Assistido alterado com sucesso!",
+    errorMessage: "Não foi possível alterar este assistido."
   }
-  const data = acolhidoToApi(acolhidoData)
-  return postRequest("acolhido", data, toastOptions);
+  const data = assistidoToApi(assistidoData)
+  return postRequest("assistido", data, toastOptions);
 }
 
-export const getAcolhidoById = (acolhidoId: string) => {
+export const getAssistidoById = (assistidoId: string) => {
   const toastOptions: ToastOptions = {
-    loadingMessage: "Carregando informações do acolhido ...",
+    loadingMessage: "Carregando informações do assistido ...",
     successMessage: "Informações carregadas com sucesso!",
     position: "bottom-center"
   }
-  return getRequest(`acolhido/por_id/${acolhidoId}`, toastOptions);
+  return getRequest(`assistido/por_id/${assistidoId}`, toastOptions);
 }
 
 export const getAddressByCep = (cep: string) => {
@@ -189,36 +189,36 @@ export const getAddressByCep = (cep: string) => {
   return getRequest(`endereco/${cep}`, toastOptions);
 }
 
-export const updateAcolhidoStatus = (id: string, status: boolean) => {
+export const updateAssistidoStatus = (id: string, status: boolean) => {
   const toastOptions: ToastOptions = {
-    loadingMessage: status ? "Ativando acolhido ..." : "Desativando acolhido ...",
-    successMessage: `Acolhido ${status ? "ativado" : "desativado"} com sucesso!`,
-    errorMessage: "Houve um problema ao alterar o status deste acolhido."
+    loadingMessage: status ? "Ativando assistido ..." : "Desativando assistido ...",
+    successMessage: `Assistido ${status ? "ativado" : "desativado"} com sucesso!`,
+    errorMessage: "Houve um problema ao alterar o status deste assistido."
   }
 
-  return putRequest(`/acolhido/${id}/status_acolhido/${status}`, undefined, toastOptions);
+  return putRequest(`/assistido/${id}/status_assistido/${status}`, undefined, toastOptions);
 }
 
-// List acolhido response properties, to perform a sort.
+// List Assistido response properties, to perform a sort.
 type Sort = "id"|"name"|"responsible"|"status"|"age"|undefined;
 
-export const getListaAcolhidos = async (page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
+export const getListaAssistidos = async (page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
 
   const SIZE = 50; //Qty of elements in each page per request
 
   const tOptions: ToastOptions = {
-    id: "getListaAcolhidos",
+    id: "getListaAssistidos",
     position: "bottom-center",
-    loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos ...",
-    successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
-    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando assistidos ...",
+    successMessage: toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos."
   }
   
   const convertedSort = new Map([
     ["id", "id"],
     ["name", "nome"],
     ["responsible", "responsavel"],
-    ["status", "statusAcolhido"],
+    ["status", "statusAssistido"],
     ["age", "dataNascimento"],
   ])
 
@@ -228,30 +228,30 @@ export const getListaAcolhidos = async (page: number, sort: Sort = undefined, or
 
   const sortParameter = sort ? `&sort=${convertedSort.get(sort)},${order}` : "";
 
-  /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
+  /* return getRequest(`lista-assistidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista-acolhidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  const { data } = await getRequest(`lista_assistidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
   console.log("before data:", data);
-  return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
+  return { assistidos: apiToListAssistido(data.assistidos), isLastPage: data.isLastPage };
 }
 
-export const getListaAcolhidosPorNome = async (name: string, page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
+export const getListaAssistidosPorNome = async (name: string, page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
 
   const SIZE = 50; //Qty of elements in each page per request
 
   const tOptions: ToastOptions = {
-    id: "getListaAcolhidosPorNome",
+    id: "getListaAssistidosPorNome",
     position: "bottom-center",
-    loadingMessage: toastOptions?.loadingMessage ?? "Carregando acolhidos por nome...",
-    successMessage: toastOptions?.successMessage ?? "Acolhidos carregados com sucesso!",
-    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os acolhidos."
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando assistidos por nome...",
+    successMessage: toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos."
   }
   
   const convertedSort = new Map([
     ["id", "id"],
     ["name", "nome"],
     ["responsible", "responsavel"],
-    ["status", "statusAcolhido"],
+    ["status", "statusAssistidos"],
     ["age", "dataNascimento"],
   ])
 
@@ -261,11 +261,11 @@ export const getListaAcolhidosPorNome = async (name: string, page: number, sort:
 
   const sortParameter = sort ? `&sort=${convertedSort.get(sort)},${order}` : "";
 
-  /* return getRequest(`lista-acolhidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
+  /* return getRequest(`lista-assistidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista-acolhidos-por-nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  const { data } = await getRequest(`lista_assistidos_por_nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
   console.log("before data:", data);
-  return { acolhidos: apiToListAcolhido(data.acolhidos), isLastPage: data.isLastPage };
+  return { assistidos: apiToListAssistido(data.assistidos), isLastPage: data.isLastPage };
 }
 
 export const createUsuario = (usuarioData: any) => {

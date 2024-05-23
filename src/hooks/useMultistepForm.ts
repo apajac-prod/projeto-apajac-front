@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 //Steps in order, to be used to generate the final object (below function getResultObject())
 const STEPS = [
-    "acolhido",
+    "assistido",
     "mae",
     "pai",
     "responsavel",
@@ -15,7 +15,7 @@ const STEPS = [
 const _Copy = (x: any) => _.cloneDeep(x);
 
 
-export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any> | null) {
+export function useMultistepForm(steps: ReactElement[], assistidoData: Array<any> | null) {
     const [safeToLeave, setSafeToLeave] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [id, setId] = useState<string|null>(null);
@@ -23,7 +23,7 @@ export function useMultistepForm(steps: ReactElement[], acolhidoData: Array<any>
     const [isLoading, setIsLoading] = useState(false);
     const [stepsData, setStepsData] = useState<any>(
         steps.map((_, index) => {
-            return {cache: null, data: acolhidoData ? acolhidoData[index] : null}
+            return {cache: null, data: assistidoData ? assistidoData[index] : null}
         })
     )
 

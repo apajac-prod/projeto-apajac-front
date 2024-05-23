@@ -13,8 +13,8 @@ import * as yup from "yup";
 import { MultistepFormContext } from "@/hooks/useMultistepForm";
 import { restoreInputValue } from "@/functions/restoreInputs";
 
-import { Finalizar } from "@/types/formAcolhido.type";
-import { createAcolhido, updateAcolhido } from "@/api/endpoints";
+import { Finalizar } from "@/types/formAssistido.type";
+import { createAssistido, updateAssistido } from "@/api/endpoints";
 
 const StepFinalizar = () => {
   const router = useRouter();
@@ -44,7 +44,7 @@ const StepFinalizar = () => {
     resolver: yupResolver(finalizeSchema),
   });
 
-  function registerAcolhido(data: any) {
+  function registerAssistido(data: any) {
     flushSync(() => {
       multistepController?.setCurrentStepData(data);
     });
@@ -52,7 +52,7 @@ const StepFinalizar = () => {
     // setDisableButtons(true);
     multistepController?.setIsLoading(true);
     if (multistepController?.getId()) {
-      updateAcolhido(multistepController?.getResultObject())
+      updateAssistido(multistepController?.getResultObject())
         .then(() => {
           window.onbeforeunload = () => null; // Removes the exit confirmation
           router.push("/menu");
@@ -62,7 +62,7 @@ const StepFinalizar = () => {
           //setDisableButtons(false);
         });
     } else {
-      createAcolhido(multistepController?.getResultObject())
+      createAssistido(multistepController?.getResultObject())
         .then(() => {
           window.onbeforeunload = () => null; // Removes the exit confirmation
           router.push("/menu");
@@ -96,7 +96,7 @@ const StepFinalizar = () => {
       <SubTitle text="Observações adicionais" />
       <SubTitle text="(Opcional)" />
       <form
-        onSubmit={handleSubmit((data) => registerAcolhido(data))}
+        onSubmit={handleSubmit((data) => registerAssistido(data))}
         autoComplete="off"
       >
         <div className={`${styles.formRow} ${styles.formCommentsRow}`}>
@@ -124,7 +124,7 @@ const StepFinalizar = () => {
               styles.buttons_disabled
             }`}
             disabled={multistepController?.isLoading}
-            onClick={handleSubmit((data) => registerAcolhido(data))}
+            onClick={handleSubmit((data) => registerAssistido(data))}
           >
             {multistepController?.getId
               ? "Finalizar alterações"

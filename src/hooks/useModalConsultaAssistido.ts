@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 
-export function useModalConsultaAcolhido () {
+export function useModalConsultaAssistido () {
     const [isOpen, setIsOpen] = useState(false);
     const [id, setId] = useState<string|null>(null);
 
@@ -13,4 +13,4 @@ export function useModalConsultaAcolhido () {
 }
 
 
-export const useModalConsultaAcolhidoContext = createContext<ReturnType<typeof useModalConsultaAcolhido> | undefined>(undefined);
+export const useModalConsultaAssistidoContext = createContext<ReturnType<typeof useModalConsultaAssistido> | undefined>(undefined);

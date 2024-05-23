@@ -1,5 +1,8 @@
 "use client";
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
 import type { ReactElement } from "react";
 
 import styles from "./page.module.css";
@@ -69,6 +72,10 @@ const Login = () => {
         setLoginError(true);
       });
   };
+  /*   dayjs.extend(utc);
+  console.log("UTC", dayjs.utc().format());
+  console.log("Local", dayjs().format());
+  console.log("Parse", dayjs("2024-04-22T23:55").format()) */
 
   return (
     <div className={styles.container}>

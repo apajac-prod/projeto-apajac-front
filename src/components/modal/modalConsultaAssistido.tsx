@@ -1,19 +1,19 @@
 import { useContext, useEffect, useState } from "react";
-import { useModalConsultaAcolhidoContext } from "@/hooks/useModalConsultaAcolhido";
+import { useModalConsultaAssistidoContext as useModalConsultaAssistidoContext } from "@/hooks/useModalConsultaAssistido";
 import * as icon from "react-flaticons";
-import styles from "./modalConsultaAcolhido.module.css";
+import styles from "./modalConsultaAssistido.module.css";
 import FormTitle from "../titles/form/form";
-import { getAcolhidoById } from "@/api/endpoints";
-import { apiToConsultaAcolhido } from "@/api/middleware/consultaAcolhido";
+import { getAssistidoById } from "@/api/endpoints";
+import { apiToConsultaAssistido } from "@/api/middleware/consultaAssistido";
 import { useRouter } from "next/navigation";
 import dateToAge from "@/functions/dateToAge";
 import dateToOutputString from "@/functions/dateToOutputString";
 import maskPhone from "@/functions/maskPhone";
 
-export const ModalConsultaAcolhido = () => {
-  const modal = useContext(useModalConsultaAcolhidoContext);
-  const [acolhidoData, setAcolhidoData] = useState<null | ReturnType<
-    typeof apiToConsultaAcolhido
+export const ModalConsultaAssistido = () => {
+  const modal = useContext(useModalConsultaAssistidoContext);
+  const [assistidoData, setAssistidoData] = useState<null | ReturnType<
+    typeof apiToConsultaAssistido
   >>(null);
   const router = useRouter();
 
@@ -21,10 +21,10 @@ export const ModalConsultaAcolhido = () => {
   useEffect(() => {
     modal &&
       modal.id &&
-      getAcolhidoById(modal.id).then((response: any) => {
-        const acolhido = apiToConsultaAcolhido(response.data);
-        console.log("RESPONSE after middleware: ", acolhido);
-        setAcolhidoData(acolhido);
+      getAssistidoById(modal.id).then((response: any) => {
+        const assistido = apiToConsultaAssistido(response.data);
+        console.log("RESPONSE after middleware: ", assistido);
+        setAssistidoData(assistido);
       });
   }, []);
 
@@ -40,7 +40,7 @@ export const ModalConsultaAcolhido = () => {
           onClick={() => modal?.setIsOpen(false)}
         />
         <FormTitle
-          title="Dados do Acolhido"
+          title="Dados do Assistido"
           Icon={icon.User}
           className={styles.title}
         />
@@ -50,8 +50,8 @@ export const ModalConsultaAcolhido = () => {
           <div>
             <div style={{ alignContent: "center" }}>
               <p>Status: </p>
-              {acolhidoData &&
-                (acolhidoData.status ? (
+              {assistidoData &&
+                (assistidoData.status ? (
                   <p style={{ color: "green" }}>ATIVO</p>
                 ) : (
                   <p style={{ color: "red" }}>INATIVO</p>
@@ -59,34 +59,34 @@ export const ModalConsultaAcolhido = () => {
             </div>
             <div>
               <p>Nome:</p>
-              {acolhidoData && <p>{acolhidoData.name}</p>}
+              {assistidoData && <p>{assistidoData.name}</p>}
             </div>
             <div>
               <p>Idade:</p>
-              {acolhidoData && <p>{dateToAge(acolhidoData.birthdate)}</p>}
+              {assistidoData && <p>{dateToAge(assistidoData.birthdate)}</p>}
             </div>
             <div>
               <p>Data de nascimento:</p>
-              {acolhidoData && (
-                <p>{dateToOutputString(acolhidoData.birthdate)}</p>
+              {assistidoData && (
+                <p>{dateToOutputString(assistidoData.birthdate)}</p>
               )}
             </div>
             <div>
               <p>Escolaridade:</p>
-              {acolhidoData && (
-                <p>{acolhidoData.educationLevel ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.educationLevel ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>Encaminhado para: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.forwardedTo ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.forwardedTo ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>Cadastro em outra(s) instituição(ões)</p>
-              {acolhidoData && acolhidoData.anyInstitutionRegister ? (
-                <p>{acolhidoData.whichInstitution}</p>
+              {assistidoData && assistidoData.anyInstitutionRegister ? (
+                <p>{assistidoData.whichInstitution}</p>
               ) : (
                 <p>Não possui</p>
               )}
@@ -94,8 +94,8 @@ export const ModalConsultaAcolhido = () => {
 
             <div>
               <p>Informações fornecidas por: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.informationProvidedBy ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.informationProvidedBy ?? "Não informado"}</p>
               )}
             </div>
           </div>
@@ -104,38 +104,38 @@ export const ModalConsultaAcolhido = () => {
           <div>
             <div>
               <p>CEP: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.address.cep ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.address.cep ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>Endereço: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.address.address ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.address.address ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>Número: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.address.number ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.address.number ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>Bairro: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.address.district ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.address.district ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>Cidade: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.address.city ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.address.city ?? "Não informado"}</p>
               )}
             </div>
             <div>
               <p>UF: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.address.fu ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.address.fu ?? "Não informado"}</p>
               )}
             </div>
           </div>
@@ -144,12 +144,14 @@ export const ModalConsultaAcolhido = () => {
           <div>
             <div>
               <p>Escola: </p>
-              {acolhidoData && <p>{acolhidoData.school ?? "Não informado"}</p>}
+              {assistidoData && (
+                <p>{assistidoData.school ?? "Não informado"}</p>
+              )}
             </div>
             <div>
               <p>Telefone: </p>
-              {acolhidoData && (
-                <p>{maskPhone(acolhidoData.schoolPhone) ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{maskPhone(assistidoData.schoolPhone) ?? "Não informado"}</p>
               )}
             </div>
           </div>
@@ -158,15 +160,15 @@ export const ModalConsultaAcolhido = () => {
           <div>
             <div>
               <p>Responsável: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.responsible.name ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.responsible.name ?? "Não informado"}</p>
               )}
             </div>
             <div className={styles.phones}>
               <p>Contato: </p>
-              {acolhidoData && (
+              {assistidoData && (
                 <div className={styles.phones}>
-                  {acolhidoData.responsible.phones.map((phone, index) => (
+                  {assistidoData.responsible.phones.map((phone, index) => (
                     <div key={phone + index}>
                       {index > 0 && (
                         <span className={styles.phoneSeparator}>/</span>
@@ -183,15 +185,15 @@ export const ModalConsultaAcolhido = () => {
           <div>
             <div>
               <p>Mãe: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.mother.name ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.mother.name ?? "Não informado"}</p>
               )}
             </div>
             <div className={styles.phones}>
               <p>Contato: </p>
-              {acolhidoData && (
+              {assistidoData && (
                 <div className={styles.phones}>
-                  {acolhidoData.mother.phones.map((phone, index) => (
+                  {assistidoData.mother.phones.map((phone, index) => (
                     <div key={phone + index}>
                       {index > 0 && (
                         <span className={styles.phoneSeparator}>/</span>
@@ -204,24 +206,24 @@ export const ModalConsultaAcolhido = () => {
             </div>
             <div>
               <p>Ocupação: </p>
-              {acolhidoData && <p>{acolhidoData.mother.occupation}</p>}
+              {assistidoData && <p>{assistidoData.mother.occupation}</p>}
             </div>
-            {acolhidoData && acolhidoData.mother.placeOfWork && (
+            {assistidoData && assistidoData.mother.placeOfWork && (
               <div>
                 <p>Local de trabalho: </p>
-                <p>{acolhidoData.mother.placeOfWork}</p>
+                <p>{assistidoData.mother.placeOfWork}</p>
               </div>
             )}
-            {acolhidoData && acolhidoData.mother.salary && (
+            {assistidoData && assistidoData.mother.salary && (
               <div>
                 <p>Salário: </p>
-                <p>R$ {acolhidoData.mother.salary}</p>
+                <p>R$ {assistidoData.mother.salary}</p>
               </div>
             )}
-            {acolhidoData && acolhidoData.mother.employmentRelationship && (
+            {assistidoData && assistidoData.mother.employmentRelationship && (
               <div>
                 <p>Vínculo empregatício: </p>
-                <p>{acolhidoData.mother.employmentRelationship}</p>
+                <p>{assistidoData.mother.employmentRelationship}</p>
               </div>
             )}
           </div>
@@ -230,15 +232,15 @@ export const ModalConsultaAcolhido = () => {
           <div>
             <div>
               <p>Pai: </p>
-              {acolhidoData && (
-                <p>{acolhidoData.father.name ?? "Não informado"}</p>
+              {assistidoData && (
+                <p>{assistidoData.father.name ?? "Não informado"}</p>
               )}
             </div>
             <div className={styles.phones}>
               <p>Contato: </p>
-              {acolhidoData && (
+              {assistidoData && (
                 <div className={styles.phones}>
-                  {acolhidoData.father.phones.map((phone, index) => (
+                  {assistidoData.father.phones.map((phone, index) => (
                     <div key={phone + index}>
                       {index > 0 && (
                         <span className={styles.phoneSeparator}>/</span>
@@ -251,24 +253,24 @@ export const ModalConsultaAcolhido = () => {
             </div>
             <div>
               <p>Ocupação: </p>
-              {acolhidoData && <p>{acolhidoData.father.occupation}</p>}
+              {assistidoData && <p>{assistidoData.father.occupation}</p>}
             </div>
-            {acolhidoData && acolhidoData.father.placeOfWork && (
+            {assistidoData && assistidoData.father.placeOfWork && (
               <div>
                 <p>Local de trabalho: </p>
-                <p>{acolhidoData.father.placeOfWork}</p>
+                <p>{assistidoData.father.placeOfWork}</p>
               </div>
             )}
-            {acolhidoData && acolhidoData.father.salary && (
+            {assistidoData && assistidoData.father.salary && (
               <div>
                 <p>Salário: </p>
-                <p>R$ {acolhidoData.father.salary}</p>
+                <p>R$ {assistidoData.father.salary}</p>
               </div>
             )}
-            {acolhidoData && acolhidoData.father.employmentRelationship && (
+            {assistidoData && assistidoData.father.employmentRelationship && (
               <div>
                 <p>Vínculo empregatício: </p>
-                <p>{acolhidoData.father.employmentRelationship}</p>
+                <p>{assistidoData.father.employmentRelationship}</p>
               </div>
             )}
           </div>
@@ -276,31 +278,31 @@ export const ModalConsultaAcolhido = () => {
           {/* familyCompositionData */}
           <div>
             <p className={styles.familyLabel}>Familiares</p>
-            {acolhidoData &&
-              acolhidoData.familyComposition.map((familyMember, index) => (
+            {assistidoData &&
+              assistidoData.familyComposition.map((familyMember, index) => (
                 <div key={familyMember.name} className={styles.familyMember}>
                   {index > 0 && <div className={styles.familySeparator}></div>}
                   <div>
                     <p>Nome: </p>
-                    {acolhidoData && (
+                    {assistidoData && (
                       <p>{familyMember.name ?? "Não informado"}</p>
                     )}
                   </div>
                   <div>
                     <p>Parentesco: </p>
-                    {acolhidoData && (
+                    {assistidoData && (
                       <p>{familyMember.relationship ?? "Não informado"}</p>
                     )}
                   </div>
                   <div>
                     <p>Idade: </p>
-                    {acolhidoData && (
+                    {assistidoData && (
                       <p>{familyMember.birthYear ?? "Não informado"}</p>
                     )}
                   </div>
                   <div>
                     <p>Ocupação: </p>
-                    {acolhidoData && (
+                    {assistidoData && (
                       <p>{familyMember.occupation ?? "Não informado"}</p>
                     )}
                   </div>
@@ -331,8 +333,8 @@ export const ModalConsultaAcolhido = () => {
                 rows={5}
                 disabled={true}
                 value={
-                  acolhidoData && acolhidoData.comments
-                    ? acolhidoData.comments
+                  assistidoData && assistidoData.comments
+                    ? assistidoData.comments
                     : "Nenhuma observação adicionada"
                 }
               ></textarea>
@@ -344,7 +346,7 @@ export const ModalConsultaAcolhido = () => {
           className={`button_submit ${styles.edit}`}
           onClick={() => router.push(`alterar/${modal?.id}`)}
         >
-          <p>Alterar acolhido</p>
+          <p>Alterar assistido</p>
           <icon.Edit />
         </div>
       </div>

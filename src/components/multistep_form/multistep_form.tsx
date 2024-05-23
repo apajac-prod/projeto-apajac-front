@@ -1,5 +1,5 @@
 import { MouseEventHandler, ReactElement } from "react";
-import { STEPS } from "@/constants/stepsCadastroAcolhido.array";
+import { STEPS } from "@/constants/stepsCadastroAssistido.array";
 
 //Multistep component
 import formStyles from "./form.module.css";
@@ -64,14 +64,14 @@ export const StepHeader = ({
   );
 };
 
-/* export const AcolhidoHeader = ({
+/* export const AssistidoHeader = ({
   onClick,
   completed,
   currentStep,
   lastStep,
 }: StepHeader) => (
   <StepHeaderGeneric
-    label={"Acolhido"}
+    label={"Assistido"}
     onClick={onClick}
     completed={completed}
     currentStep={currentStep}

@@ -10,7 +10,7 @@ import { useContext } from "react";
 import { MultistepFormContext } from "@/hooks/useMultistepForm";
 import { restoreInputValue } from "@/functions/restoreInputs";
 
-import { ComposicaoFamiliar } from "@/types/formAcolhido.type";
+import { ComposicaoFamiliar } from "@/types/formAssistido.type";
 
 const StepComposicaoFamiliar = () => {
   const multistepController = useContext(MultistepFormContext);
