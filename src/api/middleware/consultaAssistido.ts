@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
   interface Api {
   id: number;
   nome: string;
@@ -58,6 +60,8 @@ interface Endereco {
 
 export function apiToConsultaAssistido (data: Api) {
 
+  console.log("apiToConsultaAssistido birthdate:", data.dataNascimento)
+
   function convertOccupation(occupation: string){
     if (!occupation) return null;
     
@@ -71,7 +75,7 @@ export function apiToConsultaAssistido (data: Api) {
         status: data.statusAssistido,
         id: data.id,
         name: data.nome,
-        birthdate: data.dataNascimento,
+        birthdate: dayjs(data.dataNascimento),
         educationLevel: data.escolaridade,
         school: data.escola,
         schoolPhone: data.telEscola,
