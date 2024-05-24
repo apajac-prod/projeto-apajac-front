@@ -1,4 +1,5 @@
 export type Assistido = {
+    registerDate: string;
     name: string | undefined;
     birthdate: Date | string | undefined;
     educationLevel: string | undefined;
@@ -11,7 +12,7 @@ export type Assistido = {
     informationProvidedBy: string | undefined;
 
     //Address
-    postalCode: string | undefined;
+    postalCode: string | undefined | null;
     fu: string | undefined;
     city: string | undefined;
     district: string | undefined;

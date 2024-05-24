@@ -152,23 +152,23 @@ const putRequest = (endpoint: string, data?: any, toastOptions?: ToastOptions) =
 }
 
 
-export const createAssistido = (assistidoData: any) => {
+export const createAssistido = (assistidoData: any, sessionId: number) => {
     const toastOptions: ToastOptions = {
       loadingMessage: "Cadastrando assistido ...",
       successMessage: "Assistido cadastrado com sucesso!",
       errorMessage: "Não foi possível cadastrar este assistido."
     }
-    const data = assistidoToApi(assistidoData)
+    const data = assistidoToApi(assistidoData, sessionId)
     return postRequest("assistido", data, toastOptions);
 }
 
-export const updateAssistido = (assistidoData: any) => {
+export const updateAssistido = (assistidoData: any, sessionId: number) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Alterando assistido ...",
     successMessage: "Assistido alterado com sucesso!",
     errorMessage: "Não foi possível alterar este assistido."
   }
-  const data = assistidoToApi(assistidoData)
+  const data = assistidoToApi(assistidoData, sessionId)
   return postRequest("assistido", data, toastOptions);
 }
 
@@ -189,14 +189,13 @@ export const getAddressByCep = (cep: string) => {
   return getRequest(`endereco/${cep}`, toastOptions);
 }
 
-export const updateAssistidoStatus = (id: string, status: boolean) => {
+export const updateAssistidoStatus = (id: string, newStatus: boolean, idResponsavelPeloCadastro: number) => {
   const toastOptions: ToastOptions = {
-    loadingMessage: status ? "Ativando assistido ..." : "Desativando assistido ...",
-    successMessage: `Assistido ${status ? "ativado" : "desativado"} com sucesso!`,
+    loadingMessage: newStatus ? "Ativando assistido ..." : "Desativando assistido ...",
+    successMessage: `Assistido ${newStatus ? "ativado" : "desativado"} com sucesso!`,
     errorMessage: "Houve um problema ao alterar o status deste assistido."
   }
-
-  return putRequest(`/assistido/${id}/status_assistido/${status}`, undefined, toastOptions);
+  return putRequest(`/assistido/${id}/status/${idResponsavelPeloCadastro}`, undefined, toastOptions);
 }
 
 // List Assistido response properties, to perform a sort.

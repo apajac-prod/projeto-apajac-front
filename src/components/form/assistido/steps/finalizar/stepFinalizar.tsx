@@ -6,7 +6,7 @@ import styles from "./stepFinalizar.module.css";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { flushSync } from "react-dom";
 
 import * as yup from "yup";
@@ -15,8 +15,12 @@ import { restoreInputValue } from "@/functions/restoreInputs";
 
 import { Finalizar } from "@/types/formAssistido.type";
 import { createAssistido, updateAssistido } from "@/api/endpoints";
+import { SessionContext } from "@/contexts/sessionContext";
 
 const StepFinalizar = () => {
+  // REMOVE AFTER TOKEN --------------------------------------------------------------
+  const session = useContext(SessionContext); // Remover no futuro quando o Token for adicionado
+
   const router = useRouter();
   const multistepController = useContext(MultistepFormContext);
   // const [disableButtons, setDisableButtons] = useState<boolean>(false);
@@ -52,7 +56,10 @@ const StepFinalizar = () => {
     // setDisableButtons(true);
     multistepController?.setIsLoading(true);
     if (multistepController?.getId()) {
-      updateAssistido(multistepController?.getResultObject())
+      updateAssistido(
+        multistepController?.getResultObject(),
+        session?.sessionInfo.id!
+      )
         .then(() => {
           window.onbeforeunload = () => null; // Removes the exit confirmation
           router.push("/menu");
@@ -62,7 +69,10 @@ const StepFinalizar = () => {
           //setDisableButtons(false);
         });
     } else {
-      createAssistido(multistepController?.getResultObject())
+      createAssistido(
+        multistepController?.getResultObject(),
+        session?.sessionInfo.id!
+      )
         .then(() => {
           window.onbeforeunload = () => null; // Removes the exit confirmation
           router.push("/menu");

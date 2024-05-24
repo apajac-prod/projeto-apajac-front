@@ -1,6 +1,8 @@
 export interface ApiAssistido {
+    idResponsavelPeloCadastro: number;
     id?: string;
     statusAssistido?: boolean;
+    cadastradoEm: string;
     nome: string;
     dataNascimento: string;
     escolaridade: string;
