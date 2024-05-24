@@ -1,5 +1,9 @@
 import { useForm } from "react-hook-form";
 
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
+
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputMask from "@mona-health/react-input-mask";
@@ -8,7 +12,7 @@ import SubTitle from "@/components/form/assistido/subTitle";
 import styles from "./stepAssistido.module.css";
 import Link from "next/link";
 
-import { useState, useContext, ChangeEvent, useEffect } from "react";
+import { useState, useContext, ChangeEvent } from "react";
 
 import { MultistepFormContext } from "@/hooks/useMultistepForm";
 import { restoreInputValue } from "@/functions/restoreInputs";
@@ -19,33 +23,8 @@ import { unmaskCep, unmaskPhone } from "@/functions/unmaskInputs";
 import FEDERATION_UNITS from "@/constants/federation_units.array";
 import { getAddressByCep } from "@/api/endpoints";
 
-const maxDaysOfMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Index: month, value: max days possible to this month
-
 const BUSCA_CEP_LINK =
   "https://buscacepinter.correios.com.br/app/endereco/index.php";
-
-function localStringDateToDate(date: string): Date {
-  const dateString = date.split("/");
-  const day = Number(dateString[0]);
-  const month = Number(dateString[1]) - 1;
-  const year = Number(dateString[2]);
-  if (
-    day <= 0 ||
-    day > maxDaysOfMonth[month] ||
-    month < 0 ||
-    month > 12 ||
-    year < 1900
-  )
-    throw new Error("Invalid input");
-  return new Date(year, month, day);
-}
-
-function localStringDateToStringDate(date: string): string {
-  if (!date || date == "") return "";
-  const returned = date.split("/").reverse().join("-");
-  console.log(returned);
-  return returned;
-}
 
 type CepError = {
   cod: number;
@@ -68,6 +47,30 @@ function StepAssistido() {
   );
   //Yup validation schema
   const assistidoSchema: yup.ObjectSchema<Assistido> = yup.object({
+    registerDate: yup
+      .string()
+      .transform((_, val: string) =>
+        dayjs(val, "DD/MM/YYYY", true).format("YYYY-MM-DD")
+      )
+      .test("register_date_check", function (strDate) {
+        if (!dayjs(strDate).isValid())
+          return this.createError({
+            message: "A data inserida não é valida",
+            path: "registerDate",
+          });
+
+        if (dayjs(strDate).isAfter(dayjs()))
+          return this.createError({
+            message:
+              "A data de cadastro não pode ser uma data que ainda não chegou.",
+            path: "registerDate",
+          });
+
+        return true;
+      })
+      .required("Obrigatório inserir a data de cadastro")
+      .typeError("Insira uma data válida"),
+
     name: yup
       .string()
       .required("Obrigatório inserir o nome do assistido")
@@ -79,7 +82,27 @@ function StepAssistido() {
 
     birthdate: yup
       .string()
-      .test("birthdate_validation", "Insira uma data válida", function (value) {
+      .transform((_, val: string) =>
+        dayjs(val, "DD/MM/YYYY", true).format("YYYY-MM-DD")
+      )
+      .test("birthdate_check", function (strDate) {
+        if (!dayjs(strDate).isValid())
+          return this.createError({
+            message: "A data inserida não é valida",
+            path: "birthdate",
+          });
+
+        if (dayjs(strDate).isAfter(dayjs()))
+          return this.createError({
+            message:
+              "A data de nascimento não pode ser uma data que ainda não chegou.",
+            path: "birthdate",
+          });
+
+        return true;
+      })
+      /* .test("birthdate_validation", "Insira uma data válida", function (value) {
+        console.log("birthdate value", value);
         // Check if the inserted date its after now()
         if (!!value) {
           try {
@@ -94,7 +117,7 @@ function StepAssistido() {
           }
         }
         return true;
-      })
+      }) */
       .required("Obrigatório inserir a data de nascimento")
       .typeError("Insira a data de nascimento em formato correto"),
 
@@ -204,9 +227,10 @@ function StepAssistido() {
         if (!!cepError && cepError.cod == 406) return false;
         return true;
       })
-      .required(
+      .nullable(),
+    /* .required(
         "Obrigatório inserir o CEP. Caso não saiba, clique em 'Não sabe o CEP?'"
-      ),
+      ), */
     fu: yup
       .string()
       .trim()
@@ -261,6 +285,7 @@ function StepAssistido() {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      registerDate: dayjs().format("DD/MM/YYYY"),
       name: restoreInputValue("name", multistepController || null),
       birthdate: restoreInputValue("birthdate", multistepController || null),
       educationLevel: restoreInputValue(
@@ -393,6 +418,27 @@ function StepAssistido() {
     <div className={styles.container}>
       <form onSubmit={handleSubmit((data) => next(data))} autoComplete="off">
         <SubTitle text="Dados do assistido" className={styles.sub_title} />
+
+        <div className={`${styles.formRow} ${styles.input_small}`}>
+          <label htmlFor="registerDate" className={styles.required}>
+            Data de cadastro
+          </label>
+          <InputMask
+            mask="99/99/9999"
+            className={`${
+              !multistepController?.getActiveStatus() && "disable_input"
+            }`}
+            tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
+            {...register("registerDate")}
+          >
+            <input type="text" />
+          </InputMask>
+        </div>
+        {errors.registerDate && (
+          <p className={styles.error_message}>
+            {String(errors.registerDate.message)}
+          </p>
+        )}
 
         <div className={`${styles.formRow} ${styles.input_big}`}>
           <label htmlFor="name" className={styles.required}>
@@ -602,9 +648,7 @@ function StepAssistido() {
         <SubTitle text="Endereço" className={styles.sub_title} />
 
         <div className={`${styles.formRow} ${styles.input_small}`}>
-          <label htmlFor="postalCode" className={styles.required}>
-            CEP
-          </label>
+          <label htmlFor="postalCode">CEP</label>
           <InputMask
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"

@@ -58,9 +58,6 @@ interface Endereco {
 
 export function apiToConsultaAssistido (data: Api) {
 
-  console.log("API sent:", data.dataNascimento);
-  console.log("Converted to:", new Date(data.dataNascimento));
-
   function convertOccupation(occupation: string){
     if (!occupation) return null;
     
@@ -74,7 +71,7 @@ export function apiToConsultaAssistido (data: Api) {
         status: data.statusAssistido,
         id: data.id,
         name: data.nome,
-        birthdate: new Date(data.dataNascimento),
+        birthdate: data.dataNascimento,
         educationLevel: data.escolaridade,
         school: data.escola,
         schoolPhone: data.telEscola,

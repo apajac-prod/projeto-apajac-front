@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 ("next/navigation");
@@ -33,6 +33,7 @@ import StepFinalizar from "./steps/finalizar/stepFinalizar";
 import { getAssistidoById, updateAssistidoStatus } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
 import { apiToAssistido } from "@/api/middleware/formAssistido";
+import { SessionContext } from "@/contexts/sessionContext";
 
 /* const [assistidoPromise, setAssistidoPromise] */
 
@@ -41,6 +42,9 @@ type Props = {
 };
 
 function FormAssistido({ editId = null }: Props) {
+  // REMOVE AFTER TOKEN --------------------------------------------------------------
+  const session = useContext(SessionContext); // Remover no futuro quando o Token for adicionado
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const multistepController = useMultistepForm(
@@ -85,7 +89,11 @@ function FormAssistido({ editId = null }: Props) {
     )
       return;
     editId &&
-      updateAssistidoStatus(editId, !activeStatus).then(() => {
+      updateAssistidoStatus(
+        editId,
+        !activeStatus,
+        session?.sessionInfo.id!
+      ).then(() => {
         if (multistepController.getActiveStatus()) {
           window.onbeforeunload = () => null; // Removes the exit confirmation
           window.location.reload();

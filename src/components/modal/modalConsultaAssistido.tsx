@@ -6,9 +6,9 @@ import FormTitle from "../titles/form/form";
 import { getAssistidoById } from "@/api/endpoints";
 import { apiToConsultaAssistido } from "@/api/middleware/consultaAssistido";
 import { useRouter } from "next/navigation";
-import dateToAge from "@/functions/dateToAge";
-import dateToOutputString from "@/functions/dateToOutputString";
 import maskPhone from "@/functions/maskPhone";
+import dayjs from "dayjs";
+import birthdateToAge from "@/functions/birthdateToAge";
 
 export const ModalConsultaAssistido = () => {
   const modal = useContext(useModalConsultaAssistidoContext);
@@ -63,12 +63,15 @@ export const ModalConsultaAssistido = () => {
             </div>
             <div>
               <p>Idade:</p>
-              {assistidoData && <p>{dateToAge(assistidoData.birthdate)}</p>}
+              {assistidoData && (
+                <p>{birthdateToAge(dayjs(assistidoData.birthdate))}</p>
+              )}
             </div>
             <div>
               <p>Data de nascimento:</p>
               {assistidoData && (
-                <p>{dateToOutputString(assistidoData.birthdate)}</p>
+                /*<p>{dateToOutputString(assistidoData.birthdate)}</p>*/
+                <p>{dayjs(assistidoData.birthdate).format("DD/MM/YYYY")}</p>
               )}
             </div>
             <div>

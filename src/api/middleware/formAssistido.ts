@@ -3,6 +3,7 @@ import { Assistido, Pais, Responsavel, ComposicaoFamiliar, Finalizar } from "@/t
 import { ApiAssistido, Contato, Familiares } from "@/types/ApiAssistido.type";
 
 import dateToOutputString from "@/functions/dateToOutputString";
+import dayjs from "dayjs";
 
 //Steps in order, to be used to generate the final object (below function getResultObject())
 const STEPS = [
@@ -20,7 +21,7 @@ type AssistidoInput = Array<
     Assistido | Pais | Responsavel | ComposicaoFamiliar | Finalizar>
 
 //Format object to what API expects
-export function assistidoToApi(assistido: AssistidoInput): ApiAssistido {
+export function assistidoToApi(assistido: AssistidoInput, sessionId: number): ApiAssistido {
     console.log("assistido before all conversion:", assistido);
 
     let data: any = assistido.map((element: any, index: number) => {
@@ -46,19 +47,22 @@ export function assistidoToApi(assistido: AssistidoInput): ApiAssistido {
     console.log("After phone array threatment", data);
 
     // Parse Datestring to Date:
-    const birthdate = new Date(Date.parse(data.assistido.birthdate.replaceAll("/","-").split("-").reverse().join()))
+    /* const birthdate = new Date(Date.parse(localDateFormatToDefaultFormat(data.assistido.birthdate)))
     console.log(birthdate);
 
     console.log("data:",data)
     console.log("data.assistido.birthdate:", data.assistido.birthdate);
-    console.log("birthdate:", birthdate)
+    console.log("birthdate:", birthdate) */
 
     // const dataToApi: { [key: string]: any} = {
+
     let dataToApi: ApiAssistido = {
+        idResponsavelPeloCadastro: sessionId,
+        cadastradoEm: data.assistido.registerDate,
         id: data.assistido.id ?? null,
         statusAssistido: data.assistido.status ?? null,
         nome: data.assistido.name,
-        dataNascimento: birthdate.toJSON(),
+        dataNascimento: data.assistido.birthdate,
         escolaridade: data.assistido.educationLevel,
         escola: data.assistido.school,
         telEscola: data.assistido.schoolPhone,
@@ -212,12 +216,14 @@ export function apiToAssistido(data: ApiAssistido) {
 
     const assistido = [
         {
+            registerDate: data.cadastradoEm,
             id: data.id || null,
             status: data.statusAssistido || null,
             address: data.endereco.endereco,
             addressNumber: data.endereco.numero,
             anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",
-            birthdate: dateToOutputString(new Date(data.dataNascimento)),
+            /* birthdate: dateToOutputString(new Date(data.dataNascimento)), */
+            birthdate: dayjs(data.dataNascimento).format("DD/MM/YYYY"),
             city: data.endereco.cidade,
             complement: data.endereco.complemento,
             district: data.endereco.bairro,
