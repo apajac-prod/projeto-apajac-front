@@ -1,7 +1,10 @@
+import { Dayjs } from "dayjs";
+
 export type Assistido = {
-    registerDate: string;
+    registerDate: Dayjs;
     name: string | undefined;
-    birthdate: Date | string | undefined;
+    birthdate: Dayjs | undefined;
+    /* birthdate: Date | string | undefined; */
     educationLevel: string | undefined;
     school: string | null | undefined;
     schoolPhone: string | undefined | null;

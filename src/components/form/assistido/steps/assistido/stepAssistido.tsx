@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 
@@ -48,18 +48,16 @@ function StepAssistido() {
   //Yup validation schema
   const assistidoSchema: yup.ObjectSchema<Assistido> = yup.object({
     registerDate: yup
-      .string()
-      .transform((_, val: string) =>
-        dayjs(val, "DD/MM/YYYY", true).format("YYYY-MM-DD")
-      )
-      .test("register_date_check", function (strDate) {
-        if (!dayjs(strDate).isValid())
+      .mixed<Dayjs>()
+      .transform((_, val: string) => dayjs(val, "DD/MM/YYYY", true))
+      .test("register_date_check", function (date) {
+        if (!dayjs.isDayjs(date) || !date?.isValid())
           return this.createError({
             message: "A data inserida não é valida",
             path: "registerDate",
           });
 
-        if (dayjs(strDate).isAfter(dayjs()))
+        if (date?.isAfter(dayjs()))
           return this.createError({
             message:
               "A data de cadastro não pode ser uma data que ainda não chegou.",
@@ -81,18 +79,16 @@ function StepAssistido() {
       .typeError("Insira o nome do assistido"),
 
     birthdate: yup
-      .string()
-      .transform((_, val: string) =>
-        dayjs(val, "DD/MM/YYYY", true).format("YYYY-MM-DD")
-      )
-      .test("birthdate_check", function (strDate) {
-        if (!dayjs(strDate).isValid())
+      .mixed<Dayjs>()
+      .transform((_, val: string) => dayjs(val, "DD/MM/YYYY", true))
+      .test("birthdate_check", function (date) {
+        if (!dayjs.isDayjs(date) || !date?.isValid())
           return this.createError({
             message: "A data inserida não é valida",
             path: "birthdate",
           });
 
-        if (dayjs(strDate).isAfter(dayjs()))
+        if (date.isAfter(dayjs()))
           return this.createError({
             message:
               "A data de nascimento não pode ser uma data que ainda não chegou.",
@@ -285,7 +281,10 @@ function StepAssistido() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      registerDate: dayjs().format("DD/MM/YYYY"),
+      registerDate:
+        restoreInputValue("registerDate", multistepController || null) != ""
+          ? restoreInputValue("registerDate", multistepController || null)
+          : dayjs().format("DD/MM/YYYY"),
       name: restoreInputValue("name", multistepController || null),
       birthdate: restoreInputValue("birthdate", multistepController || null),
       educationLevel: restoreInputValue(

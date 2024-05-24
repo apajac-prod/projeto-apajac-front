@@ -64,14 +64,14 @@ export const ModalConsultaAssistido = () => {
             <div>
               <p>Idade:</p>
               {assistidoData && (
-                <p>{birthdateToAge(dayjs(assistidoData.birthdate))}</p>
+                <p>{birthdateToAge(assistidoData.birthdate)}</p>
               )}
             </div>
             <div>
               <p>Data de nascimento:</p>
               {assistidoData && (
                 /*<p>{dateToOutputString(assistidoData.birthdate)}</p>*/
-                <p>{dayjs(assistidoData.birthdate).format("DD/MM/YYYY")}</p>
+                <p>{assistidoData.birthdate.format("DD/MM/YYYY")}</p>
               )}
             </div>
             <div>
