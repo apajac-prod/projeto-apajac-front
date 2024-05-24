@@ -3,7 +3,7 @@ import { Dayjs } from "dayjs";
 export type Assistido = {
     registerDate: Dayjs;
     name: string | undefined;
-    birthdate: Dayjs | string | undefined;
+    birthdate: Dayjs | undefined;
     /* birthdate: Date | string | undefined; */
     educationLevel: string | undefined;
     school: string | null | undefined;

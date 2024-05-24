@@ -2,7 +2,6 @@ import { Assistido, Pais, Responsavel, ComposicaoFamiliar, Finalizar } from "@/t
 
 import { ApiAssistido, Contato, Familiares } from "@/types/ApiAssistido.type";
 
-import dateToOutputString from "@/functions/dateToOutputString";
 import dayjs from "dayjs";
 
 //Steps in order, to be used to generate the final object (below function getResultObject())
@@ -58,11 +57,11 @@ export function assistidoToApi(assistido: AssistidoInput, sessionId: number): Ap
 
     let dataToApi: ApiAssistido = {
         idResponsavelPeloCadastro: sessionId,
-        cadastradoEm: data.assistido.registerDate,
+        cadastradoEm: data.assistido.registerDate.format("YYYY-MM-DD"),
         id: data.assistido.id ?? null,
         statusAssistido: data.assistido.status ?? null,
         nome: data.assistido.name,
-        dataNascimento: data.assistido.birthdate,
+        dataNascimento: data.assistido.birthdate.format("YYYY-MM-DD"),
         escolaridade: data.assistido.educationLevel,
         escola: data.assistido.school,
         telEscola: data.assistido.schoolPhone,
@@ -216,14 +215,14 @@ export function apiToAssistido(data: ApiAssistido) {
 
     const assistido = [
         {
-            registerDate: data.cadastradoEm,
+            registerDate: dayjs(data.cadastradoEm),
             id: data.id || null,
             status: data.statusAssistido || null,
             address: data.endereco.endereco,
             addressNumber: data.endereco.numero,
             anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",
             /* birthdate: dateToOutputString(new Date(data.dataNascimento)), */
-            birthdate: dayjs(data.dataNascimento).format("DD/MM/YYYY"),
+            birthdate: dayjs(data.dataNascimento),
             city: data.endereco.cidade,
             complement: data.endereco.complemento,
             district: data.endereco.bairro,
