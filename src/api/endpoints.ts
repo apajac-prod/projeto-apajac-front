@@ -1,9 +1,10 @@
 import {axios} from "@/api/api";
 import { assistidoToApi as assistidoToApi } from "./middleware/formAssistido";
 import toast from "react-hot-toast";
-import { ListAssistido, apiToListAssistido } from "./middleware/listAssistido";
+import { apiToListAssistido } from "./middleware/listAssistido";
 import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
+import { apiToListUsuarios } from "./middleware/listUsuario";
 
 const HTTP_STATUS = {
     OK: 200,
@@ -250,7 +251,7 @@ export const getListaAssistidosPorNome = async (name: string, page: number, sort
     ["id", "id"],
     ["name", "nome"],
     ["responsible", "responsavel"],
-    ["status", "statusAssistidos"],
+    ["status", "statusAssistido"],
     ["age", "dataNascimento"],
   ])
 
@@ -321,4 +322,20 @@ export const login = async (username: string, password: string) => {
 
   const { data: dataResponse } = await postRequest("/login", data, toastOptions);
   return apiToLogin(dataResponse);
+}
+
+export const getListaUsuarios = async (page: number, toastOptions?: ToastOptions) => {
+
+  const SIZE = 50; //Qty of elements in each page per request
+
+  const tOptions: ToastOptions = {
+    id: "getListaUsuários",
+    position: "bottom-center",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando usuários ...",
+    successMessage: toastOptions?.successMessage ?? "Usuários carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os usuários."
+  }
+
+  const { data } = await getRequest(`lista_usuarios?page=${page}&size=${SIZE}`, tOptions);
+  return { usuarios: apiToListUsuarios(data.usuarios), isLastPage: data.isLastPage };
 }

@@ -15,10 +15,13 @@ import "tippy.js/dist/tippy.css"; // optional for styling
 import { ListAssistido } from "@/types/listAssistido.type";
 import { ListUsuario } from "@/types/listUsuario.type";
 import rolesToString from "@/functions/rolesToString";
+import { TooltipCustom } from "@/components/ui/tooltip";
+import { useRouter } from "next/navigation";
 
 type SortBy = "name" | "status" | "age"; // "responsible" removed due to back issues
 
 export default function ConsultarAssistido() {
+  const router = useRouter();
   const [usuarios, setUsuarios] = useState<ListUsuario[]>([]);
   const [page, setPage] = useState<number>(0);
   const [isLastPage, setIslastPage] = useState(false);
@@ -117,15 +120,6 @@ export default function ConsultarAssistido() {
     }
   }
 
-  useEffect(() => {
-    tippy("[data-tippy-content]");
-  }, []);
-
-  // Prevent "document is not defined" error
-  /* if (typeof window !== "undefined") {
-    tippy("[data-tippy-content]");
-  } */
-
   return (
     <div className={styles.container}>
       <FormTitle
@@ -153,22 +147,29 @@ export default function ConsultarAssistido() {
       <div className={styles.userContainer}>
         {usuarios &&
           usuarios.map((usuario) => (
-            <div className={styles.userCard} key={usuario.id}>
+            <div
+              className={styles.userCard}
+              key={usuario.id}
+              onClick={() => router.push(`alterar/${usuario.id}`)}
+            >
               <div className={styles.name}>
                 <p>{usuario.name}</p>
               </div>
 
-              <div className={styles.login} data-tippy-content={usuario.login}>
+              <div className={styles.login}>
                 <p>Login:</p>
-                <p>{usuario.login}</p>
+                <TooltipCustom content={usuario.login.toString()}>
+                  <p className={styles.content}>{usuario.login}</p>
+                </TooltipCustom>
               </div>
 
-              <div
-                className={styles.roles}
-                data-tippy-content={rolesToString(usuario.roles)}
-              >
+              <div className={styles.roles}>
                 <p>Permissões:</p>
-                <p>{rolesToString(usuario.roles)}</p>
+                <TooltipCustom content={rolesToString(usuario.roles)}>
+                  <p className={styles.content}>
+                    {rolesToString(usuario.roles)}
+                  </p>
+                </TooltipCustom>
               </div>
 
               <div className={styles.status}>

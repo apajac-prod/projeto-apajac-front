@@ -1,3 +1,5 @@
+import { ROLES } from "@/constants/roles";
+
 const ROLES_TO_PERMISSOES = new Map([
     ["admin", "Administrador"],
     ["alterar_assistido", "Alterar assistido"],
@@ -7,11 +9,14 @@ const ROLES_TO_PERMISSOES = new Map([
 ])
 
 export default function rolesToString(roles: Array<string>){
-    let rolesStr = "";
 
+    if (roles.includes(ROLES.ADMINISTRADOR)) return "Administrador";
+
+    let rolesStr = "";
     roles.forEach((role, index) => {
         console.log("index:", index, "\n", "role:", role)
         console.log("getRole:", ROLES_TO_PERMISSOES.get(role))
+        if(role == ROLES.ADMINISTRADOR) return;
         if (rolesStr == "") {
             rolesStr = rolesStr + ROLES_TO_PERMISSOES.get(role);
             return;
@@ -19,5 +24,6 @@ export default function rolesToString(roles: Array<string>){
         rolesStr = rolesStr + `, ${ROLES_TO_PERMISSOES.get(role)}`;
     })
     console.log("rolesStr:", rolesStr)
+
     return rolesStr;
 }

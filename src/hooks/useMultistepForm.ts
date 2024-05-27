@@ -104,6 +104,7 @@ export function useMultistepForm(steps: ReactElement[], assistidoData: Array<any
 
     function setCurrentStepData(data: any){
         setData(currentStepIndex, data);
+        console.log("currentStepIndex:", data);
     }
 
     function setCurrentStepCache(data: any){

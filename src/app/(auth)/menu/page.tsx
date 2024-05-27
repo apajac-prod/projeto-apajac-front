@@ -47,8 +47,10 @@ const Menu = () => {
 
         <MenuCard
           title={"Consultar usuários"}
-          link="/em_construcao"
-          show={true}
+          link="/usuario/consultar"
+          show={
+            session && session.sessionInfo.roles?.includes(ROLES.ADMINISTRADOR)
+          }
         />
       </MenuCategoria>
     </div>
