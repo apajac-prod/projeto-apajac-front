@@ -1,6 +1,6 @@
 import { ListUsuarioApi, ListUsuario } from "@/types/listUsuario.type";
 
-export function apiToListUsuarios(listUsuarioApi: ListUsuarioApi[]): ListUsuario[] {
+export function apiToListUsuario(listUsuarioApi: ListUsuarioApi[]): ListUsuario[] {
     return listUsuarioApi.map((usuario) => {
         return {
         id: usuario.id,

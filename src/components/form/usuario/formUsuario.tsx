@@ -9,7 +9,7 @@ import styles from "./formUsuario.module.css";
 
 import FormTitle from "@/components/titles/form/form";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -20,12 +20,16 @@ import {
 import { Usuario } from "@/types/formUsuario.type";
 import containsUppercase from "@/functions/containsUppercase";
 import { ROLES } from "@/constants/roles";
+import { SessionContext } from "@/contexts/sessionContext";
 
 type Props = {
   usuario?: Usuario;
 };
 
 function FormUsuario({ usuario }: Props) {
+  // REMOVE AFTER TOKEN --------------------------------------------------------------
+  const session = useContext(SessionContext); // Remover no futuro quando o Token for adicionado
+
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -237,7 +241,7 @@ function FormUsuario({ usuario }: Props) {
       return;
 
     setIsLoading(true);
-    updateUsuarioStatus(usuario!.id!, !isActive)
+    updateUsuarioStatus(usuario!.id!, !isActive, session?.sessionInfo.id!)
       .then(() => {
         setIsActive((oldValue) => !oldValue);
         if (previousStatus) {
@@ -440,8 +444,10 @@ function FormUsuario({ usuario }: Props) {
         <div className={styles.buttons}>
           <button
             type="submit"
-            className={`button_submit ${isLoading && "disable_button"}`}
-            disabled={isLoading}
+            className={`button_submit ${
+              (isLoading || !isActive) && "disable_button"
+            }`}
+            disabled={isLoading || !isActive}
             onClick={handleSubmit((data) => registerUsuario(data))}
           >
             {usuario ? "Alterar cadastro" : "Cadastrar usuário"}

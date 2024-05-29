@@ -6,13 +6,11 @@ import styles from "./page.module.css";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   ToastOptions,
-  getListaAssistidosPorNome,
   getListaUsuarios,
+  getListaUsuariosPorNome,
 } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
-import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
-import { ListAssistido } from "@/types/listAssistido.type";
 import { ListUsuario } from "@/types/listUsuario.type";
 import rolesToString from "@/functions/rolesToString";
 import { TooltipCustom } from "@/components/ui/tooltip";
@@ -20,7 +18,7 @@ import { useRouter } from "next/navigation";
 
 type SortBy = "name" | "status" | "age"; // "responsible" removed due to back issues
 
-export default function ConsultarAssistido() {
+export default function ConsultarUsuario() {
   const router = useRouter();
   const [usuarios, setUsuarios] = useState<ListUsuario[]>([]);
   const [page, setPage] = useState<number>(0);
@@ -71,28 +69,22 @@ export default function ConsultarAssistido() {
     setIsLoading(true);
     console.log("searchByName:", searchByName);
 
-    /*     if (!!searchByName) {
-      getListaAssistidosPorNome(
-        searchByName,
-        page,
-        sortBy,
-        orderByAsc,
-        toastOptions
-      )
+    if (!!searchByName) {
+      getListaUsuariosPorNome(searchByName, page, toastOptions)
         .then(({ usuarios, isLastPage: lastPage }) => {
           setUsuarios((oldArray) => [...oldArray, ...usuarios]);
           setIslastPage(lastPage);
         })
         .finally(() => setIsLoading(false));
-    } else { */
-    getListaUsuarios(page, toastOptions)
-      .then(({ usuarios, isLastPage: lastPage }) => {
-        setUsuarios((oldArray) => [...oldArray, ...usuarios]);
-        setIslastPage(lastPage);
-        console.log("ROLES:", usuarios[0].roles);
-      })
-      .finally(() => setIsLoading(false));
-    //}
+    } else {
+      getListaUsuarios(page, toastOptions)
+        .then(({ usuarios, isLastPage: lastPage }) => {
+          setUsuarios((oldArray) => [...oldArray, ...usuarios]);
+          setIslastPage(lastPage);
+          console.log("ROLES:", usuarios[0].roles);
+        })
+        .finally(() => setIsLoading(false));
+    }
   }, [page, sortBy, orderByAsc, searchByName]);
 
   function handleNameChange(e: FormEvent<HTMLFormElement>) {
