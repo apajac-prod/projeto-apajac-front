@@ -1,18 +1,4 @@
-type ListAssistidoApi = {
-    id: string;
-    nome: string;
-    idade: number;
-    responsavel: string;
-    statusAssistido: boolean;
-}
-
-export type ListAssistido = {
-    id: string;
-    name: string;
-    age: number;
-    responsible: string;
-    status: boolean;
-}
+import { ListAssistido, ListAssistidoApi } from "@/types/listAssistido.type";
 
 export function apiToListAssistido(listAssistidoApi: ListAssistidoApi[]): ListAssistido[] {
     return listAssistidoApi.map((assistido) => {

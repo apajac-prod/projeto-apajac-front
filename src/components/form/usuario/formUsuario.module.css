@@ -114,3 +114,7 @@
   background-color: #ff0000;
   border-radius: 5px;
 }
+
+.permission_admin:has(input:disabled) {
+  background-color: hsla(0, 100%, 50%, 0.5);
+}

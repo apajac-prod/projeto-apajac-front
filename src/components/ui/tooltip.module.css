@@ -1,0 +1,22 @@
+.TooltipContent {
+  cursor: none;
+  max-width: var(--radix-tooltip-content-available-width);
+  height: auto;
+  background-color: #5e5e5e;
+  color: #fff;
+}
+
+.TooltipContent > p {
+  cursor: none;
+  display: block;
+  height: auto;
+  white-space: wrap;
+  overflow: auto !important;
+  text-wrap: wrap !important;
+  text-overflow: normal;
+  text-align: center;
+}
+
+.arrow > polygon {
+  color: #5e5e5e;
+}
