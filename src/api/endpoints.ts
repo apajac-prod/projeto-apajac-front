@@ -1,9 +1,10 @@
 import {axios} from "@/api/api";
 import { assistidoToApi as assistidoToApi } from "./middleware/formAssistido";
 import toast from "react-hot-toast";
-import { ListAssistido, apiToListAssistido } from "./middleware/listAssistido";
+import { apiToListAssistido } from "./middleware/listAssistido";
 import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
+import { apiToListUsuario } from "./middleware/listUsuario";
 
 const HTTP_STATUS = {
     OK: 200,
@@ -250,7 +251,7 @@ export const getListaAssistidosPorNome = async (name: string, page: number, sort
     ["id", "id"],
     ["name", "nome"],
     ["responsible", "responsavel"],
-    ["status", "statusAssistidos"],
+    ["status", "statusAssistido"],
     ["age", "dataNascimento"],
   ])
 
@@ -297,14 +298,14 @@ export const updateUsuario = (usuarioData: any) => {
   return postRequest("usuario", data, toastOptions);
 }
 
-export const updateUsuarioStatus = (id: string, status: boolean) => {
+export const updateUsuarioStatus = (id: string, newStatus: boolean, idResponsavelPelaAlteracao: number) => {
+  // No futuro, ao adicionar Token, irá remover o idResponsavelPelaAlteracao.
   const toastOptions: ToastOptions = {
-    loadingMessage: status ? "Ativando usuário ..." : "Desativando usuário ...",
-    successMessage: `Usuário ${status ? "ativado" : "desativado"} com sucesso!`,
+    loadingMessage: newStatus ? "Ativando usuário ..." : "Desativando usuário ...",
+    successMessage: `Usuário ${newStatus ? "ativado" : "desativado"} com sucesso!`,
     errorMessage: "Houve um problema ao alterar o status deste usuário."
   }
-
-  return putRequest(`/usuario/${id}/status_usuario/${status}`, undefined, toastOptions);
+  return putRequest(`/usuario/${id}/status/${idResponsavelPelaAlteracao}`, undefined, toastOptions);
 }
 
 export const login = async (username: string, password: string) => {
@@ -321,4 +322,37 @@ export const login = async (username: string, password: string) => {
 
   const { data: dataResponse } = await postRequest("/login", data, toastOptions);
   return apiToLogin(dataResponse);
+}
+
+export const getListaUsuarios = async (page: number, toastOptions?: ToastOptions) => {
+
+  const SIZE = 50; //Qty of elements in each page per request
+
+  const tOptions: ToastOptions = {
+    id: "getListaUsuários",
+    position: "bottom-center",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando usuários ...",
+    successMessage: toastOptions?.successMessage ?? "Usuários carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os usuários."
+  }
+
+  const { data } = await getRequest(`lista_usuarios?page=${page}&size=${SIZE}`, tOptions);
+  return { usuarios: apiToListUsuario(data.usuarios), isLastPage: data.isLastPage };
+}
+
+export const getListaUsuariosPorNome = async (name: string, page: number, toastOptions?: ToastOptions) => {
+
+  const SIZE = 50; //Qty of elements in each page per request
+
+  const tOptions: ToastOptions = {
+    id: "getListaAssistidosPorNome",
+    position: "bottom-center",
+    loadingMessage: toastOptions?.loadingMessage ?? "Carregando assistidos por nome...",
+    successMessage: toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
+    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos."
+  }
+  // Conferir como passar os parametros de page e sort pra api
+  const { data } = await getRequest(`lista_usuarios_por_nome/${name}?page=${page}&size=${SIZE}&sort=nome`, tOptions);
+  console.log("before data:", data);
+  return { usuarios: apiToListUsuario(data.usuarios), isLastPage: data.isLastPage };
 }

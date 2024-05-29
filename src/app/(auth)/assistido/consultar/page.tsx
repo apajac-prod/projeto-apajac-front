@@ -9,15 +9,15 @@ import {
   getListaAssistidos,
   getListaAssistidosPorNome,
 } from "@/api/endpoints";
-import { ListAssistido } from "@/api/middleware/listAssistido";
 import { ModalConsultaAssistido } from "@/components/modal/modalConsultaAssistido";
 import {
   useModalConsultaAssistido,
   useModalConsultaAssistidoContext as useModalContext,
 } from "@/hooks/useModalConsultaAssistido";
 import Loader from "@/common/loader/loader";
-import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css"; // optional for styling
+import { ListAssistido } from "@/types/listAssistido.type";
+import { TooltipCustom } from "@/components/ui/tooltip";
 
 type SortBy = "name" | "status" | "age"; // "responsible" removed due to back issues
 
@@ -36,6 +36,7 @@ export default function ConsultarAssistido() {
   );
   const inputNameRef = useRef<HTMLInputElement | null>(null);
   const observerRef = useRef(null);
+  const tippyRef = useRef(null);
 
   const modal = useModalConsultaAssistido();
 
@@ -144,10 +145,29 @@ export default function ConsultarAssistido() {
     setPage(0);
   }
 
-  // Prevent "document is not defined" error
-  if (typeof window !== "undefined") {
+  /*   useEffect(() => {
+    console.log("-----------------------");
+    var element = document.querySelector("[data-tippy-content]");
+    console.log("element", element);
+
+    if (!element) return;
+    console.log("window", window);
+    console.log("tippy");
+    console.log("assistidos", assistidos);
     tippy("[data-tippy-content]");
-  }
+  }, [observerRef.current]); */
+
+  // Prevent "document is not defined" error
+  /* if (typeof window !== "undefined") {
+    var element = document.querySelector("[data-tippy-content]");
+    console.log("element", element);
+    if (element) {
+      console.log("window", window);
+      console.log("tippy");
+      console.log("assistidos", assistidos);
+      tippy("[data-tippy-content]");
+    }
+  } */
 
   return (
     <div className={styles.container}>
@@ -227,15 +247,17 @@ export default function ConsultarAssistido() {
                   }}
                 >
                   <td className={styles.name}>
-                    <p data-tippy-content={assistido.name}>{assistido.name}</p>
+                    <TooltipCustom content={assistido.name}>
+                      <p>{assistido.name}</p>
+                    </TooltipCustom>
                   </td>
                   <td className={styles.age}>
                     <p>{assistido.age}</p>
                   </td>
                   <td className={styles.name}>
-                    <p data-tippy-content={assistido.responsible}>
-                      {assistido.responsible}
-                    </p>
+                    <TooltipCustom content={assistido.responsible}>
+                      <p>{assistido.responsible}</p>
+                    </TooltipCustom>
                   </td>
                   <td className={styles.status}>
                     <p
