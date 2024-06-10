@@ -7,7 +7,6 @@ import { getAssistidoById } from "@/api/endpoints";
 import { apiToConsultaAssistido } from "@/api/middleware/consultaAssistido";
 import { useRouter } from "next/navigation";
 import maskPhone from "@/functions/maskPhone";
-import dayjs from "dayjs";
 import birthdateToAge from "@/functions/birthdateToAge";
 
 export const ModalConsultaAssistido = () => {
@@ -121,6 +120,12 @@ export const ModalConsultaAssistido = () => {
               <p>Número: </p>
               {assistidoData && (
                 <p>{assistidoData.address.number ?? "Não informado"}</p>
+              )}
+            </div>
+            <div>
+              <p>Complemento: </p>
+              {assistidoData && (
+                <p>{assistidoData.address.complement ?? "Não informado"}</p>
               )}
             </div>
             <div>
