@@ -297,6 +297,7 @@ function FormUsuario({ usuario }: Props) {
           <input
             type="text"
             id="login"
+            autoComplete={"off"}
             className={`${!isActive && "disable_input"}`}
             {...register("login")}
           />
@@ -315,6 +316,7 @@ function FormUsuario({ usuario }: Props) {
           <input
             type={showPassword ? "text" : "password"}
             id="password"
+            autoComplete={"off"}
             placeholder={usuario ? "Digite para trocar a senha" : undefined}
             className={`${!isActive && "disable_input"}`}
             {...register("password")}
@@ -348,6 +350,7 @@ function FormUsuario({ usuario }: Props) {
           <input
             type={showPassword ? "text" : "password"}
             id="repeatPassword"
+            autoComplete={"off"}
             placeholder={usuario ? "Digite para trocar a senha" : undefined}
             className={`${!isActive && "disable_input"}`}
             {...register("repeatPassword")}
