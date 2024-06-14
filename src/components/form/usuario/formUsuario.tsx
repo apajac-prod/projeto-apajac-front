@@ -274,6 +274,13 @@ function FormUsuario({ usuario }: Props) {
         onSubmit={handleSubmit((data) => registerUsuario(data))}
         autoComplete="off"
       >
+        <input
+          autoComplete="false"
+          name="hidden"
+          type="text"
+          style={{ display: "none" }}
+        ></input>
+
         <div className={`${styles.formRow} ${styles.input_big}`}>
           <label htmlFor="name" className={styles.required}>
             Nome
