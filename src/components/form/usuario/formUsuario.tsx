@@ -140,7 +140,12 @@ function FormUsuario({ usuario }: Props) {
   }, []);
 
   function registerUsuario(data: any) {
-    const dataWithRoles = { ...data, roles: getRoles() };
+    const converted_roles = getRoles();
+    if (converted_roles.length <= 0)
+      return alert(
+        "É obrigatório marcar ao menos uma permissão para este usuário."
+      );
+    const dataWithRoles = { ...data, roles: converted_roles };
     console.log("dataWithRoles", dataWithRoles);
     setIsLoading(true);
     if (usuario) {
@@ -301,7 +306,10 @@ function FormUsuario({ usuario }: Props) {
         )}
 
         <div className={styles.formRow}>
-          <label htmlFor="password" className={styles.required}>
+          <label
+            htmlFor="password"
+            className={usuario ? undefined : styles.required}
+          >
             Senha
           </label>
           <input
@@ -331,7 +339,10 @@ function FormUsuario({ usuario }: Props) {
         )}
 
         <div className={styles.formRow}>
-          <label htmlFor="repeatPassword" className={styles.required}>
+          <label
+            htmlFor="repeatPassword"
+            className={usuario ? undefined : styles.required}
+          >
             Repita a senha
           </label>
           <input

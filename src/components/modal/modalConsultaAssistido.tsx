@@ -7,10 +7,12 @@ import { getAssistidoById } from "@/api/endpoints";
 import { apiToConsultaAssistido } from "@/api/middleware/consultaAssistido";
 import { useRouter } from "next/navigation";
 import maskPhone from "@/functions/maskPhone";
-import dayjs from "dayjs";
 import birthdateToAge from "@/functions/birthdateToAge";
+import { SessionContext } from "@/contexts/sessionContext";
+import { ROLES } from "@/constants/roles";
 
 export const ModalConsultaAssistido = () => {
+  const session = useContext(SessionContext);
   const modal = useContext(useModalConsultaAssistidoContext);
   const [assistidoData, setAssistidoData] = useState<null | ReturnType<
     typeof apiToConsultaAssistido
@@ -26,6 +28,12 @@ export const ModalConsultaAssistido = () => {
         console.log("RESPONSE after middleware: ", assistido);
         setAssistidoData(assistido);
       });
+
+    console.log("roles:", session?.sessionInfo.roles);
+    console.log(
+      "includes alterar?",
+      session?.sessionInfo.roles?.includes(ROLES.ALTERAR_ASSISTIDO)
+    );
   }, []);
 
   return (
@@ -121,6 +129,12 @@ export const ModalConsultaAssistido = () => {
               <p>Número: </p>
               {assistidoData && (
                 <p>{assistidoData.address.number ?? "Não informado"}</p>
+              )}
+            </div>
+            <div>
+              <p>Complemento: </p>
+              {assistidoData && (
+                <p>{assistidoData.address.complement ?? "Não informado"}</p>
               )}
             </div>
             <div>
@@ -345,13 +359,15 @@ export const ModalConsultaAssistido = () => {
           </div>
         </div>
 
-        <div
-          className={`button_submit ${styles.edit}`}
-          onClick={() => router.push(`alterar/${modal?.id}`)}
-        >
-          <p>Alterar assistido</p>
-          <icon.Edit />
-        </div>
+        {session?.sessionInfo.roles?.includes(ROLES.ALTERAR_ASSISTIDO) && (
+          <div
+            className={`button_submit ${styles.edit}`}
+            onClick={() => router.push(`alterar/${modal?.id}`)}
+          >
+            <p>Alterar assistido</p>
+            <icon.Edit />
+          </div>
+        )}
       </div>
     </div>
   );
