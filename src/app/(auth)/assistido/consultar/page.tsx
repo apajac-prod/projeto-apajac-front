@@ -36,7 +36,6 @@ export default function ConsultarAssistido() {
   );
   const inputNameRef = useRef<HTMLInputElement | null>(null);
   const observerRef = useRef(null);
-  const tippyRef = useRef(null);
 
   const modal = useModalConsultaAssistido();
 
@@ -144,30 +143,6 @@ export default function ConsultarAssistido() {
     setIslastPage(false);
     setPage(0);
   }
-
-  /*   useEffect(() => {
-    console.log("-----------------------");
-    var element = document.querySelector("[data-tippy-content]");
-    console.log("element", element);
-
-    if (!element) return;
-    console.log("window", window);
-    console.log("tippy");
-    console.log("assistidos", assistidos);
-    tippy("[data-tippy-content]");
-  }, [observerRef.current]); */
-
-  // Prevent "document is not defined" error
-  /* if (typeof window !== "undefined") {
-    var element = document.querySelector("[data-tippy-content]");
-    console.log("element", element);
-    if (element) {
-      console.log("window", window);
-      console.log("tippy");
-      console.log("assistidos", assistidos);
-      tippy("[data-tippy-content]");
-    }
-  } */
 
   return (
     <div className={styles.container}>
