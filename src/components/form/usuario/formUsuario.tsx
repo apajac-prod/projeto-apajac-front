@@ -274,13 +274,6 @@ function FormUsuario({ usuario }: Props) {
         onSubmit={handleSubmit((data) => registerUsuario(data))}
         autoComplete="off"
       >
-        <input
-          autoComplete="false"
-          name="hidden"
-          type="text"
-          style={{ display: "none" }}
-        ></input>
-
         <div className={`${styles.formRow} ${styles.input_big}`}>
           <label htmlFor="name" className={styles.required}>
             Nome
@@ -323,7 +316,7 @@ function FormUsuario({ usuario }: Props) {
           <input
             type={showPassword ? "text" : "password"}
             id="password"
-            autoComplete={"off"}
+            autoComplete="new-password"
             placeholder={usuario ? "Digite para trocar a senha" : undefined}
             className={`${!isActive && "disable_input"}`}
             {...register("password")}
@@ -340,6 +333,12 @@ function FormUsuario({ usuario }: Props) {
             height={18}
             onClick={() => setShowPassword((currentValue) => !currentValue)}
           />
+          <input //Just to disable auto-fill on Chrome
+            autoComplete="off"
+            name="dummyPassword"
+            type="password"
+            style={{ display: "none" }}
+          ></input>
         </div>
         {errors.password && (
           <p className={styles.error_message}>
@@ -357,7 +356,7 @@ function FormUsuario({ usuario }: Props) {
           <input
             type={showPassword ? "text" : "password"}
             id="repeatPassword"
-            autoComplete={"off"}
+            autoComplete="new-password"
             placeholder={usuario ? "Digite para trocar a senha" : undefined}
             className={`${!isActive && "disable_input"}`}
             {...register("repeatPassword")}
