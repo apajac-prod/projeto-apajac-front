@@ -196,10 +196,16 @@ function StepAssistido() {
 
     forwardedTo: yup
       .string()
+      .transform((_, val) => (val === "" ? null : val))
+      .nullable()
       .trim()
-      .min(3, "Necessário inserir ao menos 3 caracteres")
+      .test(
+        "min-check",
+        "Necessário inserir ao menos 3 caracteres",
+        (input) => !input || (!!input && input.length >= 3)
+      )
       .max(255, "Quantidade máxima permitida de carácteres: 255")
-      .required("Obrigatório indicar o encaminhamento"),
+      .optional(),
 
     whoRecommended: yup
       .string()
@@ -590,9 +596,7 @@ function StepAssistido() {
         )}
 
         <div className={styles.formRow}>
-          <label htmlFor="forwardedTo" className={styles.required}>
-            Encaminhado para
-          </label>
+          <label htmlFor="forwardedTo">Encaminhado para</label>
           <input
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"
