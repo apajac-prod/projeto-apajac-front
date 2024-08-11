@@ -1,4 +1,4 @@
-import {axios} from "@/api/api";
+import { axios } from "@/api/api";
 import { assistidoToApi as assistidoToApi } from "./middleware/formAssistido";
 import toast from "react-hot-toast";
 import { apiToListAssistido } from "./middleware/listAssistido";
@@ -7,222 +7,261 @@ import { apiToLogin } from "./middleware/login";
 import { apiToListUsuario } from "./middleware/listUsuario";
 
 const HTTP_STATUS = {
-    OK: 200,
-    CREATED: 201,
-    ACCEPTED: 202,
-    NO_CONTENT: 204,
-    BAD_REQUEST: 400,
-    UNAUTHORIZED: 401,
-}
+  OK: 200,
+  CREATED: 201,
+  ACCEPTED: 202,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+};
 
 export type ToastOptions = {
-    noToast?: boolean|undefined;
-    dismissAnyPreviousToast?: boolean|undefined;
-    id?: string|undefined;
-    loadingMessage?: string|undefined;
-    successMessage?: string|undefined;
-    errorMessage?: string|undefined;
-    duration?: {
-      sucess?: number|undefined;
-      error?: number|undefined;
-    }
-    position?: "bottom-center"|"bottom-left"|"bottom-right"|"top-center"|"top-left"|"top-right";
-}
+  noToast?: boolean | undefined;
+  dismissAnyPreviousToast?: boolean | undefined;
+  id?: string | undefined;
+  loadingMessage?: string | undefined;
+  successMessage?: string | undefined;
+  errorMessage?: string | undefined;
+  duration?: {
+    sucess?: number | undefined;
+    error?: number | undefined;
+  };
+  position?:
+    | "bottom-center"
+    | "bottom-left"
+    | "bottom-right"
+    | "top-center"
+    | "top-left"
+    | "top-right";
+};
 
 type CustomError = {
   status: number;
   messageFromApi?: string | null;
   customMessage?: string | null;
   error: Error;
-}
+};
 
 function createToast(promise: Promise<any>, toastOptions?: ToastOptions) {
-  toastOptions && !!toastOptions.dismissAnyPreviousToast && toast.dismiss();  //Dismiss any previous toast that is displayed in screen
+  toastOptions && !!toastOptions.dismissAnyPreviousToast && toast.dismiss(); //Dismiss any previous toast that is displayed in screen
   toast.promise<void>(
-      promise,
-      {
-        loading: toastOptions?.loadingMessage ?? "Carregando informações ...",
-        success: () => {
-          return toastOptions?.successMessage ?? "Informações carregadas com sucesso!";
-        },
-        error: (err: CustomError) => {
-          let displayErrorMessage = err.customMessage;
-          if (err.customMessage && err.messageFromApi) displayErrorMessage += "\n";
-          if (err.messageFromApi) displayErrorMessage += `Cód: ${err.status} | ${err.messageFromApi}`;
-
-          return displayErrorMessage!
-        },
+    promise,
+    {
+      loading: toastOptions?.loadingMessage ?? "Carregando informações ...",
+      success: () => {
+        return (
+          toastOptions?.successMessage ?? "Informações carregadas com sucesso!"
+        );
       },
-      {
-        style: {
-          backgroundColor: "#5992cd",
-          outline: "2px #fff solid",
-          color: "#fff",
-          minWidth: "300px",
-          minHeight: "60px",
-          margin: "5%",
-        },
-        success: {
-          duration: toastOptions?.duration?.sucess ?? 1500,
-        },
-        error: {
-          duration: toastOptions?.duration?.error ?? 5000,
-        },
-        id: toastOptions?.id ?? "default",
-        position: toastOptions?.position ?? "top-center",
-      }
-    );
+      error: (err: CustomError) => {
+        let displayErrorMessage = err.customMessage;
+        if (err.customMessage && err.messageFromApi)
+          displayErrorMessage += "\n";
+        if (err.messageFromApi)
+          displayErrorMessage += `Cód: ${err.status} | ${err.messageFromApi}`;
+
+        return displayErrorMessage!;
+      },
+    },
+    {
+      style: {
+        backgroundColor: "#5992cd",
+        outline: "2px #fff solid",
+        color: "#fff",
+        minWidth: "300px",
+        minHeight: "60px",
+        margin: "5%",
+      },
+      success: {
+        duration: toastOptions?.duration?.sucess ?? 1500,
+      },
+      error: {
+        duration: toastOptions?.duration?.error ?? 5000,
+      },
+      id: toastOptions?.id ?? "default",
+      position: toastOptions?.position ?? "top-center",
+    }
+  );
 }
 
 const getRequest = (endpoint: string, toastOptions?: ToastOptions) => {
-  const response = axios.get(endpoint)
-  .catch(({request: requestError}) => {
-
+  const response = axios.get(endpoint).catch(({ request: requestError }) => {
     if (!requestError.response) {
-      throw <CustomError> {
+      throw <CustomError>{
         status: 0,
         messageFromApi: null,
         customMessage: "Não foi possível se conectar ao servidor.",
-        error: new Error()
-      }
+        error: new Error(),
+      };
     }
 
     throw {
       status: requestError.status,
       messageFromApi: JSON.parse(requestError.response).message,
-      customMessage: toastOptions?.errorMessage ?? "Não foi possível carregar as informações.",
-      error: new Error()
-    }
-  })
-  
+      customMessage:
+        toastOptions?.errorMessage ??
+        "Não foi possível carregar as informações.",
+      error: new Error(),
+    };
+  });
+
   !toastOptions?.noToast && createToast(response, toastOptions);
 
   return response;
-}
+};
 
-const postRequest = (endpoint: string, data: any, toastOptions?: ToastOptions) => {
-  const response = axios.post(endpoint, data)
-  .catch(({request: requestError}) => {
-
-    if (!requestError.response) {
-      throw <CustomError> {
-        status: 0,
-        messageFromApi: null,
-        customMessage: "Não foi possível se conectar ao servidor.",
-        error: new Error()
+const postRequest = (
+  endpoint: string,
+  data: any,
+  toastOptions?: ToastOptions
+) => {
+  const response = axios
+    .post(endpoint, data)
+    .catch(({ request: requestError }) => {
+      if (!requestError.response) {
+        throw <CustomError>{
+          status: 0,
+          messageFromApi: null,
+          customMessage: "Não foi possível se conectar ao servidor.",
+          error: new Error(),
+        };
       }
-    }
 
-    throw {
-      status: requestError.status,
-      messageFromApi: JSON.parse(requestError.response).message,
-      customMessage: toastOptions?.errorMessage ?? "Não foi possível salvar as informações.",
-      error: new Error()
-    }
-  })
-  
+      throw {
+        status: requestError.status,
+        messageFromApi: JSON.parse(requestError.response).message,
+        customMessage:
+          toastOptions?.errorMessage ??
+          "Não foi possível salvar as informações.",
+        error: new Error(),
+      };
+    });
+
   !toastOptions?.noToast && createToast(response, toastOptions);
 
   return response;
-}
+};
 
-const putRequest = (endpoint: string, data?: any, toastOptions?: ToastOptions) => {
-  const response = axios.put(endpoint, data)
-  .catch(({request: requestError}) => {
-
-    if (!requestError.response) {
-      throw <CustomError> {
-        status: 0,
-        messageFromApi: null,
-        customMessage: "Não foi possível se conectar ao servidor.",
-        error: new Error()
+const putRequest = (
+  endpoint: string,
+  data?: any,
+  toastOptions?: ToastOptions
+) => {
+  const response = axios
+    .put(endpoint, data)
+    .catch(({ request: requestError }) => {
+      if (!requestError.response) {
+        throw <CustomError>{
+          status: 0,
+          messageFromApi: null,
+          customMessage: "Não foi possível se conectar ao servidor.",
+          error: new Error(),
+        };
       }
-    }
 
-    throw {
-      status: requestError.status,
-      messageFromApi: JSON.parse(requestError.response).message,
-      customMessage: toastOptions?.errorMessage ?? "Não foi possível alterar as informações.",
-      error: new Error()
-    }
-  })
-  
+      throw {
+        status: requestError.status,
+        messageFromApi: JSON.parse(requestError.response).message,
+        customMessage:
+          toastOptions?.errorMessage ??
+          "Não foi possível alterar as informações.",
+        error: new Error(),
+      };
+    });
+
   !toastOptions?.noToast && createToast(response, toastOptions);
 
   return response;
-}
-
+};
 
 export const createAssistido = (assistidoData: any, sessionId: number) => {
-    const toastOptions: ToastOptions = {
-      loadingMessage: "Cadastrando assistido ...",
-      successMessage: "Assistido cadastrado com sucesso!",
-      errorMessage: "Não foi possível cadastrar este assistido."
-    }
-    const data = assistidoToApi(assistidoData, sessionId)
-    return postRequest("assistido", data, toastOptions);
-}
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Cadastrando assistido ...",
+    successMessage: "Assistido cadastrado com sucesso!",
+    errorMessage: "Não foi possível cadastrar este assistido.",
+  };
+  const data = assistidoToApi(assistidoData, sessionId);
+  return postRequest("assistido", data, toastOptions);
+};
 
 export const updateAssistido = (assistidoData: any, sessionId: number) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Alterando assistido ...",
     successMessage: "Assistido alterado com sucesso!",
-    errorMessage: "Não foi possível alterar este assistido."
-  }
-  const data = assistidoToApi(assistidoData, sessionId)
+    errorMessage: "Não foi possível alterar este assistido.",
+  };
+  const data = assistidoToApi(assistidoData, sessionId);
   return postRequest("assistido", data, toastOptions);
-}
+};
 
 export const getAssistidoById = (assistidoId: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando informações do assistido ...",
     successMessage: "Informações carregadas com sucesso!",
-    position: "bottom-center"
-  }
+    position: "bottom-center",
+  };
   return getRequest(`assistido/por_id/${assistidoId}`, toastOptions);
-}
+};
 
 export const getAddressByCep = (cep: string) => {
   const toastOptions: ToastOptions = {
-    noToast: true
-  }
+    noToast: true,
+  };
 
   return getRequest(`endereco/${cep}`, toastOptions);
-}
+};
 
-export const updateAssistidoStatus = (id: string, newStatus: boolean, idResponsavelPeloCadastro: number) => {
+export const updateAssistidoStatus = (
+  id: string,
+  newStatus: boolean,
+  idResponsavelPeloCadastro: number
+) => {
   const toastOptions: ToastOptions = {
-    loadingMessage: newStatus ? "Ativando assistido ..." : "Desativando assistido ...",
-    successMessage: `Assistido ${newStatus ? "ativado" : "desativado"} com sucesso!`,
-    errorMessage: "Houve um problema ao alterar o status deste assistido."
-  }
-  return putRequest(`/assistido/${id}/status/${idResponsavelPeloCadastro}`, undefined, toastOptions);
-}
+    loadingMessage: newStatus
+      ? "Ativando assistido ..."
+      : "Desativando assistido ...",
+    successMessage: `Assistido ${
+      newStatus ? "ativado" : "desativado"
+    } com sucesso!`,
+    errorMessage: "Houve um problema ao alterar o status deste assistido.",
+  };
+  return putRequest(
+    `/assistido/${id}/status/${idResponsavelPeloCadastro}`,
+    undefined,
+    toastOptions
+  );
+};
 
 // List Assistido response properties, to perform a sort.
-type Sort = "id"|"name"|"responsible"|"status"|"age"|undefined;
+type Sort = "id" | "name" | "responsible" | "status" | "age" | undefined;
 
-export const getListaAssistidos = async (page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
-
+export const getListaAssistidos = async (
+  page: number,
+  sort: Sort = undefined,
+  orderByAsc: boolean = true,
+  toastOptions?: ToastOptions
+) => {
   const SIZE = 50; //Qty of elements in each page per request
 
   const tOptions: ToastOptions = {
     id: "getListaAssistidos",
     position: "bottom-center",
     loadingMessage: toastOptions?.loadingMessage ?? "Carregando assistidos ...",
-    successMessage: toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
-    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos."
-  }
-  
+    successMessage:
+      toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
+    errorMessage:
+      toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos.",
+  };
+
   const convertedSort = new Map([
     ["id", "id"],
     ["name", "nome"],
     ["responsible", "responsavel"],
     ["status", "statusAssistido"],
     ["age", "dataNascimento"],
-  ])
+  ]);
 
-  if (sort === "age") orderByAsc = !orderByAsc
+  if (sort === "age") orderByAsc = !orderByAsc;
 
   const order = orderByAsc ? "asc" : "desc";
 
@@ -230,32 +269,46 @@ export const getListaAssistidos = async (page: number, sort: Sort = undefined, o
 
   /* return getRequest(`lista-assistidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista_assistidos?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  const { data } = await getRequest(
+    `lista_assistidos?page=${page}&size=${SIZE}${sortParameter}`,
+    tOptions
+  );
   console.log("before data:", data);
-  return { assistidos: apiToListAssistido(data.assistidos), isLastPage: data.isLastPage };
-}
+  return {
+    assistidos: apiToListAssistido(data.assistidos),
+    isLastPage: data.isLastPage,
+  };
+};
 
-export const getListaAssistidosPorNome = async (name: string, page: number, sort: Sort = undefined, orderByAsc: boolean = true, toastOptions?: ToastOptions) => {
-
+export const getListaAssistidosPorNome = async (
+  name: string,
+  page: number,
+  sort: Sort = undefined,
+  orderByAsc: boolean = true,
+  toastOptions?: ToastOptions
+) => {
   const SIZE = 50; //Qty of elements in each page per request
 
   const tOptions: ToastOptions = {
     id: "getListaAssistidosPorNome",
     position: "bottom-center",
-    loadingMessage: toastOptions?.loadingMessage ?? "Carregando assistidos por nome...",
-    successMessage: toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
-    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos."
-  }
-  
+    loadingMessage:
+      toastOptions?.loadingMessage ?? "Carregando assistidos por nome...",
+    successMessage:
+      toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
+    errorMessage:
+      toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos.",
+  };
+
   const convertedSort = new Map([
     ["id", "id"],
     ["name", "nome"],
     ["responsible", "responsavel"],
     ["status", "statusAssistido"],
     ["age", "dataNascimento"],
-  ])
+  ]);
 
-  if (sort === "age") orderByAsc = !orderByAsc
+  if (sort === "age") orderByAsc = !orderByAsc;
 
   const order = orderByAsc ? "asc" : "desc";
 
@@ -263,96 +316,140 @@ export const getListaAssistidosPorNome = async (name: string, page: number, sort
 
   /* return getRequest(`lista-assistidos?${sort ? `?_sort=${convertedSort.get(sort)}` : ""}`, toastOptions) */
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista_assistidos_por_nome/${name}?page=${page}&size=${SIZE}${sortParameter}`, tOptions);
+  const { data } = await getRequest(
+    `lista_assistidos_por_nome/${name}?page=${page}&size=${SIZE}${sortParameter}`,
+    tOptions
+  );
   console.log("before data:", data);
-  return { assistidos: apiToListAssistido(data.assistidos), isLastPage: data.isLastPage };
-}
+  return {
+    assistidos: apiToListAssistido(data.assistidos),
+    isLastPage: data.isLastPage,
+  };
+};
 
 export const createUsuario = (usuarioData: any) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Cadastrando usuário ...",
     successMessage: "Usuário cadastrado com sucesso!",
-    errorMessage: "Não foi possível cadastrar este usuário."
-  }
-  const data = usuarioToApi(usuarioData)
+    errorMessage: "Não foi possível cadastrar este usuário.",
+  };
+  const data = usuarioToApi(usuarioData);
   return postRequest("usuario", data, toastOptions);
-}
+};
 
 export const getUsuario = async (id: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Carregando usuário ...",
     successMessage: "Usuário carregado com sucesso!",
-    errorMessage: "Não foi possível carregar este usuário."
-  }
-  const { data } = await getRequest(`usuario/por_id/${id}`, toastOptions); 
+    errorMessage: "Não foi possível carregar este usuário.",
+  };
+  const { data } = await getRequest(`usuario/por_id/${id}`, toastOptions);
   return apiToUsuario(data);
-}
+};
 
 export const updateUsuario = (usuarioData: any) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Atualizando usuário ...",
     successMessage: "Usuário atualizado com sucesso!",
-    errorMessage: "Não foi possível atualizar este usuário."
-  }
-  const data = usuarioToApi(usuarioData)
+    errorMessage: "Não foi possível atualizar este usuário.",
+  };
+  const data = usuarioToApi(usuarioData);
   return postRequest("usuario", data, toastOptions);
-}
+};
 
-export const updateUsuarioStatus = (id: string, newStatus: boolean, idResponsavelPelaAlteracao: number) => {
+export const updateUsuarioStatus = (
+  id: string,
+  newStatus: boolean,
+  idResponsavelPelaAlteracao: number
+) => {
   // No futuro, ao adicionar Token, irá remover o idResponsavelPelaAlteracao.
   const toastOptions: ToastOptions = {
-    loadingMessage: newStatus ? "Ativando usuário ..." : "Desativando usuário ...",
-    successMessage: `Usuário ${newStatus ? "ativado" : "desativado"} com sucesso!`,
-    errorMessage: "Houve um problema ao alterar o status deste usuário."
-  }
-  return putRequest(`/usuario/${id}/status/${idResponsavelPelaAlteracao}`, undefined, toastOptions);
-}
+    loadingMessage: newStatus
+      ? "Ativando usuário ..."
+      : "Desativando usuário ...",
+    successMessage: `Usuário ${
+      newStatus ? "ativado" : "desativado"
+    } com sucesso!`,
+    errorMessage: "Houve um problema ao alterar o status deste usuário.",
+  };
+  return putRequest(
+    `/usuario/${id}/status/${idResponsavelPelaAlteracao}`,
+    undefined,
+    toastOptions
+  );
+};
 
 export const login = async (username: string, password: string) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Efetuando login ...",
     successMessage: "Login realizado com sucesso!",
-    errorMessage: "Houve um problema ao tentar efetuar login."
-  }
+    errorMessage: "Houve um problema ao tentar efetuar login.",
+  };
 
   const data = {
     login: username,
-    password: password
-  }
+    password: password,
+  };
 
-  const { data: dataResponse } = await postRequest("/login", data, toastOptions);
+  const { data: dataResponse } = await postRequest(
+    "/login",
+    data,
+    toastOptions
+  );
   return apiToLogin(dataResponse);
-}
+};
 
-export const getListaUsuarios = async (page: number, toastOptions?: ToastOptions) => {
-
+export const getListaUsuarios = async (
+  page: number,
+  toastOptions?: ToastOptions
+) => {
   const SIZE = 50; //Qty of elements in each page per request
 
   const tOptions: ToastOptions = {
     id: "getListaUsuários",
     position: "bottom-center",
     loadingMessage: toastOptions?.loadingMessage ?? "Carregando usuários ...",
-    successMessage: toastOptions?.successMessage ?? "Usuários carregados com sucesso!",
-    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os usuários."
-  }
+    successMessage:
+      toastOptions?.successMessage ?? "Usuários carregados com sucesso!",
+    errorMessage:
+      toastOptions?.errorMessage ?? "Não foi possível carregar os usuários.",
+  };
 
-  const { data } = await getRequest(`lista_usuarios?page=${page}&size=${SIZE}`, tOptions);
-  return { usuarios: apiToListUsuario(data.usuarios), isLastPage: data.isLastPage };
-}
+  const { data } = await getRequest(
+    `lista_usuarios?page=${page}&size=${SIZE}`,
+    tOptions
+  );
+  return {
+    usuarios: apiToListUsuario(data.usuarios),
+    isLastPage: data.isLastPage,
+  };
+};
 
-export const getListaUsuariosPorNome = async (name: string, page: number, toastOptions?: ToastOptions) => {
-
+export const getListaUsuariosPorNome = async (
+  name: string,
+  page: number,
+  toastOptions?: ToastOptions
+) => {
   const SIZE = 50; //Qty of elements in each page per request
 
   const tOptions: ToastOptions = {
     id: "getListaAssistidosPorNome",
     position: "bottom-center",
-    loadingMessage: toastOptions?.loadingMessage ?? "Carregando assistidos por nome...",
-    successMessage: toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
-    errorMessage: toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos."
-  }
+    loadingMessage:
+      toastOptions?.loadingMessage ?? "Carregando assistidos por nome...",
+    successMessage:
+      toastOptions?.successMessage ?? "Assistidos carregados com sucesso!",
+    errorMessage:
+      toastOptions?.errorMessage ?? "Não foi possível carregar os assistidos.",
+  };
   // Conferir como passar os parametros de page e sort pra api
-  const { data } = await getRequest(`lista_usuarios_por_nome/${name}?page=${page}&size=${SIZE}&sort=nome`, tOptions);
+  const { data } = await getRequest(
+    `lista_usuarios_por_nome/${name}?page=${page}&size=${SIZE}&sort=nome`,
+    tOptions
+  );
   console.log("before data:", data);
-  return { usuarios: apiToListUsuario(data.usuarios), isLastPage: data.isLastPage };
-}
+  return {
+    usuarios: apiToListUsuario(data.usuarios),
+    isLastPage: data.isLastPage,
+  };
+};

@@ -29,21 +29,20 @@ type Props = {
 const StepPais = ({ who }: Props) => {
   const multistepController = useContext(MultistepFormContext);
   const [showEmploymentRelationshipDesc, setShowEmploymentRelationshipDesc] =
-    useState(
-      restoreInputValue(
-        "employmentRelationship",
-        multistepController || null
-      ) == "outro"
-        ? true
-        : false
-    );
+    useState(multistepController?.fatherDataInformed);
   const [showWorkFields, setShowWorkFields] = useState(
     restoreInputValue("ocupation", multistepController || null) == "outro"
       ? true
       : false
   );
-
   const [phoneMask, setPhoneMask] = useState(new Map());
+  const [enableInputsSwitch, setEnableInputsSwitch] = useState(
+    who != "father"
+      ? true
+      : restoreInputValue("name", multistepController || null)
+      ? true
+      : false
+  );
 
   //Yup validation schema
   const paisSchema: yup.ObjectSchema<Pais> = yup.object({
@@ -186,9 +185,6 @@ const StepPais = ({ who }: Props) => {
   });
 
   useEffect(() => {
-    // Apply phone mask at every phone loaded as defaultValue
-    console.log("FIELDS --------", fields);
-
     let newPhoneMask = new Map();
 
     fields.forEach((field, index) => {
@@ -216,10 +212,13 @@ const StepPais = ({ who }: Props) => {
         JSON.stringify(data)
       )
     ) {
-      handleSubmit((data) => {
+      /* handleSubmit((data) => {
         multistepController?.setCurrentStepData(data);
         multistepController?.back();
-      })();
+      })(); */
+
+      multistepController?.setCurrentStepData(data);
+      multistepController?.back();
       return;
     }
     multistepController?.setCurrentStepCache(data);
@@ -321,29 +320,84 @@ const StepPais = ({ who }: Props) => {
     e.target.value = unmaskedValue == "" ? "" : maskMoney(unmaskedValue);
   }
 
+  function handleSwitchChange(checked: boolean) {
+    setEnableInputsSwitch(checked);
+    if (!checked) {
+      setValue<any>("ocupation", "");
+      setShowWorkFields(false);
+    }
+  }
+
+  function handlePreSubmit() {
+    if (!enableInputsSwitch) {
+      // Caso a opção 'Informar dados do pai?' esteja DESMARCADO
+      const nullData = {
+        name: null,
+        employmentRelationship: null,
+        employmentRelationshipDesc: null,
+        ocupation: null,
+        phones: [{ value: "" }],
+        placeOfWork: null,
+        salary: null,
+      };
+
+      next(nullData);
+      return;
+    }
+
+    handleSubmit((data) => {
+      next(data);
+    })();
+  }
+
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit((data) => next(data))} autoComplete="off">
+      {who === "father" && (
+        <label className="inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={enableInputsSwitch}
+            onChange={(e) => handleSwitchChange(e.target.checked)}
+            className="sr-only peer"
+          />
+          <span className="mr-3 text-base font-medium text-gray-900 dark:text-gray-300">
+            Informar dados do pai?
+          </span>
+          <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+        </label>
+      )}
+      <form autoComplete="off">
         <SubTitle
           text={who === "mother" ? "Dados da mãe" : "Dados do pai"}
           className={styles.sub_title}
         />
 
         <div className={`${styles.formRow} ${styles.input_big}`}>
-          <label htmlFor="name" className={styles.required}>
+          <label
+            htmlFor="name"
+            className={enableInputsSwitch ? styles.required : ""}
+          >
             Nome
           </label>
           <input
             className={`${
-              !multistepController?.getActiveStatus() && "disable_input"
+              (!multistepController?.getActiveStatus() ||
+                !enableInputsSwitch) &&
+              "disable_input"
             }`}
-            tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
+            tabIndex={
+              !multistepController?.getActiveStatus() || !enableInputsSwitch
+                ? -1
+                : undefined
+            }
             type="text"
-            style={{ textTransform: "uppercase" }}
+            style={{
+              textTransform: "uppercase",
+            }}
             {...register("name")}
           />
         </div>
-        {errors.name && (
+        {errors.name && enableInputsSwitch && (
           <p className={styles.error_message}>{String(errors.name.message)}</p>
         )}
 
@@ -352,17 +406,21 @@ const StepPais = ({ who }: Props) => {
             <div className={`${styles.formRow} ${styles.input_small}`}>
               <label
                 htmlFor={`phones.${index}.value` as const}
-                className={styles.required}
+                className={enableInputsSwitch ? styles.required : ""}
               >
                 Telefone{index > 0 && ` ${index + 1}`}
               </label>
 
               <InputMask
                 className={`${
-                  !multistepController?.getActiveStatus() && "disable_input"
+                  (!multistepController?.getActiveStatus() ||
+                    !enableInputsSwitch) &&
+                  "disable_input"
                 }`}
                 tabIndex={
-                  !multistepController?.getActiveStatus() ? -1 : undefined
+                  !multistepController?.getActiveStatus() || !enableInputsSwitch
+                    ? -1
+                    : undefined
                 }
                 mask={
                   phoneMask.get(`phones.${index}.value`) ?? "(99) 9999-9999"
@@ -374,17 +432,20 @@ const StepPais = ({ who }: Props) => {
                 <input type="text" />
               </InputMask>
 
-              {index > 0 && multistepController?.getActiveStatus() && (
-                <icon.PhoneCross
-                  style={{ cursor: "pointer" }}
-                  color="red"
-                  onClick={() => removePhoneInput(index)}
-                />
-              )}
+              {index > 0 &&
+                multistepController?.getActiveStatus() &&
+                enableInputsSwitch && (
+                  <icon.PhoneCross
+                    style={{ cursor: "pointer" }}
+                    color="red"
+                    onClick={() => removePhoneInput(index)}
+                  />
+                )}
 
               {index === fields.length - 1 &&
                 index < MAX_PHONE_NUMBERS - 1 &&
-                multistepController?.getActiveStatus() && (
+                multistepController?.getActiveStatus() &&
+                enableInputsSwitch && (
                   <icon.Add
                     style={{ cursor: "pointer" }}
                     color="green"
@@ -392,7 +453,7 @@ const StepPais = ({ who }: Props) => {
                   />
                 )}
             </div>
-            {errors.phones && errors.phones[index] && (
+            {errors.phones && errors.phones[index] && enableInputsSwitch && (
               <p className={styles.error_message}>
                 {String(errors.phones![index]?.value?.message)}
               </p>
@@ -401,14 +462,22 @@ const StepPais = ({ who }: Props) => {
         ))}
 
         <div className={styles.formRow}>
-          <label htmlFor="ocupation" className={styles.required}>
+          <label
+            htmlFor="ocupation"
+            className={enableInputsSwitch ? styles.required : ""}
+          >
             Ocupação
           </label>
           <select
             className={`${
-              !multistepController?.getActiveStatus() && "disable_input"
+              !multistepController?.getActiveStatus() ||
+              (!enableInputsSwitch && "disable_input")
             }`}
-            tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
+            tabIndex={
+              !multistepController?.getActiveStatus() || !enableInputsSwitch
+                ? -1
+                : undefined
+            }
             defaultValue={""}
             {...register("ocupation", {
               onChange: (e) => handleOcupationChange(e),
@@ -423,7 +492,7 @@ const StepPais = ({ who }: Props) => {
             <option value="outro">Outro</option>
           </select>
         </div>
-        {errors.ocupation && (
+        {errors.ocupation && enableInputsSwitch && (
           <p className={styles.error_message}>
             {String(errors.ocupation.message)}
           </p>
@@ -437,13 +506,15 @@ const StepPais = ({ who }: Props) => {
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}
                 tabIndex={
-                  !multistepController?.getActiveStatus() ? -1 : undefined
+                  !multistepController?.getActiveStatus() || !enableInputsSwitch
+                    ? -1
+                    : undefined
                 }
                 type="text"
                 {...register("placeOfWork")}
               />
             </div>
-            {errors.placeOfWork && (
+            {errors.placeOfWork && enableInputsSwitch && (
               <p className={styles.error_message}>
                 {String(errors.placeOfWork.message)}
               </p>
@@ -456,7 +527,9 @@ const StepPais = ({ who }: Props) => {
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}
                 tabIndex={
-                  !multistepController?.getActiveStatus() ? -1 : undefined
+                  !multistepController?.getActiveStatus() || !enableInputsSwitch
+                    ? -1
+                    : undefined
                 }
                 type="text"
                 placeholder="R$ 0,00"
@@ -465,7 +538,7 @@ const StepPais = ({ who }: Props) => {
                 })}
               />
             </div>
-            {errors.salary && (
+            {errors.salary && enableInputsSwitch && (
               <p className={styles.error_message}>
                 {String(errors.salary.message)}
               </p>
@@ -483,7 +556,9 @@ const StepPais = ({ who }: Props) => {
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}
                 tabIndex={
-                  !multistepController?.getActiveStatus() ? -1 : undefined
+                  !multistepController?.getActiveStatus() || !enableInputsSwitch
+                    ? -1
+                    : undefined
                 }
                 defaultValue={""}
                 {...register("employmentRelationship", {
@@ -514,7 +589,10 @@ const StepPais = ({ who }: Props) => {
                         "disable_input"
                       }`}
                       tabIndex={
-                        !multistepController?.getActiveStatus() ? -1 : undefined
+                        !multistepController?.getActiveStatus() ||
+                        !enableInputsSwitch
+                          ? -1
+                          : undefined
                       }
                       type="text"
                       {...register("employmentRelationshipDesc")}
@@ -524,12 +602,13 @@ const StepPais = ({ who }: Props) => {
               )}
             </div>
             {errors.employmentRelationshipDesc &&
-              showEmploymentRelationshipDesc && (
+              showEmploymentRelationshipDesc &&
+              enableInputsSwitch && (
                 <p className={styles.error_message}>
                   {String(errors.employmentRelationshipDesc.message)}
                 </p>
               )}
-            {errors.employmentRelationship && (
+            {errors.employmentRelationship && enableInputsSwitch && (
               <p className={styles.error_message}>
                 {String(errors.employmentRelationship.message)}
               </p>
@@ -540,8 +619,8 @@ const StepPais = ({ who }: Props) => {
         <div className={styles.buttons}>
           <button
             className="button_submit"
-            type="submit"
-            onClick={handleSubmit((data) => next(data))}
+            type="button"
+            onClick={() => handlePreSubmit()}
           >
             Avançar
           </button>
