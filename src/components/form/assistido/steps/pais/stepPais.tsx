@@ -20,7 +20,7 @@ import InputMask from "@mona-health/react-input-mask";
 import { Pais } from "@/types/formAssistido.type";
 
 const OCUPATION = ["desempregado", "do_lar", "desconhecido", "outro"];
-const EMPLOYMENT_RELATIONSHIP = ["clt", "autonomo", "outro"];
+const EMPLOYMENT_RELATIONSHIP = ["clt", "autonomo", "outro", "nao_informado"];
 const MAX_PHONE_NUMBERS = 5; //Max phone inputs that can be added
 
 type Props = {
@@ -29,7 +29,15 @@ type Props = {
 const StepPais = ({ who }: Props) => {
   const multistepController = useContext(MultistepFormContext);
   const [showEmploymentRelationshipDesc, setShowEmploymentRelationshipDesc] =
-    useState(multistepController?.fatherDataInformed);
+    useState(
+      multistepController?.fatherDataInformed &&
+        (restoreInputValue(
+          "employmentRelationship",
+          multistepController || null
+        ) === "outro"
+          ? true
+          : false)
+    );
   const [showWorkFields, setShowWorkFields] = useState(
     restoreInputValue("ocupation", multistepController || null) == "outro"
       ? true
@@ -571,6 +579,7 @@ const StepPais = ({ who }: Props) => {
                 <option value="clt">CLT</option>
                 <option value="autonomo">Autônoma</option>
                 <option value="outro">Outro</option>
+                <option value="nao_informado">Não informado</option>
               </select>
               {showEmploymentRelationshipDesc && (
                 <>
