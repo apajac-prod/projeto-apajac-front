@@ -66,12 +66,9 @@ export default function ConsultarAssistido() {
   }, []);
 
   useEffect(() => {
-    console.log(`Request, page=${page} ; sortBy=${sortBy}`);
-    console.log("isLastPage", isLastPage);
     if (isLastPage) return;
 
     setIsLoading(true);
-    console.log("searchByName:", searchByName);
 
     if (!!searchByName) {
       getListaAssistidosPorNome(

@@ -25,15 +25,8 @@ export const ModalConsultaAssistido = () => {
       modal.id &&
       getAssistidoById(modal.id).then((response: any) => {
         const assistido = apiToConsultaAssistido(response.data);
-        console.log("RESPONSE after middleware: ", assistido);
         setAssistidoData(assistido);
       });
-
-    console.log("roles:", session?.sessionInfo.roles);
-    console.log(
-      "includes alterar?",
-      session?.sessionInfo.roles?.includes(ROLES.ALTERAR_ASSISTIDO)
-    );
   }, []);
 
   return (
@@ -262,7 +255,7 @@ export const ModalConsultaAssistido = () => {
                       {index > 0 && (
                         <span className={styles.phoneSeparator}>/</span>
                       )}
-                      <p>{maskPhone(phone)}</p>
+                      <p>{phone == "" ? "Não informado" : maskPhone(phone)}</p>
                     </div>
                   ))}
                 </div>
@@ -270,7 +263,9 @@ export const ModalConsultaAssistido = () => {
             </div>
             <div>
               <p>Ocupação: </p>
-              {assistidoData && <p>{assistidoData.father.occupation}</p>}
+              {assistidoData && (
+                <p>{assistidoData.father.occupation ?? "Não informado"}</p>
+              )}
             </div>
             {assistidoData && assistidoData.father.placeOfWork && (
               <div>
@@ -296,47 +291,53 @@ export const ModalConsultaAssistido = () => {
           <div>
             <p className={styles.familyLabel}>Familiares</p>
             {assistidoData &&
-              assistidoData.familyComposition.map((familyMember, index) => (
-                <div key={familyMember.name} className={styles.familyMember}>
-                  {index > 0 && <div className={styles.familySeparator}></div>}
-                  <div>
-                    <p>Nome: </p>
-                    {assistidoData && (
-                      <p>{familyMember.name ?? "Não informado"}</p>
+              (assistidoData.familyComposition.length <= 0 ? (
+                <p>Nenhum familiar cadastrado.</p>
+              ) : (
+                assistidoData.familyComposition.map((familyMember, index) => (
+                  <div key={familyMember.name} className={styles.familyMember}>
+                    {index > 0 && (
+                      <div className={styles.familySeparator}></div>
                     )}
-                  </div>
-                  <div>
-                    <p>Parentesco: </p>
-                    {assistidoData && (
-                      <p>{familyMember.relationship ?? "Não informado"}</p>
-                    )}
-                  </div>
-                  <div>
-                    <p>Idade: </p>
-                    {assistidoData && (
-                      <p>{familyMember.birthYear ?? "Não informado"}</p>
-                    )}
-                  </div>
-                  <div>
-                    <p>Ocupação: </p>
-                    {assistidoData && (
-                      <p>{familyMember.occupation ?? "Não informado"}</p>
-                    )}
-                  </div>
-
-                  {familyMember.comments && (
-                    <div className={styles.familyComments}>
-                      <p>Observações</p>
-                      <textarea
-                        name="obs"
-                        cols={20}
-                        rows={5}
-                        disabled={true}
-                        value={familyMember.comments}
-                      ></textarea>
+                    <div>
+                      <p>Nome: </p>
+                      {assistidoData && (
+                        <p>{familyMember.name ?? "Não informado"}</p>
+                      )}
                     </div>
-                  )}
-                </div>
+                    <div>
+                      <p>Parentesco: </p>
+                      {assistidoData && (
+                        <p>{familyMember.relationship ?? "Não informado"}</p>
+                      )}
+                    </div>
+                    <div>
+                      <p>Idade: </p>
+                      {assistidoData && (
+                        <p>{familyMember.birthYear ?? "Não informado"}</p>
+                      )}
+                    </div>
+                    <div>
+                      <p>Ocupação: </p>
+                      {assistidoData && (
+                        <p>{familyMember.occupation ?? "Não informado"}</p>
+                      )}
+                    </div>
+
+                    {familyMember.comments && (
+                      <div className={styles.familyComments}>
+                        <p>Observações</p>
+                        <textarea
+                          name="obs"
+                          cols={20}
+                          rows={5}
+                          disabled={true}
+                          value={familyMember.comments}
+                        ></textarea>
+                      </div>
+                    )}
+                  </div>
+                ))
               ))}
           </div>
 
