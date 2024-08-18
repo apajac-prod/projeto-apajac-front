@@ -150,13 +150,14 @@ export default function ConsultarAssistido() {
       />
 
       <form
+        aria-label="search by name"
         className={styles.search}
         onSubmit={(e) => {
           handleNameChange(e);
         }}
       >
         <label htmlFor="search_input">Nome</label>
-        <input type="text" minLength={3} ref={inputNameRef} />
+        <input type="text" id="search_input" minLength={3} ref={inputNameRef} />
         <input
           type="submit"
           className={`button_submit ${isLoading ? styles.disabled : ""}`}
