@@ -229,6 +229,7 @@ const StepResponsavel = () => {
             Responsável
           </label>
           <select
+            aria-label="select option"
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"
             }`}

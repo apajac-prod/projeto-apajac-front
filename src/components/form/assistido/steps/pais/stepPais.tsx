@@ -398,7 +398,7 @@ const StepPais = ({ who }: Props) => {
                 ? -1
                 : undefined
             }
-            type="text"
+            type="text" id="name"
             style={{
               textTransform: "uppercase",
             }}
@@ -477,6 +477,7 @@ const StepPais = ({ who }: Props) => {
             Ocupação
           </label>
           <select
+            aria-label="select option"
             className={`${
               !multistepController?.getActiveStatus() ||
               (!enableInputsSwitch && "disable_input")

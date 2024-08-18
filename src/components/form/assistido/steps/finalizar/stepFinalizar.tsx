@@ -111,6 +111,7 @@ const StepFinalizar = () => {
       >
         <div className={`${styles.formRow} ${styles.formCommentsRow}`}>
           <textarea
+            aria-label="observation area"
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
