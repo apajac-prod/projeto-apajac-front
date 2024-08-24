@@ -24,19 +24,20 @@ const Header = () => {
   return (
     <header className={styles.container}>
       <Image
+        tabIndex={1}        
         onClick={() => goToHome()}
         src={"/icons/apajac.jpg"}
         alt="Logotipo da APAJAC"
         width={48}
         height={48}
       />
-      <p onClick={() => goToHome()} className={styles.title}>
+      <p tabIndex={2} onClick={() => goToHome()} className={styles.title}>
         SISTEMA DE GERENCIAMENTO APAJAC
       </p>
 
       <div className={styles.logoutContainer}>
         <p>Olá, {session?.sessionInfo.name?.split(" ")[0]}</p>
-        <p onClick={() => handleLogout()} className={styles.logout}>
+        <p tabIndex={3} onClick={() => handleLogout()} className={styles.logout}>
           Logout <icon.Exit />
         </p>
       </div>

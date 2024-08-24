@@ -222,7 +222,7 @@ const StepResponsavel = () => {
 
   return (
     <div className={styles.container}>
-      <SubTitle text="Dados do responsável" />
+      <SubTitle text="Dados do responsável" className={styles.sub_title} />
       <form onSubmit={handleSubmit((data) => next(data))} autoComplete="off">
         <div className={`${styles.formRow} ${styles.input}`}>
           <label htmlFor="responsible" className={styles.required}>

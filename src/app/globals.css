@@ -126,7 +126,7 @@ input {
 
 .disable_input {
   background-color: #ddd !important;
-  color: #6d6d6d !important;
+  color: #3B3B3B !important;
   pointer-events: none !important;
 }
 
@@ -167,6 +167,7 @@ input {
   background-color: #fff;
   outline: 1px solid #008607;
 }
+
 
 /* Remove cursor effect from Button of tooltip */
 /* button[data-state="closed"],
