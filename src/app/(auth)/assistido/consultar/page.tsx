@@ -142,9 +142,10 @@ export default function ConsultarAssistido() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} >
+      
       <FormTitle
-        title="Consultar Assistidos"
+        title ="Consultar Assistidos"
         Icon={icon.User}
         className={styles.title}
       />
@@ -235,7 +236,7 @@ export default function ConsultarAssistido() {
                   <td className={styles.status}>
                     <p
                       style={
-                        assistido.status ? { color: "green" } : { color: "red" }
+                        assistido.status ? { color: "#006600" } : { color: "#d9070a" }
                       }
                     >
                       {assistido.status ? "ativo" : "inativo"}
