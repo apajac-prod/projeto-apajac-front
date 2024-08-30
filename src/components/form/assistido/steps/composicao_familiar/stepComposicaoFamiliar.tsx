@@ -142,8 +142,8 @@ const StepComposicaoFamiliar = () => {
   }
   return (
     <div className={styles.container}>
-      <SubTitle text="Composição Familiar" />
-      <SubTitle text="(Opcional)" />
+      <SubTitle text="Composição Familiar" className={styles.sub_title}/>
+      <SubTitle text="(Opcional)" className={styles.sub_title}/>
 
       <form onSubmit={handleSubmit((data) => next(data))} autoComplete="off">
         {fields.map((field, index) => (
@@ -163,7 +163,7 @@ const StepComposicaoFamiliar = () => {
                 tabIndex={
                   !multistepController?.getActiveStatus() ? -1 : undefined
                 }
-                type="text"
+                type="text" aria-label="name"
                 style={{ textTransform: "uppercase" }}
                 {...register(`familyComposition.${index}.name` as const)}
               />
@@ -183,6 +183,7 @@ const StepComposicaoFamiliar = () => {
                 Parentesco
               </label>
               <input
+                aria-label="relationship"
                 className={`${
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}
@@ -208,6 +209,7 @@ const StepComposicaoFamiliar = () => {
                 Idade
               </label>
               <input
+                aria-label="age"
                 className={`${
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}
@@ -231,6 +233,7 @@ const StepComposicaoFamiliar = () => {
                 Ocupação
               </label>
               <input
+                aria-label="ocupation"
                 className={`${
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}
@@ -252,6 +255,7 @@ const StepComposicaoFamiliar = () => {
                 Observações
               </label>
               <textarea
+                aria-label="comments"
                 className={`${
                   !multistepController?.getActiveStatus() && "disable_input"
                 }`}

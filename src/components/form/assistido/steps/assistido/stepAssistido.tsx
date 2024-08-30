@@ -436,7 +436,7 @@ function StepAssistido() {
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
             {...register("registerDate")}
           >
-            <input type="text" />
+            <input type="text" id="registerDate"/>
           </InputMask>
         </div>
         {errors.registerDate && (
@@ -454,7 +454,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" 
+            id="name"
             style={{ textTransform: "uppercase" }}
             {...register("name")}
           />
@@ -475,7 +476,7 @@ function StepAssistido() {
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
             {...register("birthdate")}
           >
-            <input type="text" />
+            <input type="text" id="birthdate" />
           </InputMask>
         </div>
         {errors.birthdate && (
@@ -493,7 +494,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="educationLevel"
             {...register("educationLevel")}
           />
         </div>
@@ -510,7 +511,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="school"
             {...register("school")}
           />
         </div>
@@ -533,7 +534,7 @@ function StepAssistido() {
               onChange: (e) => handlePhoneChange(e),
             })}
           >
-            <input type="text" />
+            <input type="text"id="schoolPhone"/>
           </InputMask>
         </div>
 
@@ -547,7 +548,7 @@ function StepAssistido() {
           <label htmlFor="anyInstitutionRegister" className={styles.required}>
             Possui cadastro em alguma instituição
           </label>
-          <select
+          <select aria-label="select an option"
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
@@ -583,7 +584,7 @@ function StepAssistido() {
                 tabIndex={
                   !multistepController?.getActiveStatus() ? -1 : undefined
                 }
-                type="text"
+                type="text" id="whichInstitution"
                 {...register("whichInstitution")}
               />
             </div>
@@ -602,7 +603,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="forwardedTo"
             {...register("forwardedTo")}
           />
         </div>
@@ -619,7 +620,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="whoRecommended"
             {...register("whoRecommended")}
           />
         </div>
@@ -638,7 +639,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="informationProvidedBy"
             {...register("informationProvidedBy")}
           />
         </div>
@@ -662,7 +663,7 @@ function StepAssistido() {
               onChange: (value) => handleCepChange(value),
             })}
           >
-            <input type="text" placeholder="_____-___" />
+            <input type="text" id="postalCode" placeholder="_____-___" />
           </InputMask>
 
           <Link tabIndex={-1} href={BUSCA_CEP_LINK} target="_blank">
@@ -707,7 +708,7 @@ function StepAssistido() {
             Estado
           </label>
           <input
-            type="text"
+            type="text" id="fu"
             {...(register("fu"), { disabled: true, value: "SP" })}
           />
         </div>
@@ -720,7 +721,7 @@ function StepAssistido() {
             Cidade
           </label>
           <input
-            type="text"
+            type="text" id="city"
             {...(register("city"), { disabled: true, value: "Jacareí" })}
           />
         </div>
@@ -737,7 +738,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="district"
             disabled={disableAddressInputs}
             {...register("district")}
           />
@@ -757,7 +758,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="address"
             disabled={disableAddressInputs}
             {...register("address")}
           />
@@ -778,7 +779,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text"
+            type="text" id="addressNumber"
             disabled={disableAddressInputs}
             {...register("addressNumber")}
           />
@@ -797,7 +798,7 @@ function StepAssistido() {
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
             disabled={disableAddressInputs}
-            type="text"
+            type="text" id="complement"
             {...register("complement")}
           />
         </div>
