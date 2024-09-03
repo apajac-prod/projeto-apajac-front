@@ -127,7 +127,7 @@ export default function ConsultarUsuario() {
         }}
       >
         <label htmlFor="search_input">Nome</label>
-        <input type="text" minLength={3} ref={inputNameRef} />
+        <input  type="text" aria-label="Nome" minLength={3} ref={inputNameRef} />
         <input
           type="submit"
           className={`button_submit ${isLoading ? styles.disabled : ""}`}
