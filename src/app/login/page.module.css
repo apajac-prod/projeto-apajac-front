@@ -88,7 +88,7 @@
 }
 
 .loginForm input[type="submit"] {
-  background-color: #5992cd;
+  background-color: #2E5994;
   text-transform: uppercase;
   color: #fff;
   font-size: 1rem;
@@ -99,7 +99,7 @@
   cursor: pointer;
   margin-top: 40px;
   transition: 0.6s;
-  border: 2px solid #5992cd;
+  border: 2px solid #2E5994;
 }
 
 .loginForm input[type="submit"]:hover {
