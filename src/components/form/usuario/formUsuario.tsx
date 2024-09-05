@@ -377,11 +377,12 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox"
+                type="checkbox" id="administrador"
                 name={ROLES.ADMINISTRADOR}
                 value={ROLES.ADMINISTRADOR}
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={adminRef}
+                 aria-label="Administrador"
                 defaultChecked={
                   usuario &&
                   usuario.roles &&
@@ -397,7 +398,7 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox"
+                type="checkbox" id="alterar_assistido"
                 name={ROLES.ALTERAR_ASSISTIDO}
                 value={ROLES.ALTERAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
@@ -419,7 +420,7 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox"
+                type="checkbox" id="consultar_assistido"
                 name={ROLES.CONSULTAR_ASSISTIDO}
                 value={ROLES.CONSULTAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
@@ -441,7 +442,7 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox"
+                type="checkbox" id="cadastrar_assistido"
                 name={ROLES.CADASTRAR_ASSISTIDO}
                 value={ROLES.CADASTRAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}

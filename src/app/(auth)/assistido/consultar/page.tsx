@@ -142,21 +142,23 @@ export default function ConsultarAssistido() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} >
+      
       <FormTitle
-        title="Consultar Assistidos"
+        title ="Consultar Assistidos"
         Icon={icon.User}
         className={styles.title}
       />
 
       <form
+        aria-label="search by name"
         className={styles.search}
         onSubmit={(e) => {
           handleNameChange(e);
         }}
       >
         <label htmlFor="search_input">Nome</label>
-        <input type="text" minLength={3} ref={inputNameRef} />
+        <input type="text" id="search_input" minLength={3} ref={inputNameRef} />
         <input
           type="submit"
           className={`button_submit ${isLoading ? styles.disabled : ""}`}
@@ -234,7 +236,7 @@ export default function ConsultarAssistido() {
                   <td className={styles.status}>
                     <p
                       style={
-                        assistido.status ? { color: "green" } : { color: "red" }
+                        assistido.status ? { color: "#006600" } : { color: "#d9070a" }
                       }
                     >
                       {assistido.status ? "ativo" : "inativo"}

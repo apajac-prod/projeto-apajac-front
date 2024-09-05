@@ -103,14 +103,15 @@ const StepFinalizar = () => {
   }
   return (
     <div className={styles.container}>
-      <SubTitle text="Observações adicionais" />
-      <SubTitle text="(Opcional)" />
+      <SubTitle text="Observações adicionais" className={styles.sub_title}/>
+      <SubTitle text="(Opcional)" className={styles.sub_title}/>
       <form
         onSubmit={handleSubmit((data) => registerAssistido(data))}
         autoComplete="off"
       >
         <div className={`${styles.formRow} ${styles.formCommentsRow}`}>
           <textarea
+            aria-label="observation area"
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
