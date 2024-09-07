@@ -5,6 +5,7 @@
 .multistep_form {
   width: fit-content;
   margin: 0 auto;
+  
 }
 
 .required_message {
@@ -12,6 +13,7 @@
   text-align: center;
   color: #ff0000;
   font-style: italic;
+  font-weight: bold;
 }
 
 .loader {
