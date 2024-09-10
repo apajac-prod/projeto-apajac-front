@@ -1,10 +1,18 @@
 import CarsAdulto from "@/components/form/cars/cars_adulto";
 import { CarsChildhoodProvider } from "@/contexts/carsChildhoodContext";
 
-const CarsChildhood = () => {
+type Params = {
+  assistidoId: string;
+};
+
+type Props = {
+  params: Params;
+};
+
+const CarsChildhood = ({ params: { assistidoId } }: Props) => {
   return (
     <CarsChildhoodProvider>
-      <CarsAdulto />
+      <CarsAdulto assistidoId={assistidoId} />
     </CarsChildhoodProvider>
   );
 };

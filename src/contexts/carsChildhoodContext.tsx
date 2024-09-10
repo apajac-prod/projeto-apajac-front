@@ -1,8 +1,13 @@
 "use client";
 
 import { CARS_CHILDHOOD_INDEX } from "@/constants/cars_childhood";
-import { isNumber } from "lodash";
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 
 type ChildhoodContextType = {
   step: number;
@@ -21,6 +26,7 @@ type ChildhoodContextType = {
   goToResultStep: () => void;
   getResult: () => (number | undefined)[];
   getResultPontos: () => number | undefined;
+  setAssistidoId: Dispatch<SetStateAction<string | undefined>>;
 };
 
 export const CarsChildhoodContext = createContext<
@@ -41,6 +47,7 @@ export function CarsChildhoodProvider({ children }: Props) {
   const [step, setStep] = useState<number>(0);
   const [pontos, setPontos] =
     useState<Array<undefined | number>>(initialValues);
+  const [assistidoId, setAssistidoId] = useState<string | undefined>(undefined);
 
   const maxStep = CARS_CHILDHOOD_INDEX.length - 1;
 
@@ -122,6 +129,7 @@ export function CarsChildhoodProvider({ children }: Props) {
       resultPontos += pontos[i]!;
     }
 
+    console.log("AssistidoID:", assistidoId);
     return resultPontos;
     /* return pontos.reduce((prevValue, currValue) => {
       if (prevValue === undefined || currValue === undefined) return currValue;
@@ -148,6 +156,7 @@ export function CarsChildhoodProvider({ children }: Props) {
         goToResultStep,
         getResultPontos,
         getResult,
+        setAssistidoId,
       }}
     >
       {children}

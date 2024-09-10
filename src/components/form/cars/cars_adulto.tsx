@@ -12,8 +12,13 @@ import {
   CARS_CHILDHOOD_TITLE,
 } from "@/constants/cars_childhood";
 import ResultadoCarsAdulto from "./resultado";
+import { useEffect } from "react";
 
-const CarsAdulto = () => {
+type Props = {
+  assistidoId: string;
+};
+
+const CarsAdulto = ({ assistidoId }: Props) => {
   const {
     step,
     nextStep,
@@ -27,7 +32,12 @@ const CarsAdulto = () => {
     goToResultStep,
     getResult,
     getResultPontos,
+    setAssistidoId,
   } = useCarsChildhoodProvider();
+
+  useEffect(() => {
+    setAssistidoId(assistidoId);
+  }, []);
   return (
     <div>
       <FormTitle
