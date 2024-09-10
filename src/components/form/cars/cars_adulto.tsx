@@ -26,6 +26,7 @@ const CarsAdulto = () => {
     isSelected,
     goToResultStep,
     getResult,
+    getResultPontos,
   } = useCarsChildhoodProvider();
   return (
     <div>
@@ -36,7 +37,7 @@ const CarsAdulto = () => {
       />
 
       <nav className="px-6">
-        <div className="m-auto mt-6 mb-6 flex justify-center items-center flex-wrap gap-2">
+        <div className="m-auto mt-6 mb-6 flex justify-center items-center flex-wrap gap-2 max-w-[1100px]">
           {CARS_CHILDHOOD_TITLE.map((title, index) => (
             <FormIndice
               key={title}
@@ -72,14 +73,16 @@ const CarsAdulto = () => {
           />
         )}
 
-        <Button
-          text={isResultStep() ? "Finalizar" : "Avançar"}
-          type="submit"
-          onClick={
-            isResultStep() ? () => console.log(getResult()) : () => nextStep()
-          }
-          className="ml-auto"
-        />
+        {(!isResultStep() || (isResultStep() && getResultPontos())) && (
+          <Button
+            text={isResultStep() ? "Finalizar e salvar" : "Avançar"}
+            type="submit"
+            onClick={
+              isResultStep() ? () => console.log(getResult()) : () => nextStep()
+            }
+            className="ml-auto"
+          />
+        )}
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ export default function Steps({ className }: Props) {
             key={`${index}-${input.pontos}`}
             className={`${
               isSelectedOption(step, index)
-                ? "bg-blue-800 text-white"
+                ? "text-white bg-blue-800"
                 : "bg-white text-black"
             }`}
             title={input.title}

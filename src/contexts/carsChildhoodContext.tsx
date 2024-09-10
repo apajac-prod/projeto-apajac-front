@@ -1,6 +1,7 @@
 "use client";
 
 import { CARS_CHILDHOOD_INDEX } from "@/constants/cars_childhood";
+import { isNumber } from "lodash";
 import { createContext, useContext, useState } from "react";
 
 type ChildhoodContextType = {
@@ -114,11 +115,18 @@ export function CarsChildhoodProvider({ children }: Props) {
   }
 
   function getResultPontos() {
-    return pontos.reduce((pValue, cValue) => {
-      if (pValue === undefined) return cValue;
-      if (cValue === undefined) return cValue;
-      return pValue + cValue;
-    });
+    let resultPontos: number = 0;
+
+    for (let i = 0; i < pontos.length; i++) {
+      if (pontos[i] === undefined) return undefined;
+      resultPontos += pontos[i]!;
+    }
+
+    return resultPontos;
+    /* return pontos.reduce((prevValue, currValue) => {
+      if (prevValue === undefined || currValue === undefined) return currValue;
+      return prevValue + currValue;
+    }); */
   }
 
   return (
