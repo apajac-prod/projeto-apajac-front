@@ -20,12 +20,10 @@ type Props = {
 
 const CarsAdulto = ({ assistidoId }: Props) => {
   const {
-    step,
     nextStep,
     previousStep,
     isFirstStep,
     isResultStep,
-    pontos,
     goToStep,
     isCompleted,
     isSelected,

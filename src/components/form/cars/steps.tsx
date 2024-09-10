@@ -31,17 +31,23 @@ export default function Steps({ className }: Props) {
       />
       <div className="flex gap-4 flex-col justify-center items-center my-6">
         {CARS_CHILDHOOD[indexProp].map((input, index) => (
-          <CarsInput
+          <div
             key={`${index}-${input.pontos}`}
-            className={`${
-              isSelectedOption(step, index)
-                ? "text-white bg-blue-800"
-                : "bg-white text-black"
-            }`}
-            title={input.title}
-            descricao={input.descricao}
-            onClick={() => handleSelectInput(index, input.pontos)}
-          />
+            className="flex justify-center items-center gap-16"
+          >
+            <p className="text-xl font-semibold w-3">{index + 1}</p>
+            <p className="w-5 text-center">{input.pontos}</p>
+            <CarsInput
+              className={`${
+                isSelectedOption(step, index)
+                  ? "text-white bg-blue-800"
+                  : "bg-white text-black"
+              }`}
+              title={input.title}
+              descricao={input.descricao}
+              onClick={() => handleSelectInput(index, input.pontos)}
+            />
+          </div>
         ))}
       </div>
     </div>
