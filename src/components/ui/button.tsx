@@ -2,6 +2,7 @@ type Props = {
   text: string;
   onClick?: () => any;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean | undefined;
   className?: string;
   style?: "default" | "confirm" | "delete";
 };
@@ -19,6 +20,7 @@ const Button = ({
   onClick,
   type = "button",
   style = "default",
+  disabled = false,
   className,
 }: Props) => {
   if (style != "default" && style != "confirm" && style != "delete")
@@ -27,9 +29,12 @@ const Button = ({
     );
   return (
     <button
+      disabled={disabled}
       type={type}
       onClick={onClick}
-      className={`${STYLE_TYPE[style]} ${className}`}
+      className={`${STYLE_TYPE[style]} ${className} ${
+        disabled && "pointer-events-none bg-[#969696]"
+      }`}
     >
       {text}
     </button>

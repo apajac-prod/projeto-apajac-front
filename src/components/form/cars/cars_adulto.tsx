@@ -78,18 +78,23 @@ const CarsAdulto = ({ assistidoId }: Props) => {
           />
         )}
 
-        {(!isResultStep() || (isResultStep() && getResultPontos())) && (
+        {isResultStep() ? (
           <Button
-            text={isResultStep() ? "Finalizar e salvar" : "Avançar"}
+            text={"Finalizar e salvar"}
+            disabled={!getResultPontos()}
             type="submit"
-            onClick={
-              isResultStep()
-                ? () =>
-                    console.log(
-                      carsToApi(assistidoId, getResultPontos(), getResult())
-                    )
-                : () => nextStep()
+            onClick={() =>
+              console.log(
+                carsToApi(assistidoId, getResultPontos(), getResult())
+              )
             }
+            className="ml-auto"
+          />
+        ) : (
+          <Button
+            text={"Avançar"}
+            type="submit"
+            onClick={() => nextStep()}
             className="ml-auto"
           />
         )}
