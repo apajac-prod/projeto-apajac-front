@@ -14,8 +14,8 @@ export default function rolesToString(roles: Array<string>) {
 
   let rolesStr = "";
   roles.forEach((role, index) => {
-    console.log("index:", index, "\n", "role:", role);
-    console.log("getRole:", ROLES_TO_PERMISSOES.get(role));
+    //console.log("index:", index, "\n", "role:", role);
+    //console.log("getRole:", ROLES_TO_PERMISSOES.get(role));
     if (role == ROLES.ADMINISTRADOR) return;
     if (rolesStr == "") {
       rolesStr = rolesStr + ROLES_TO_PERMISSOES.get(role);
@@ -23,7 +23,7 @@ export default function rolesToString(roles: Array<string>) {
     }
     rolesStr = rolesStr + `, ${ROLES_TO_PERMISSOES.get(role)}`;
   });
-  console.log("rolesStr:", rolesStr);
+  //console.log("rolesStr:", rolesStr);
 
   return rolesStr;
 }
