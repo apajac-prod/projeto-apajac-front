@@ -33,6 +33,13 @@ const Menu = () => {
             session && session.sessionInfo.roles?.includes(ROLES.ADMINISTRADOR)
           }
         />
+        <MenuCard
+          title={"Realizar CARS Childhood"}
+          link="/cars/childhood/buscar"
+          show={
+            session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
+          }
+        />
       </MenuCategoria>
 
       <MenuCategoria title={"Consultar"} className={styles.categoria}>
