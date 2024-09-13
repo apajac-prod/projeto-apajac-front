@@ -1,22 +1,18 @@
 "use client";
 
 import { CARS_CHILDHOOD_INDEX } from "@/constants/cars_childhood";
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { createContext, useContext, useState } from "react";
 
 type ChildhoodContextType = {
   step: number;
-  pontos: Array<undefined | number>;
+  pontos: Array<number | undefined>;
+  observacoes: Array<string | undefined>;
   nextStep: () => void;
   previousStep: () => void;
   isResultStep: () => boolean;
   isFirstStep: () => boolean;
-  setPontosByStep: (step: number, pontos: number | undefined) => void;
+  setPontosByStep: (step: number, pontos: undefined | number) => void;
+  setObservacoesByStep: (step: number, observacoes: undefined | string) => void;
   getIndexByStep: (step: number) => string;
   isSelectedOption: (step: number, index: number) => boolean;
   getStepByIndex: (index: string) => number | undefined;
@@ -26,6 +22,8 @@ type ChildhoodContextType = {
   goToResultStep: () => void;
   getResult: () => (number | undefined)[];
   getResultPontos: () => number | undefined;
+  getObservacoes: () => (string | undefined)[];
+  getObservacoesByStep: (step: number) => string;
 };
 
 export const CarsChildhoodContext = createContext<
@@ -36,7 +34,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-let initialValues: Array<undefined | number> = [];
+let initialValues: Array<undefined> = [];
 
 CARS_CHILDHOOD_INDEX.forEach(() => {
   initialValues.push(undefined);
@@ -45,7 +43,10 @@ CARS_CHILDHOOD_INDEX.forEach(() => {
 export function CarsChildhoodProvider({ children }: Props) {
   const [step, setStep] = useState<number>(0);
   const [pontos, setPontos] =
-    useState<Array<undefined | number>>(initialValues);
+    useState<Array<number | undefined>>(initialValues);
+
+  const [observacoes, setObservacoes] =
+    useState<Array<string | undefined>>(initialValues);
 
   const maxStep = CARS_CHILDHOOD_INDEX.length - 1;
 
@@ -76,6 +77,14 @@ export function CarsChildhoodProvider({ children }: Props) {
       let newPontos = [...actualPontos];
       newPontos[step] = pontos;
       return newPontos;
+    });
+  }
+
+  function setObservacoesByStep(step: number, observacoes: string | undefined) {
+    setObservacoes((actualObservacoes) => {
+      let newObservacoes = [...actualObservacoes];
+      newObservacoes[step] = observacoes;
+      return newObservacoes;
     });
   }
 
@@ -119,6 +128,14 @@ export function CarsChildhoodProvider({ children }: Props) {
     return pontos;
   }
 
+  function getObservacoes() {
+    return observacoes;
+  }
+
+  function getObservacoesByStep(step: number) {
+    return observacoes[step] ?? "";
+  }
+
   function getResultPontos() {
     let resultPontos: number = 0;
 
@@ -148,6 +165,10 @@ export function CarsChildhoodProvider({ children }: Props) {
         goToResultStep,
         getResultPontos,
         getResult,
+        getObservacoes,
+        setObservacoesByStep,
+        getObservacoesByStep,
+        observacoes,
       }}
     >
       {children}

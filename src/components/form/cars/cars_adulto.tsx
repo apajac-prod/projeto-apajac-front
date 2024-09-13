@@ -12,7 +12,6 @@ import {
   CARS_CHILDHOOD_TITLE,
 } from "@/constants/cars_childhood";
 import ResultadoCarsAdulto from "./resultado";
-import { useEffect } from "react";
 import { carsToApi } from "@/api/middleware/cars";
 
 type Props = {
@@ -31,6 +30,7 @@ const CarsAdulto = ({ assistidoId }: Props) => {
     goToResultStep,
     getResult,
     getResultPontos,
+    getObservacoes,
   } = useCarsChildhoodProvider();
 
   return (
@@ -81,11 +81,16 @@ const CarsAdulto = ({ assistidoId }: Props) => {
         {isResultStep() ? (
           <Button
             text={"Finalizar e salvar"}
-            disabled={!getResultPontos()}
+            disabled={getResultPontos() === undefined}
             type="submit"
             onClick={() =>
               console.log(
-                carsToApi(assistidoId, getResultPontos(), getResult())
+                carsToApi(
+                  assistidoId,
+                  getResultPontos(),
+                  getResult(),
+                  getObservacoes()
+                )
               )
             }
             className="ml-auto"

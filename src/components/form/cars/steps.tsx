@@ -10,8 +10,14 @@ type Props = {
   className?: string;
 };
 export default function Steps({ className }: Props) {
-  const { step, setPontosByStep, isSelectedOption, getIndexByStep } =
-    useCarsChildhoodProvider();
+  const {
+    step,
+    setPontosByStep,
+    isSelectedOption,
+    getIndexByStep,
+    setObservacoesByStep,
+    observacoes,
+  } = useCarsChildhoodProvider();
 
   const indexProp = getIndexByStep(step);
 
@@ -21,6 +27,11 @@ export default function Steps({ className }: Props) {
       return;
     }
     setPontosByStep(step, pontos);
+  }
+
+  function handleObservacoesBlur(observacoesValue: string) {
+    if (!observacoesValue) return;
+    setObservacoesByStep(step, observacoesValue);
   }
 
   return (
@@ -49,6 +60,16 @@ export default function Steps({ className }: Props) {
             />
           </div>
         ))}
+      </div>
+
+      <div className="w-[660px] m-auto flex justify-end">
+        <textarea
+          id={`observacoes-${step}`}
+          value={observacoes[step] ?? ""}
+          placeholder="Digite aqui observações sobre esta resposta. (OPCIONAL)"
+          className="placeholder:text-center resize-none w-96 h-24 mr-16 mb-16 rounded-sm p-1"
+          onChange={(e) => handleObservacoesBlur(e.target.value)}
+        ></textarea>
       </div>
     </div>
   );
