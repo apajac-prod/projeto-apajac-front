@@ -13,12 +13,14 @@ import {
 } from "@/constants/cars_childhood";
 import ResultadoCarsAdulto from "./resultado";
 import { createCarsChildhood } from "@/api/endpoints";
+import { useRouter } from "next/navigation";
 
 type Props = {
   assistidoId: string;
 };
 
 const CarsAdulto = ({ assistidoId }: Props) => {
+  const router = useRouter();
   const {
     nextStep,
     previousStep,
@@ -39,7 +41,9 @@ const CarsAdulto = ({ assistidoId }: Props) => {
       getResultPontos(),
       getResult(),
       getObservacoes()
-    );
+    ).then(() => {
+      router.push("/menu");
+    });
   };
 
   return (
