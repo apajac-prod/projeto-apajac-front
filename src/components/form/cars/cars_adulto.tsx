@@ -12,7 +12,7 @@ import {
   CARS_CHILDHOOD_TITLE,
 } from "@/constants/cars_childhood";
 import ResultadoCarsAdulto from "./resultado";
-import { carsToApi } from "@/api/middleware/cars";
+import { createCarsChildhood } from "@/api/endpoints";
 
 type Props = {
   assistidoId: string;
@@ -32,6 +32,15 @@ const CarsAdulto = ({ assistidoId }: Props) => {
     getResultPontos,
     getObservacoes,
   } = useCarsChildhoodProvider();
+
+  const submitCars = () => {
+    createCarsChildhood(
+      assistidoId,
+      getResultPontos(),
+      getResult(),
+      getObservacoes()
+    );
+  };
 
   return (
     <div>
@@ -83,16 +92,7 @@ const CarsAdulto = ({ assistidoId }: Props) => {
             text={"Finalizar e salvar"}
             disabled={getResultPontos() === undefined}
             type="submit"
-            onClick={() =>
-              console.log(
-                carsToApi(
-                  assistidoId,
-                  getResultPontos(),
-                  getResult(),
-                  getObservacoes()
-                )
-              )
-            }
+            onClick={() => submitCars()}
             className="ml-auto"
           />
         ) : (

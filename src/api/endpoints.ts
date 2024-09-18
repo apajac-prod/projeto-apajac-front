@@ -5,6 +5,7 @@ import { apiToListAssistido } from "./middleware/listAssistido";
 import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
 import { apiToListUsuario } from "./middleware/listUsuario";
+import { carsToApi } from "./middleware/cars";
 
 const HTTP_STATUS = {
   OK: 200,
@@ -452,4 +453,19 @@ export const getListaUsuariosPorNome = async (
     usuarios: apiToListUsuario(data.usuarios),
     isLastPage: data.isLastPage,
   };
+};
+
+export const createCarsChildhood = (
+  assistidoId: string,
+  resultPontos: number | undefined,
+  result: Array<number | undefined>,
+  observacoes: Array<string | undefined>
+) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Salvando CARS ...",
+    successMessage: "Cars salvo com sucesso!",
+    errorMessage: "Não foi possível salvar o CARS.",
+  };
+  const data = carsToApi(assistidoId, resultPontos, result, observacoes);
+  return postRequest("cars", data, toastOptions);
 };
