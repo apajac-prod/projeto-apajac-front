@@ -8,7 +8,7 @@ const ConsultarAssistido = () => {
 
   return (
     <BuscarAssistido
-      onSelectCallback={(id) => router.push(`/cars/childhood/${id}`)}
+      onSelectCallback={(id) => router.push(`/cars/cadastrar/${id}`)}
     />
   );
 };

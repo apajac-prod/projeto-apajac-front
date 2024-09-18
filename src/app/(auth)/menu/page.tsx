@@ -35,7 +35,7 @@ const Menu = () => {
         />
         <MenuCard
           title={"Realizar CARS Childhood"}
-          link="/cars/childhood/buscar"
+          link="/cars/buscar"
           show={
             session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
           }
