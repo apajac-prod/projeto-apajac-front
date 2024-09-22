@@ -1,20 +1,12 @@
-import { useCallback } from "react";
 import SubTitle from "../assistido/subTitle";
 import { useCarsChildhoodProvider } from "@/contexts/carsChildhoodContext";
+import { getCarsResult } from "@/functions/getCarsResult";
 
 type Props = {
   className?: string;
 };
 export default function ResultadoCarsAdulto({ className }: Props) {
   const { getResultPontos } = useCarsChildhoodProvider();
-
-  const getResultText = useCallback((pontos: number | undefined) => {
-    if (pontos === undefined)
-      return "Responda todas as questões para ter o resultado final.";
-    if (pontos <= 30) return "Sem autismo";
-    if (pontos <= 36) return "Autismo leve-moderado";
-    return "Autismo grave";
-  }, []);
 
   return (
     <div className={className}>
@@ -24,7 +16,7 @@ export default function ResultadoCarsAdulto({ className }: Props) {
           <>
             <p className="font-semibold">Pontuação: {getResultPontos()}</p>
             <p className="px-2 py-4 bg-white rounded-md">
-              {getResultText(getResultPontos())}
+              {getCarsResult(getResultPontos())}
             </p>
           </>
         ) : (

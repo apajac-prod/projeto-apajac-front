@@ -35,7 +35,7 @@ const Menu = () => {
         />
         <MenuCard
           title={"Realizar CARS Childhood"}
-          link="/cars/buscar"
+          link="/assistido/buscar?goto=realizar_cars"
           show={
             session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
           }
@@ -57,6 +57,14 @@ const Menu = () => {
           link="/usuario/consultar"
           show={
             session && session.sessionInfo.roles?.includes(ROLES.ADMINISTRADOR)
+          }
+        />
+
+        <MenuCard
+          title={"Consultar CARS Childhood"}
+          link="/assistido/buscar?goto=listar_cars"
+          show={
+            session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
           }
         />
       </MenuCategoria>

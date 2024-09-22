@@ -469,3 +469,13 @@ export const createCarsChildhood = (
   const data = carsToApi(assistidoId, resultPontos, result, observacoes);
   return postRequest("cars", data, toastOptions);
 };
+
+export const getCarsByAssistidoId = async (assistidoid: number | string) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Carregando informações ...",
+    successMessage: "Informaçõs carregadas com sucesso!",
+    errorMessage: "Houve um problema ao listar os CARS deste assistido.",
+  };
+
+  return await getRequest(`cars/${assistidoid}`, toastOptions);
+};
