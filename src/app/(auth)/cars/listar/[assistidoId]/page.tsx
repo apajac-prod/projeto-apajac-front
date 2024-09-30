@@ -68,7 +68,9 @@ const ListarCarsPage = ({ params: { assistidoId } }: Props) => {
           <div
             key={avaliacao.id}
             className="bg-white rounded-md h-28 w-[95%] max-w-[500px] mx-auto mt-2 mb-4 flex items-center p-4 justify-between cursor-pointer"
-            onClick={() => router.push(`/cars/consultar/${avaliacao.id}`)}
+            onClick={() =>
+              router.push(`/cars/listar/${assistidoId}/id/${avaliacao.id}`)
+            }
           >
             <div className="text-center font-semibold leading-6">
               <p>CARS realizado em</p>

@@ -479,3 +479,13 @@ export const getCarsByAssistidoId = async (assistidoid: number | string) => {
 
   return await getRequest(`cars/${assistidoid}`, toastOptions);
 };
+
+export const getCarsDetailsById = async (carsId: number | string) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Carregando informações ...",
+    successMessage: "Informaçõs carregadas com sucesso!",
+    errorMessage: "Houve um problema ao carregar as informações deste CARS.",
+  };
+
+  return await getRequest(`cars/detalhes/${carsId}`, toastOptions);
+};
