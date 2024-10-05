@@ -6,6 +6,7 @@ import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
 import { apiToListUsuario } from "./middleware/listUsuario";
 import { carsToApi } from "./middleware/cars";
+import { MchatFormData } from "@/components/form/mchat/Constants";
 
 const HTTP_STATUS = {
   OK: 200,
@@ -488,4 +489,35 @@ export const getCarsDetailsById = async (carsId: number | string) => {
   };
 
   return await getRequest(`cars/detalhes/${carsId}`, toastOptions);
+};
+
+export const createMchat = (
+  mchatData: any
+) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Salvando MCHAT ...",
+    successMessage: "MCHAT salvo com sucesso!",
+    errorMessage: "Não foi possível salvar o MCHAT.",
+  };
+  return postRequest("mchat", mchatData, toastOptions);
+};
+
+export const getMchatByAssistidoId = async (assistidoid: number | string) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Carregando informações ...",
+    successMessage: "Informaçõs carregadas com sucesso!",
+    errorMessage: "Houve um problema ao listar os MCHATs deste assistido.",
+  };
+
+  return await getRequest(`mchat/${assistidoid}`, toastOptions);
+};
+
+export const getMchatDetailsById = async (mchatId: number | string) => {
+  const toastOptions: ToastOptions = {
+    loadingMessage: "Carregando informações ...",
+    successMessage: "Informaçõs carregadas com sucesso!",
+    errorMessage: "Houve um problema ao carregar as informações deste MCHAT.",
+  };
+
+  return await getRequest(`mchat/detalhes/${mchatId}`, toastOptions);
 };

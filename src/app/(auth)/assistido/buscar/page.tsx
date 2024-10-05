@@ -7,6 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 const pathMap = new Map([
   ["realizar_cars", "/cars/cadastrar/"],
   ["listar_cars", "/cars/listar/"],
+  ["realizar_mchat", "/mchat/cadastrar/"],
+  ["listar_mchat", "/mchat/listar/"],
 ]);
 
 const BuscarAssistidoPage = () => {
@@ -14,8 +16,7 @@ const BuscarAssistidoPage = () => {
   const goto = searchParams.get("goto");
   const router = useRouter();
 
-  console.log("goto: ", goto);
-  if (!goto) return <NotFound />;
+  if (!goto || !pathMap.get(goto)) return <NotFound />;
 
   return (
     <BuscarAssistido

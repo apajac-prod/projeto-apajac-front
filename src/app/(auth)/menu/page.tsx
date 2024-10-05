@@ -40,6 +40,13 @@ const Menu = () => {
             session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
           }
         />
+        <MenuCard
+          title={"Realizar MCHAT"}
+          link="/assistido/buscar?goto=realizar_mchat"
+          show={
+            session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
+          }
+        />
       </MenuCategoria>
 
       <MenuCategoria title={"Consultar"} className={styles.categoria}>
@@ -63,6 +70,14 @@ const Menu = () => {
         <MenuCard
           title={"Consultar CARS Childhood"}
           link="/assistido/buscar?goto=listar_cars"
+          show={
+            session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
+          }
+        />
+
+        <MenuCard
+          title={"Consultar MCHAT Childhood"}
+          link="/assistido/buscar?goto=listar_mchat"
           show={
             session && session.sessionInfo.roles?.includes(ROLES.REALIZAR_EXAME)
           }
