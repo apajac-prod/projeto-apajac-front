@@ -66,13 +66,13 @@ function FormUsuario({ usuario }: Props) {
         if (value.split("").includes(" "))
           return this.createError({
             message: "O login não pode conter espaços",
-            path: "login",
+            path: this.path,
           });
 
         if (containsUppercase(value))
           return this.createError({
             message: "O login não pode conter letras maiúsculas",
-            path: "login",
+            path: this.path,
           });
 
         return true;
@@ -87,24 +87,31 @@ function FormUsuario({ usuario }: Props) {
         const min = 6;
         const max = 20;
 
-        if (!value || value == "") return true;
+        if (!value || value == "") {
+          if (usuario) return true;
+
+          return this.createError({
+            message: `É obrigatório inserir uma senha.`,
+            path: this.path,
+          });
+        }
 
         if (value.length < min)
           return this.createError({
             message: `A senha precisa ter no mínimo ${min} caracteres.`,
-            path: "password",
+            path: this.path,
           });
 
         if (value.length > max)
           return this.createError({
             message: `A senha precisa ter no máximo ${max} caracteres.`,
-            path: "password",
+            path: this.path,
           });
 
         if (value.split("").includes(" "))
           return this.createError({
             message: "A senha não pode conter espaços",
-            path: "password",
+            path: this.path,
           });
 
         return true;
@@ -116,8 +123,16 @@ function FormUsuario({ usuario }: Props) {
     repeatPassword: yup
       .string()
       .transform((_, val) => (val === "" ? null : val))
+      .test("password_check", function (value) {
+        if (!value && this.parent.password == "") return true
+        if(value === this.parent.password) return true;
+        
+        return this.createError({
+          message: "As senhas inseridas não são iguais.",
+          path: this.path,
+        });
+      })
       .nullable()
-      .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.")
       .typeError("Repita a senha"),
   });
 
