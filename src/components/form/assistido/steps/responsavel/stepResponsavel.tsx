@@ -126,7 +126,6 @@ const StepResponsavel = () => {
     let newPhoneMask = new Map();
 
     fields.forEach((field, index) => {
-      console.log(field);
       if (field.value && unmaskPhone(field.value[3]) == "9") {
         const name = `phones.${index}.value`;
         newPhoneMask.set(name, "(99) 9 9999-9999");
@@ -138,7 +137,6 @@ const StepResponsavel = () => {
   }, []);
 
   function handleResponsibleChange(value: string) {
-    console.log("FIELDS -----", fields);
     replace([]);
     reset({ responsibleName: "" });
 
@@ -156,7 +154,6 @@ const StepResponsavel = () => {
   function handlePhoneChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value: string = event.target.value;
     const name = event.target.name;
-    console.log("event name", name);
     if (value[5] == "9") {
       setPhoneMask(
         (actualPhoneMask) =>
@@ -170,14 +167,6 @@ const StepResponsavel = () => {
     );
     setValue<any>(name, value);
   }
-
-  /*   useEffect(() => {
-    if (showResponsibleWho) {
-      setFocus("responsibleWho");
-      if (fields && fields.length <= 0)
-        append({ value: "" }, { shouldFocus: false });
-    } else replace([]);
-  }, [showResponsibleWho]); */
 
   useEffect(() => {
     setShowResponsibleFields((oldValue) => {
@@ -198,7 +187,6 @@ const StepResponsavel = () => {
 
   function next(data: any) {
     multistepController?.setCurrentStepData(data);
-    console.log(data);
     multistepController?.next();
   }
 
@@ -218,6 +206,10 @@ const StepResponsavel = () => {
     }
     multistepController?.setCurrentStepCache(data);
     multistepController?.back();
+  }
+
+  function hasFather() {
+    return !!multistepController?.getData(2).name;
   }
 
   return (
@@ -243,7 +235,7 @@ const StepResponsavel = () => {
               Selecione
             </option>
             <option value="mae">Mãe</option>
-            <option value="pai">Pai</option>
+            {hasFather() && <option value="pai">Pai</option>}
             <option value="outro">Outro</option>
           </select>
         </div>
