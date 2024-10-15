@@ -42,6 +42,8 @@ function FormUsuario({ usuario }: Props) {
   const alterarAssistidoRef = useRef<HTMLInputElement | null>(null);
   const cadastrarAssistidoRef = useRef<HTMLInputElement | null>(null);
   const consultarAssistidoRef = useRef<HTMLInputElement | null>(null);
+  const realizarExameRef = useRef<HTMLInputElement | null>(null);
+  const consultarExameRef = useRef<HTMLInputElement | null>(null);
 
   //Yup validation schema
   const usuarioSchema: yup.ObjectSchema<
@@ -64,13 +66,13 @@ function FormUsuario({ usuario }: Props) {
         if (value.split("").includes(" "))
           return this.createError({
             message: "O login não pode conter espaços",
-            path: "login",
+            path: this.path,
           });
 
         if (containsUppercase(value))
           return this.createError({
             message: "O login não pode conter letras maiúsculas",
-            path: "login",
+            path: this.path,
           });
 
         return true;
@@ -85,24 +87,31 @@ function FormUsuario({ usuario }: Props) {
         const min = 6;
         const max = 20;
 
-        if (!value || value == "") return true;
+        if (!value || value == "") {
+          if (usuario) return true;
+
+          return this.createError({
+            message: `É obrigatório inserir uma senha.`,
+            path: this.path,
+          });
+        }
 
         if (value.length < min)
           return this.createError({
             message: `A senha precisa ter no mínimo ${min} caracteres.`,
-            path: "password",
+            path: this.path,
           });
 
         if (value.length > max)
           return this.createError({
             message: `A senha precisa ter no máximo ${max} caracteres.`,
-            path: "password",
+            path: this.path,
           });
 
         if (value.split("").includes(" "))
           return this.createError({
             message: "A senha não pode conter espaços",
-            path: "password",
+            path: this.path,
           });
 
         return true;
@@ -114,8 +123,16 @@ function FormUsuario({ usuario }: Props) {
     repeatPassword: yup
       .string()
       .transform((_, val) => (val === "" ? null : val))
+      .test("password_check", function (value) {
+        if (!value && this.parent.password == "") return true
+        if(value === this.parent.password) return true;
+        
+        return this.createError({
+          message: "As senhas inseridas não são iguais.",
+          path: this.path,
+        });
+      })
       .nullable()
-      .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.")
       .typeError("Repita a senha"),
   });
 
@@ -206,6 +223,8 @@ function FormUsuario({ usuario }: Props) {
       alterarAssistidoRef!.current!.checked = true;
       cadastrarAssistidoRef!.current!.checked = true;
       consultarAssistidoRef!.current!.checked = true;
+      realizarExameRef!.current!.checked = true;
+      consultarExameRef!.current!.checked = true;
     }
   }
 
@@ -231,6 +250,20 @@ function FormUsuario({ usuario }: Props) {
       cadastrarAssistidoRef.current.checked
     )
       roles.push(ROLES.CADASTRAR_ASSISTIDO);
+
+    if (
+      realizarExameRef &&
+      realizarExameRef.current &&
+      realizarExameRef.current.checked
+    )
+      roles.push(ROLES.REALIZAR_EXAME);
+
+    if (
+      consultarExameRef &&
+      consultarExameRef.current &&
+      consultarExameRef.current.checked
+    )
+      roles.push(ROLES.CONSULTAR_EXAME);
 
     return roles;
   }
@@ -377,12 +410,13 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox" id="administrador"
+                type="checkbox"
+                id={ROLES.ADMINISTRADOR}
                 name={ROLES.ADMINISTRADOR}
                 value={ROLES.ADMINISTRADOR}
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={adminRef}
-                 aria-label="Administrador"
+                aria-label="Administrador"
                 defaultChecked={
                   usuario &&
                   usuario.roles &&
@@ -398,7 +432,8 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox" id="alterar_assistido"
+                type="checkbox"
+                id={ROLES.ALTERAR_ASSISTIDO}
                 name={ROLES.ALTERAR_ASSISTIDO}
                 value={ROLES.ALTERAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
@@ -420,7 +455,8 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox" id="consultar_assistido"
+                type="checkbox"
+                id={ROLES.CONSULTAR_ASSISTIDO}
                 name={ROLES.CONSULTAR_ASSISTIDO}
                 value={ROLES.CONSULTAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
@@ -442,7 +478,8 @@ function FormUsuario({ usuario }: Props) {
               <input
                 className={`${!isActive && "disable_input"}`}
                 disabled={!isActive}
-                type="checkbox" id="cadastrar_assistido"
+                type="checkbox"
+                id={ROLES.CADASTRAR_ASSISTIDO}
                 name={ROLES.CADASTRAR_ASSISTIDO}
                 value={ROLES.CADASTRAR_ASSISTIDO}
                 onClick={(e) => handlePermissionCheck(e)}
@@ -451,6 +488,48 @@ function FormUsuario({ usuario }: Props) {
                   usuario &&
                   usuario.roles &&
                   usuario.roles.includes(ROLES.CADASTRAR_ASSISTIDO)
+                    ? true
+                    : undefined
+                }
+              />
+            </div>
+
+            <div className={styles.permission}>
+              <label htmlFor={ROLES.REALIZAR_EXAME}>Realizar exames</label>
+              <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
+                type="checkbox"
+                id={ROLES.REALIZAR_EXAME}
+                name={ROLES.REALIZAR_EXAME}
+                value={ROLES.REALIZAR_EXAME}
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={realizarExameRef}
+                defaultChecked={
+                  usuario &&
+                  usuario.roles &&
+                  usuario.roles.includes(ROLES.REALIZAR_EXAME)
+                    ? true
+                    : undefined
+                }
+              />
+            </div>
+
+            <div className={styles.permission}>
+              <label htmlFor={ROLES.CONSULTAR_EXAME}>Consultar exames</label>
+              <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
+                type="checkbox"
+                id={ROLES.CONSULTAR_EXAME}
+                name={ROLES.CONSULTAR_EXAME}
+                value={ROLES.CONSULTAR_EXAME}
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={consultarExameRef}
+                defaultChecked={
+                  usuario &&
+                  usuario.roles &&
+                  usuario.roles.includes(ROLES.CONSULTAR_EXAME)
                     ? true
                     : undefined
                 }
