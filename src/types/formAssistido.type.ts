@@ -4,6 +4,7 @@ export type Assistido = {
   registerDate: Dayjs;
   name: string | undefined;
   birthdate: Dayjs | undefined;
+  gender: string;
   /* birthdate: Date | string | undefined; */
   educationLevel: string | undefined;
   school: string | null | undefined;

@@ -29,7 +29,6 @@ export function assistidoToApi(
   assistido: AssistidoInput,
   sessionId: number
 ): ApiAssistido {
-
   let data: any = assistido.map((element: any, index: number) => {
     if (STEPS[index] == "composicaoFamiliar") {
       return element.familyComposition;
@@ -56,7 +55,6 @@ export function assistidoToApi(
     }
   });
 
-
   // Parse Datestring to Date:
   /* const birthdate = new Date(Date.parse(localDateFormatToDefaultFormat(data.assistido.birthdate)))
     console.log(birthdate);
@@ -74,6 +72,7 @@ export function assistidoToApi(
     statusAssistido: data.assistido.status ?? null,
     nome: data.assistido.name,
     dataNascimento: data.assistido.birthdate.format("YYYY-MM-DD"),
+    genero: data.assistido.gender,
     escolaridade: data.assistido.educationLevel,
     escola: data.assistido.school,
     telEscola: data.assistido.schoolPhone,
@@ -269,6 +268,7 @@ export function apiToAssistido(data: ApiAssistido) {
       anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",
       /* birthdate: dateToOutputString(new Date(data.dataNascimento)), */
       birthdate: dayjs(data.dataNascimento),
+      gender: data.genero,
       city: data.endereco.cidade,
       complement: data.endereco.complemento,
       district: data.endereco.bairro,

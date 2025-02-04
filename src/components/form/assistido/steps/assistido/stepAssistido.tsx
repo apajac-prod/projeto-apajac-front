@@ -117,6 +117,10 @@ function StepAssistido() {
       .required("Obrigatório inserir a data de nascimento")
       .typeError("Insira a data de nascimento em formato correto"),
 
+    gender: yup
+      .string()
+      .required("Obrigatório selecionar um gênero")
+      .typeError("Selecione o gênero"),
     educationLevel: yup
       .string()
       .trim()
@@ -293,6 +297,7 @@ function StepAssistido() {
           : dayjs().format("DD/MM/YYYY"),
       name: restoreInputValue("name", multistepController || null),
       birthdate: restoreInputValue("birthdate", multistepController || null),
+      gender: restoreInputValue("gender", multistepController || null),
       educationLevel: restoreInputValue(
         "educationLevel",
         multistepController || null
@@ -436,7 +441,7 @@ function StepAssistido() {
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
             {...register("registerDate")}
           >
-            <input type="text" id="registerDate"/>
+            <input type="text" id="registerDate" />
           </InputMask>
         </div>
         {errors.registerDate && (
@@ -454,7 +459,7 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" 
+            type="text"
             id="name"
             style={{ textTransform: "uppercase" }}
             {...register("name")}
@@ -486,6 +491,32 @@ function StepAssistido() {
         )}
 
         <div className={styles.formRow}>
+          <label htmlFor="gender" className={styles.required}>
+            Gênero
+          </label>
+          <select
+            aria-label="select an option"
+            className={`${
+              !multistepController?.getActiveStatus() && "disable_input"
+            }`}
+            tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
+            defaultValue={""}
+            {...register("gender")}
+          >
+            <option value="" hidden>
+              Selecione
+            </option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        {errors.gender && (
+          <p className={styles.error_message}>
+            {String(errors.gender.message)}
+          </p>
+        )}
+
+        <div className={styles.formRow}>
           <label htmlFor="educationLevel" className={styles.required}>
             Escolaridade
           </label>
@@ -494,7 +525,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="educationLevel"
+            type="text"
+            id="educationLevel"
             {...register("educationLevel")}
           />
         </div>
@@ -511,7 +543,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="school"
+            type="text"
+            id="school"
             {...register("school")}
           />
         </div>
@@ -534,7 +567,7 @@ function StepAssistido() {
               onChange: (e) => handlePhoneChange(e),
             })}
           >
-            <input type="text"id="schoolPhone"/>
+            <input type="text" id="schoolPhone" />
           </InputMask>
         </div>
 
@@ -548,7 +581,8 @@ function StepAssistido() {
           <label htmlFor="anyInstitutionRegister" className={styles.required}>
             Possui cadastro em alguma instituição
           </label>
-          <select aria-label="select an option"
+          <select
+            aria-label="select an option"
             className={`${
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
@@ -584,7 +618,8 @@ function StepAssistido() {
                 tabIndex={
                   !multistepController?.getActiveStatus() ? -1 : undefined
                 }
-                type="text" id="whichInstitution"
+                type="text"
+                id="whichInstitution"
                 {...register("whichInstitution")}
               />
             </div>
@@ -603,7 +638,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="forwardedTo"
+            type="text"
+            id="forwardedTo"
             {...register("forwardedTo")}
           />
         </div>
@@ -620,7 +656,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="whoRecommended"
+            type="text"
+            id="whoRecommended"
             {...register("whoRecommended")}
           />
         </div>
@@ -639,7 +676,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="informationProvidedBy"
+            type="text"
+            id="informationProvidedBy"
             {...register("informationProvidedBy")}
           />
         </div>
@@ -708,7 +746,8 @@ function StepAssistido() {
             Estado
           </label>
           <input
-            type="text" id="fu"
+            type="text"
+            id="fu"
             {...(register("fu"), { disabled: true, value: "SP" })}
           />
         </div>
@@ -721,7 +760,8 @@ function StepAssistido() {
             Cidade
           </label>
           <input
-            type="text" id="city"
+            type="text"
+            id="city"
             {...(register("city"), { disabled: true, value: "Jacareí" })}
           />
         </div>
@@ -738,7 +778,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="district"
+            type="text"
+            id="district"
             disabled={disableAddressInputs}
             {...register("district")}
           />
@@ -758,7 +799,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="address"
+            type="text"
+            id="address"
             disabled={disableAddressInputs}
             {...register("address")}
           />
@@ -779,7 +821,8 @@ function StepAssistido() {
               !multistepController?.getActiveStatus() && "disable_input"
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
-            type="text" id="addressNumber"
+            type="text"
+            id="addressNumber"
             disabled={disableAddressInputs}
             {...register("addressNumber")}
           />
@@ -798,7 +841,8 @@ function StepAssistido() {
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
             disabled={disableAddressInputs}
-            type="text" id="complement"
+            type="text"
+            id="complement"
             {...register("complement")}
           />
         </div>
