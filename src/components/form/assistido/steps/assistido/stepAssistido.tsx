@@ -22,6 +22,7 @@ import { unmaskCep, unmaskPhone } from "@/functions/unmaskInputs";
 
 import FEDERATION_UNITS from "@/constants/federation_units.array";
 import { getAddressByCep } from "@/api/endpoints";
+import { GENERO } from "./enum";
 
 const BUSCA_CEP_LINK =
   "https://buscacepinter.correios.com.br/app/endereco/index.php";
@@ -97,30 +98,13 @@ function StepAssistido() {
 
         return true;
       })
-      /* .test("birthdate_validation", "Insira uma data válida", function (value) {
-        console.log("birthdate value", value);
-        // Check if the inserted date its after now()
-        if (!!value) {
-          try {
-            const date = localStringDateToDate(value);
-            const schema = yup
-              .date()
-              .max(new Date())
-              .typeError("Insira uma data válida");
-            return schema.isValidSync(date);
-          } catch (Error) {
-            return false;
-          }
-        }
-        return true;
-      }) */
       .required("Obrigatório inserir a data de nascimento")
       .typeError("Insira a data de nascimento em formato correto"),
 
-    gender: yup
+    sex: yup
       .string()
-      .required("Obrigatório selecionar um gênero")
-      .typeError("Selecione o gênero"),
+      .required("Obrigatório selecionar um sexo")
+      .typeError("Selecione o sexo"),
     educationLevel: yup
       .string()
       .trim()
@@ -297,7 +281,7 @@ function StepAssistido() {
           : dayjs().format("DD/MM/YYYY"),
       name: restoreInputValue("name", multistepController || null),
       birthdate: restoreInputValue("birthdate", multistepController || null),
-      gender: restoreInputValue("gender", multistepController || null),
+      sex: restoreInputValue("sex", multistepController || null),
       educationLevel: restoreInputValue(
         "educationLevel",
         multistepController || null
@@ -491,8 +475,8 @@ function StepAssistido() {
         )}
 
         <div className={styles.formRow}>
-          <label htmlFor="gender" className={styles.required}>
-            Gênero
+          <label htmlFor="sex" className={styles.required}>
+            Sexo
           </label>
           <select
             aria-label="select an option"
@@ -501,18 +485,22 @@ function StepAssistido() {
             }`}
             tabIndex={!multistepController?.getActiveStatus() ? -1 : undefined}
             defaultValue={""}
-            {...register("gender")}
+            {...register("sex")}
           >
-            <option value="" hidden>
-              Selecione
+            <option value={""} hidden>
+              Selecione um sexo
             </option>
-            <option value="M">Masculino</option>
-            <option value="F">Feminino</option>
+            <option value={GENERO.INDEFINIDO} hidden>
+              Selecione um sexo
+            </option>
+            <option value={GENERO.MASCULINO}>Masculino</option>
+            <option value={GENERO.FEMININO}>Feminino</option>
+            <option value={GENERO.OUTRO}>Outro</option>
           </select>
         </div>
-        {errors.gender && (
+        {errors.sex && (
           <p className={styles.error_message}>
-            {String(errors.gender.message)}
+            {String(errors.sex.message)}
           </p>
         )}
 
@@ -856,8 +844,7 @@ function StepAssistido() {
           <button
             className="button_submit"
             onClick={handleSubmit(
-              (data) => next(data),
-              (erro) => console.log("Erro detectado:", erro)
+              (data) => next(data)
             )}
           >
             Avançar

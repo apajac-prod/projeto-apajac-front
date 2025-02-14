@@ -163,7 +163,6 @@ function FormUsuario({ usuario }: Props) {
         "É obrigatório marcar ao menos uma permissão para este usuário."
       );
     const dataWithRoles = { ...data, roles: converted_roles };
-    console.log("dataWithRoles", dataWithRoles);
     setIsLoading(true);
     if (usuario) {
       const dataWithId = { id: usuario.id, ...dataWithRoles };

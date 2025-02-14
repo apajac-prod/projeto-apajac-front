@@ -5,7 +5,7 @@ export interface ApiAssistido {
   cadastradoEm: string;
   nome: string;
   dataNascimento: string;
-  genero: string;
+  sexo: string;
   escolaridade: string;
   escola: string;
   telEscola: string;
