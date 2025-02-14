@@ -64,7 +64,6 @@ function FormAssistido({ editId = null }: Props) {
       setIsLoading(true);
       getAssistidoById(editId)
         .then(({ data }) => {
-          console.log("data da requisição:", data);
           multistepController.loadData(apiToAssistido(data));
           multistepController.setId(data.id);
           multistepController.setActiveStatus(data.statusAssistido);

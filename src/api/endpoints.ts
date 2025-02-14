@@ -275,7 +275,6 @@ export const getListaAssistidos = async (
     `lista_assistidos?page=${page}&size=${SIZE}${sortParameter}`,
     tOptions
   );
-  console.log("before data:", data);
   return {
     assistidos: apiToListAssistido(data.assistidos),
     isLastPage: data.isLastPage,
@@ -322,7 +321,6 @@ export const getListaAssistidosPorNome = async (
     `lista_assistidos_por_nome/${name}?page=${page}&size=${SIZE}${sortParameter}`,
     tOptions
   );
-  console.log("before data:", data);
   return {
     assistidos: apiToListAssistido(data.assistidos),
     isLastPage: data.isLastPage,
@@ -449,7 +447,6 @@ export const getListaUsuariosPorNome = async (
     `lista_usuarios_por_nome/${name}?page=${page}&size=${SIZE}&sort=nome`,
     tOptions
   );
-  console.log("before data:", data);
   return {
     usuarios: apiToListUsuario(data.usuarios),
     isLastPage: data.isLastPage,

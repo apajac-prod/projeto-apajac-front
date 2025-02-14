@@ -17,15 +17,12 @@ import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { login } from "@/api/endpoints";
-import birthdateToAge from "@/functions/birthdateToAge";
 
-// Login Form Object
 type loginForm = {
   loginApajac: string;
   password: string;
 };
 
-//Yup validation schema
 const loginSchema: yup.ObjectSchema<loginForm> = yup.object({
   loginApajac: yup.string().required("Insira seu login"),
   password: yup.string().required("Insira sua senha"),
@@ -37,7 +34,6 @@ const Login = () => {
   const [loginError, setLoginError] = useState(false);
   const loginErrorRef = useRef<HTMLParagraphElement>(null);
 
-  // Setting the form
   const {
     register,
     handleSubmit,
@@ -52,22 +48,18 @@ const Login = () => {
     if (!!session) router.push("/menu");
   }, []);
 
-  // Handling the form
   const onSubmit = (data: loginForm) => {
     login(data.loginApajac, data.password)
       .then((data) => {
-        console.log("data", data);
         localStorage.setItem("session", JSON.stringify(data));
         router.push("/menu");
       })
       .catch((error) => {
         if (!error.status) return;
-        console.log(error);
         if (loginErrorRef.current) {
           loginErrorRef.current.classList.remove(styles.loginErrorAnimation);
           loginErrorRef.current.offsetWidth;
           loginErrorRef.current.classList.add(styles.loginErrorAnimation);
-          console.log(loginErrorRef.current.classList);
         }
         setLoginError(true);
       });
