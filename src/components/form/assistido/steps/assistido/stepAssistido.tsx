@@ -22,7 +22,7 @@ import { unmaskCep, unmaskPhone } from "@/functions/unmaskInputs";
 
 import FEDERATION_UNITS from "@/constants/federation_units.array";
 import { getAddressByCep } from "@/api/endpoints";
-import { GENERO } from "./enum";
+import { SEXO } from "./enum";
 
 const BUSCA_CEP_LINK =
   "https://buscacepinter.correios.com.br/app/endereco/index.php";
@@ -490,12 +490,11 @@ function StepAssistido() {
             <option value={""} hidden>
               Selecione um sexo
             </option>
-            <option value={GENERO.INDEFINIDO} hidden>
+            <option value={SEXO.INDEFINIDO} hidden>
               Selecione um sexo
             </option>
-            <option value={GENERO.MASCULINO}>Masculino</option>
-            <option value={GENERO.FEMININO}>Feminino</option>
-            <option value={GENERO.OUTRO}>Outro</option>
+            <option value={SEXO.MASCULINO}>Masculino</option>
+            <option value={SEXO.FEMININO}>Feminino</option>
           </select>
         </div>
         {errors.sex && (
