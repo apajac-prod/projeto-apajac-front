@@ -1,6 +1,5 @@
-export enum GENERO {
+export enum SEXO {
     MASCULINO = 'M',
     FEMININO = 'F',
-    OUTRO = 'O',
-    INDEFINIDO = 'N' // Define o sexo ainda não selecionado
+    INDEFINIDO = 'N' // Define o sexo ainda não selecionado -> A ser removido no futuro, quando todos os sexos da base forem definidos
 }
