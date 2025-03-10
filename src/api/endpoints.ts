@@ -1,32 +1,22 @@
 import { axios } from "@/api/api";
-import { assistidoToApi as assistidoToApi } from "./middleware/formAssistido";
+import { assistidoToApi } from "./middleware/formAssistido";
 import toast from "react-hot-toast";
 import { apiToListAssistido } from "./middleware/listAssistido";
 import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
 import { apiToListUsuario } from "./middleware/listUsuario";
 import { carsToApi } from "./middleware/cars";
-import { MchatFormData } from "@/components/form/mchat/Constants";
-
-const HTTP_STATUS = {
-  OK: 200,
-  CREATED: 201,
-  ACCEPTED: 202,
-  NO_CONTENT: 204,
-  BAD_REQUEST: 400,
-  UNAUTHORIZED: 401,
-};
 
 export type ToastOptions = {
-  noToast?: boolean | undefined;
-  dismissAnyPreviousToast?: boolean | undefined;
-  id?: string | undefined;
-  loadingMessage?: string | undefined;
-  successMessage?: string | undefined;
-  errorMessage?: string | undefined;
+  noToast?: boolean;
+  dismissAnyPreviousToast?: boolean;
+  id?: string;
+  loadingMessage?: string;
+  successMessage?: string;
+  errorMessage?: string;
   duration?: {
-    sucess?: number | undefined;
-    error?: number | undefined;
+    sucess?: number;
+    error?: number;
   };
   position?:
     | "bottom-center"
@@ -327,13 +317,13 @@ export const getListaAssistidosPorNome = async (
   };
 };
 
-export const createUsuario = (usuarioData: any) => {
+export const createUsuario = (usuarioData: any, idResponsavelPeloCadastro: number) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Cadastrando usuário ...",
     successMessage: "Usuário cadastrado com sucesso!",
     errorMessage: "Não foi possível cadastrar este usuário.",
   };
-  const data = usuarioToApi(usuarioData);
+  const data = {... usuarioToApi(usuarioData), idResponsavelPeloCadastro};
   return postRequest("usuario", data, toastOptions);
 };
 
@@ -347,13 +337,13 @@ export const getUsuario = async (id: string) => {
   return apiToUsuario(data);
 };
 
-export const updateUsuario = (usuarioData: any) => {
+export const updateUsuario = (usuarioData: any, idResponsavelPeloCadastro: number) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Atualizando usuário ...",
     successMessage: "Usuário atualizado com sucesso!",
     errorMessage: "Não foi possível atualizar este usuário.",
   };
-  const data = usuarioToApi(usuarioData);
+  const data = {... usuarioToApi(usuarioData), idResponsavelPeloCadastro};
   return postRequest("usuario", data, toastOptions);
 };
 
