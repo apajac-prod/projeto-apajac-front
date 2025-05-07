@@ -5,4 +5,5 @@ export const ROLES = {
   CADASTRAR_ASSISTIDO: "cadastrar_assistido",
   REALIZAR_EXAME: "realizar_exame",
   CONSULTAR_EXAME: "consultar_exame",
+  CONSULTAR_RELATORIOS: "consultar_relatorios",
 };
