@@ -4,7 +4,7 @@ import { getMchatByAssistidoId } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
 import { peaToString } from "@/components/form/mchat/Utils";
 import FormTitle from "@/components/titles/form/form";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -57,7 +57,9 @@ const ListarMchatPage = ({ params: { assistidoId } }: Props) => {
         className="m-auto mt-4"
       />
 
-      <h2 className="text-center mt-12 text-xl">Histórico de MCHAT realizado</h2>
+      <h2 className="text-center mt-12 text-xl">
+        Histórico de MCHAT realizado
+      </h2>
 
       {mchat.mchat.length <= 0 ? (
         <p className="mt-4 text-center">

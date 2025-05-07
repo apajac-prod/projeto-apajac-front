@@ -4,7 +4,10 @@ import { getMchatDetailsById } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
 import { mchatFormData } from "@/components/form/mchat/Constants";
 import { MchatQuestions } from "@/components/form/mchat/mchatQuestions";
-import { mchatFormDataToArray, peaToString } from "@/components/form/mchat/Utils";
+import {
+  mchatFormDataToArray,
+  peaToString,
+} from "@/components/form/mchat/Utils";
 import FormTitle from "@/components/titles/form/form";
 import Button from "@/components/ui/button";
 import dayjs from "dayjs";
@@ -33,7 +36,9 @@ export type MchatDataResponse = {
 
 const ConsultarMchatPage = ({ params: { assistidoId, mchatId } }: Props) => {
   const router = useRouter();
-  const [mchatDataResponse, setMchatDataResponse] = useState<MchatDataResponse | undefined>(undefined);
+  const [mchatDataResponse, setMchatDataResponse] = useState<
+    MchatDataResponse | undefined
+  >(undefined);
 
   useEffect(() => {
     getMchatDetailsById(mchatId)
@@ -70,7 +75,7 @@ const ConsultarMchatPage = ({ params: { assistidoId, mchatId } }: Props) => {
         <p>{`Resultado: ${peaToString(mchatDataResponse.pea)}`}</p>
       </div>
 
-      <MchatQuestions mchatDataResponse={mchatDataResponse}/>
+      <MchatQuestions mchatDataResponse={mchatDataResponse} />
 
       <Button
         text="Voltar ao histórico Mchat"
