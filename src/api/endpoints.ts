@@ -6,6 +6,9 @@ import { apiToUsuario, usuarioToApi } from "./middleware/formUsuario";
 import { apiToLogin } from "./middleware/login";
 import { apiToListUsuario } from "./middleware/listUsuario";
 import { carsToApi } from "./middleware/cars";
+import { ChartResponse, ChartResponseConverted } from "@/types/Chart.type";
+import { AxiosResponse } from "axios";
+import { MonthsNumerics } from "@/types/MonthsNumerics.type";
 
 export type ToastOptions = {
   noToast?: boolean;
@@ -317,13 +320,16 @@ export const getListaAssistidosPorNome = async (
   };
 };
 
-export const createUsuario = (usuarioData: any, idResponsavelPeloCadastro: number) => {
+export const createUsuario = (
+  usuarioData: any,
+  idResponsavelPeloCadastro: number
+) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Cadastrando usuário ...",
     successMessage: "Usuário cadastrado com sucesso!",
     errorMessage: "Não foi possível cadastrar este usuário.",
   };
-  const data = {... usuarioToApi(usuarioData), idResponsavelPeloCadastro};
+  const data = { ...usuarioToApi(usuarioData), idResponsavelPeloCadastro };
   return postRequest("usuario", data, toastOptions);
 };
 
@@ -337,13 +343,16 @@ export const getUsuario = async (id: string) => {
   return apiToUsuario(data);
 };
 
-export const updateUsuario = (usuarioData: any, idResponsavelPeloCadastro: number) => {
+export const updateUsuario = (
+  usuarioData: any,
+  idResponsavelPeloCadastro: number
+) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Atualizando usuário ...",
     successMessage: "Usuário atualizado com sucesso!",
     errorMessage: "Não foi possível atualizar este usuário.",
   };
-  const data = {... usuarioToApi(usuarioData), idResponsavelPeloCadastro};
+  const data = { ...usuarioToApi(usuarioData), idResponsavelPeloCadastro };
   return postRequest("usuario", data, toastOptions);
 };
 
@@ -478,9 +487,7 @@ export const getCarsDetailsById = async (carsId: number | string) => {
   return await getRequest(`cars/detalhes/${carsId}`, toastOptions);
 };
 
-export const createMchat = (
-  mchatData: any
-) => {
+export const createMchat = (mchatData: any) => {
   const toastOptions: ToastOptions = {
     loadingMessage: "Salvando MCHAT ...",
     successMessage: "MCHAT salvo com sucesso!",
@@ -507,4 +514,74 @@ export const getMchatDetailsById = async (mchatId: number | string) => {
   };
 
   return await getRequest(`mchat/detalhes/${mchatId}`, toastOptions);
+};
+
+export const getDistributionBySex = async () => {
+  return getRequest("/relatorio/total_por_sexo", { noToast: true }).then(
+    ({ data }) => {
+      return { labels: data.labels, data: data.values };
+    }
+  );
+};
+
+export const getActiveAndInactives = async () => {
+  return getRequest("/relatorio/ativos_inativos", { noToast: true }).then(
+    ({ data }) => {
+      return { labels: data.labels, data: data.values };
+    }
+  );
+};
+
+export const getAgeRange = async () => {
+  return getRequest("/relatorio/faixa_etaria", { noToast: true }).then(
+    ({ data }) => {
+      return { labels: data.labels, data: data.values };
+    }
+  );
+};
+
+export const getBirthdaysOfMonth = async (
+  month: number,
+  toastOptions?: ToastOptions
+) => {
+  return getRequest(`/relatorio/aniversariantes/${month}`, toastOptions).then(
+    (response) => response.data
+  );
+};
+
+export const getByNeighborhood = async (
+  neighborhood: string,
+  toastOptions?: ToastOptions
+) => {
+  return getRequest(
+    `/relatorio/total_assistidos_por_bairro?bairro=${neighborhood}`,
+    toastOptions
+  ).then((response) => response.data);
+};
+
+export const getChartTotalPorIdade = async (
+  toastOptions?: ToastOptions
+): Promise<AxiosResponse<ChartResponse>> => {
+  return getRequest("/relatorio/total_por_idade", toastOptions).then(
+    (response) => response.data
+  );
+};
+
+export const getRegistersByMonth = async (
+  year: number,
+  toastOptions?: ToastOptions
+) => {
+  return getRequest(`/relatorio/cadastro_mensal/${year}`, toastOptions).then(
+    ({ data }) => {
+      return { labels: data.labels, data: data.values };
+    }
+  );
+};
+
+export const getRegistersByMonthOptions = async (
+  toastOptions?: ToastOptions
+) => {
+  return getRequest(`/relatorio/anos_cadastros`, toastOptions).then(
+    (response) => response.data
+  );
 };

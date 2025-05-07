@@ -2,105 +2,69 @@
 
 import * as icon from "react-flaticons";
 import FormTitle from "@/components/titles/form/form";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale, BarElement, Chart, ChartDataset } from "chart.js";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { usePDF } from "react-to-pdf";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+} from "chart.js";
+import { DistributionBySex } from "./charts/DistributionBySex";
+import { ActiveAndInactives } from "./charts/ActiveAndInactives";
+import { AgeRange } from "./charts/AgeRange";
+import { BirthdaysOfMonth } from "./charts/BirthdaysOfMonth";
+import { RegistersByMonth } from "./charts/RegistersByMonth";
+import { ByNeighborhood } from "./charts/ByNeighborhood";
 
-ChartJS.register(ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale, BarElement);
-
-const chartTitlePlugin = (title: string) => ({
-  display: true,
-  text: title,
-  font: { size: 16 },
-  padding: 10,
-});
-
-const MOCK_RELATORIOS = {
-  SEXO: {
-    data: {
-      labels: ["Masculino", "Feminino", "Não definidos"],
-      datasets: [
-        {
-          data: [30, 50, 120],
-          backgroundColor: ["#36A2EB", "#FF6384", "#DDD"],
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        title: chartTitlePlugin("Distribuição por Sexo"),
-        legend: {
-          labels: {
-            generateLabels: (chart: Chart<"doughnut">) => {
-              const datasets = chart.data.datasets as ChartDataset<"doughnut">[];
-              return datasets[0].data.map((data, i) => ({
-                text: `${chart.data.labels?.[i]} ${data}`,
-                hidden: !chart.getDataVisibility(i),
-                fillStyle: Array.isArray(datasets[0].backgroundColor) ? datasets[0].backgroundColor[i] : "#000",
-                index: i,
-              }));
-            },
-          },
-        },
-      },
-    },
-  },
-  IDADE_INGRESSO: {
-    data: {
-      labels: [
-        "0 a 4 anos",
-        "5 a 9 anos",
-        "10 a 14 anos",
-        "15 a 19 anos",
-        "20 a 24 anos",
-        "25 a 29 anos",
-        "30 a 34 anos",
-        "35 a 39 anos",
-        "40 anos ou mais",
-      ],
-      datasets: [
-        {
-          data: [0, 50, 120, 80, 100, 60, 40, 20, 10],
-          backgroundColor: "#FF5733",
-          categoryPercentage: 0.8,
-          barPercentage: 0.9,
-          minBarLength: 2
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        title: chartTitlePlugin("Distribuição por Idade de Ingresso"),
-        legend: {
-          display: false,
-        }
-      },
-    },
-  },
-};
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
 const Relatorios = () => {
+  const { toPDF, targetRef } = usePDF({ filename: "relatorios_apajac.pdf" });
   return (
     <>
-      <FormTitle
-        className="m-auto my-8"
-        title={"Relatórios e estatísticas"}
-        Icon={icon.Stats}
-      />
-    <div className="flex justify-center items-center gap-8 mx-4 w-full max-w-[calc(100%-32px)] max-md:flex-wrap">
-      {/* Gráfico Doughnut */}
-      <div className="max-md:w-full max-md:h-64 w-1/2 h-96">
-        <Doughnut data={MOCK_RELATORIOS.SEXO.data} options={MOCK_RELATORIOS.SEXO.options} />
+      <div className="flex gap-8 justify-end items-center mr-6 mt-6 md:mr-10 print:hidden">
+        <icon.Print
+          className="w-5 h-5 md:w-6 md:h-8 cursor-pointer"
+          onClick={() => window.print()}
+        />
+        <icon.Download
+          className="w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+          onClick={() => toPDF()}
+        />
       </div>
+      <div ref={targetRef} className="pt-6">
+        <FormTitle
+          className="m-auto"
+          title={"Relatórios e estatísticas"}
+          Icon={icon.Stats}
+        />
 
-      {/* Gráfico de Barras */}
-      <div className="max-md:w-full max-md:h-64 w-1/2 h-96">
-        <Bar data={MOCK_RELATORIOS.IDADE_INGRESSO.data} options={MOCK_RELATORIOS.IDADE_INGRESSO.options} />
+        <div className="flex justify-center items-center gap-8 mx-4 w-full max-w-[calc(100%-32px)] max-md:flex-wrap my-12 print:sm:gap-32 print:flex-wrap">
+          <DistributionBySex />
+          <ActiveAndInactives />
+        </div>
+        <hr className="max-md:hidden w-1/2 m-auto" />
+        <div className="w-full flex justify-center items-center">
+          <div className="flex p-4 justify-center items-center gap-8 mx-4 w-[90%] max-md:flex-wrap my-12 print:sm:gap-32 print:flex-wrap">
+            <AgeRange />
+            <RegistersByMonth />
+          </div>
+        </div>
+        <BirthdaysOfMonth />
+        <ByNeighborhood />
       </div>
-    </div>
     </>
   );
 };
