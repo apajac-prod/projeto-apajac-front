@@ -4,7 +4,7 @@ import FormTitle from "@/components/titles/form/form";
 import { useCallback, useMemo, useState } from "react";
 import * as icon from "react-flaticons";
 import { mchatFormData } from "./Constants";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/custom-button";
 import { useRouter } from "next/navigation";
 import {
   getMchatResultString,

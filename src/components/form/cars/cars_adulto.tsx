@@ -5,7 +5,7 @@ import FormTitle from "@/components/titles/form/form";
 
 import * as icon from "react-flaticons";
 import Steps from "./steps";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/custom-button";
 import { useCarsChildhoodProvider } from "@/contexts/carsChildhoodContext";
 import {
   CARS_CHILDHOOD_INDEX,

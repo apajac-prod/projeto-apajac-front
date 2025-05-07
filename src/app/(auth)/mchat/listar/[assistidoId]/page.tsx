@@ -4,7 +4,7 @@ import { getMchatByAssistidoId } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
 import { peaToString } from "@/components/form/mchat/Utils";
 import FormTitle from "@/components/titles/form/form";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/custom-button";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
