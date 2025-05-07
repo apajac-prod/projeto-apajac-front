@@ -12,7 +12,7 @@ export const ChartLoader = ({
     {error ? (
       <>
         <icon.EngineWarning className="text-red-500" />
-        <p>Erro ao carregar '{chartName}'</p>
+        <p>Erro ao carregar &quot;{chartName}&quot;</p>
       </>
     ) : (
       <>
