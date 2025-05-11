@@ -30,12 +30,18 @@ import {
 
 import * as icon from "react-flaticons";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   getMonthNameFromNumber,
   getMonthNumberFromName,
   MONTH_NAMES,
 } from "../enum";
+
+import { ModalConsultaAssistido } from "@/components/modal/modalConsultaAssistido";
+import {
+  useModalConsultaAssistido,
+  useModalConsultaAssistidoContext as useModalContext,
+} from "@/hooks/useModalConsultaAssistido";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -43,6 +49,13 @@ export const BirthdaysOfMonth = () => {
   const [birthdaysData, setBirthdaysData] = useState<any[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+  const modal = useModalConsultaAssistido();
+
+  const handleAssistidoSelect = useCallback((id: string) => {
+    modal.setIsOpen(true);
+    modal.setId(id);
+  }, []);
 
   const fetchData = () => {
     getBirthdaysOfMonth(selectedMonth).then((data) => {
@@ -126,7 +139,10 @@ export const BirthdaysOfMonth = () => {
         </TableHeader>
         <TableBody>
           {currentItems?.map((item) => (
-            <TableRow key={item.id}>
+            <TableRow
+              key={item.id}
+              onClick={() => handleAssistidoSelect(item.id)}
+            >
               <TableCell className="!font-medium !capitalize">
                 {item.nome}
               </TableCell>
@@ -213,6 +229,12 @@ export const BirthdaysOfMonth = () => {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
+      )}
+
+      {modal && modal.isOpen && modal.id && (
+        <useModalContext.Provider value={modal}>
+          <ModalConsultaAssistido />
+        </useModalContext.Provider>
       )}
     </div>
   );

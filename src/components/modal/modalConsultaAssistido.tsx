@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, WheelEventHandler } from "react";
 import { useModalConsultaAssistidoContext as useModalConsultaAssistidoContext } from "@/hooks/useModalConsultaAssistido";
 import * as icon from "react-flaticons";
 import styles from "./modalConsultaAssistido.module.css";
@@ -27,6 +27,23 @@ export const ModalConsultaAssistido = () => {
         const assistido = apiToConsultaAssistido(response.data);
         setAssistidoData(assistido);
       });
+  }, []);
+
+  useEffect(() => {
+    const preventScrollOutsideModal = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const outsideModal = document.querySelector(`.${styles.backgroundClose}`);
+    if (!outsideModal) return;
+    outsideModal.addEventListener("wheel", preventScrollOutsideModal, {
+      passive: false,
+    });
+
+    return () => {
+      outsideModal.removeEventListener("wheel", preventScrollOutsideModal);
+    };
   }, []);
 
   return (
