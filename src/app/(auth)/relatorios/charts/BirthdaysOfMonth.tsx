@@ -142,6 +142,7 @@ export const BirthdaysOfMonth = () => {
             <TableRow
               key={item.id}
               onClick={() => handleAssistidoSelect(item.id)}
+              className="cursor-pointer"
             >
               <TableCell className="!font-medium !capitalize">
                 {item.nome}
