@@ -3,7 +3,7 @@
 import { getCarsByAssistidoId } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
 import FormTitle from "@/components/titles/form/form";
-import Button from "@/components/ui/button";
+import Button from "@/components/ui/custom-button";
 import { getCarsResult } from "@/functions/getCarsResult";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";

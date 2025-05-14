@@ -3,7 +3,7 @@
 import { getCarsDetailsById } from "@/api/endpoints";
 import Loader from "@/common/loader/loader";
 import FormTitle from "@/components/titles/form/form";
-import Button from "@/components/ui/button";
+import Button from "@/components/ui/custom-button";
 import {
   CARS_CHILDHOOD,
   CARS_CHILDHOOD_INDEX,

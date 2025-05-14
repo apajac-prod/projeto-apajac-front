@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2E5994;
+  background-color: #2e5994;
 }
 
 .container p {
@@ -54,13 +54,13 @@
 }
 
 .logout {
-  width: fit-content;
   align-self: flex-end;
+  display: flex;
+  background-color: red;
 }
 
-.logout p {
-  display: inline-block;
-  margin: auto;
+.logout > p {
+  width: fit-content;
 }
 
 .logout svg {

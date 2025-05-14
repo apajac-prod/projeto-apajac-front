@@ -44,6 +44,7 @@ function FormUsuario({ usuario }: Props) {
   const consultarAssistidoRef = useRef<HTMLInputElement | null>(null);
   const realizarExameRef = useRef<HTMLInputElement | null>(null);
   const consultarExameRef = useRef<HTMLInputElement | null>(null);
+  const consultarRelatoriosRef = useRef<HTMLInputElement | null>(null);
 
   //Yup validation schema
   const usuarioSchema: yup.ObjectSchema<
@@ -163,11 +164,10 @@ function FormUsuario({ usuario }: Props) {
         "É obrigatório marcar ao menos uma permissão para este usuário."
       );
     const dataWithRoles = { ...data, roles: converted_roles };
-    console.log("dataWithRoles", dataWithRoles);
     setIsLoading(true);
     if (usuario) {
       const dataWithId = { id: usuario.id, ...dataWithRoles };
-      updateUsuario(dataWithId)
+      updateUsuario(dataWithId, session?.sessionInfo.id!)
         .then(() => {
           window.onbeforeunload = () => null;
           router.push("/menu");
@@ -176,7 +176,7 @@ function FormUsuario({ usuario }: Props) {
           setIsLoading(false);
         });
     } else {
-      createUsuario(dataWithRoles)
+      createUsuario(dataWithRoles, session?.sessionInfo.id!)
         .then(() => {
           window.onbeforeunload = () => null;
           router.push("/menu");
@@ -188,27 +188,27 @@ function FormUsuario({ usuario }: Props) {
   }
 
   function handlePermissionCheck({ target }: any) {
-    const permissionClicked = target && target.name;
-    const checked = target && target.checked;
+    const permissionClicked = target.name;
+    const checked = target.checked;
 
     if (!checked) {
       if (
         permissionClicked != ROLES.ADMINISTRADOR &&
-        adminRef!.current!.checked
+        adminRef.current!.checked
       )
-        adminRef!.current!.checked = false;
+        adminRef.current!.checked = false;
 
       if (
         permissionClicked == ROLES.CONSULTAR_ASSISTIDO &&
-        alterarAssistidoRef!.current!.checked
+        alterarAssistidoRef.current!.checked
       )
-        alterarAssistidoRef!.current!.checked = false;
+        alterarAssistidoRef.current!.checked = false;
 
       return;
     }
 
     if (permissionClicked === ROLES.ALTERAR_ASSISTIDO) {
-      consultarAssistidoRef!.current!.checked = true;
+      consultarAssistidoRef.current!.checked = true;
     }
 
     if (permissionClicked === ROLES.ADMINISTRADOR && checked) {
@@ -220,50 +220,44 @@ function FormUsuario({ usuario }: Props) {
         target.checked = false;
         return;
       }
-      alterarAssistidoRef!.current!.checked = true;
-      cadastrarAssistidoRef!.current!.checked = true;
-      consultarAssistidoRef!.current!.checked = true;
-      realizarExameRef!.current!.checked = true;
-      consultarExameRef!.current!.checked = true;
+      alterarAssistidoRef.current!.checked = true;
+      cadastrarAssistidoRef.current!.checked = true;
+      consultarAssistidoRef.current!.checked = true;
+      realizarExameRef.current!.checked = true;
+      consultarExameRef.current!.checked = true;
+      consultarRelatoriosRef.current!.checked = true;
     }
   }
 
   function getRoles() {
     let roles = [];
-    if (adminRef && adminRef.current && adminRef.current.checked)
+    if (adminRef.current?.checked)
       roles.push(ROLES.ADMINISTRADOR);
     if (
-      alterarAssistidoRef &&
-      alterarAssistidoRef.current &&
-      alterarAssistidoRef.current.checked
+      alterarAssistidoRef.current?.checked
     )
       roles.push(ROLES.ALTERAR_ASSISTIDO);
     if (
-      consultarAssistidoRef &&
-      consultarAssistidoRef.current &&
-      consultarAssistidoRef.current.checked
+      consultarAssistidoRef.current?.checked
     )
       roles.push(ROLES.CONSULTAR_ASSISTIDO);
     if (
-      cadastrarAssistidoRef &&
-      cadastrarAssistidoRef.current &&
-      cadastrarAssistidoRef.current.checked
+      cadastrarAssistidoRef.current?.checked
     )
       roles.push(ROLES.CADASTRAR_ASSISTIDO);
 
     if (
-      realizarExameRef &&
-      realizarExameRef.current &&
-      realizarExameRef.current.checked
+      realizarExameRef.current?.checked
     )
       roles.push(ROLES.REALIZAR_EXAME);
 
     if (
-      consultarExameRef &&
-      consultarExameRef.current &&
-      consultarExameRef.current.checked
+      consultarExameRef.current?.checked
     )
       roles.push(ROLES.CONSULTAR_EXAME);
+
+    if (consultarRelatoriosRef.current?.checked)
+      roles.push(ROLES.CONSULTAR_RELATORIOS);
 
     return roles;
   }
@@ -283,9 +277,7 @@ function FormUsuario({ usuario }: Props) {
       .then(() => {
         setIsActive((oldValue) => !oldValue);
         if (previousStatus) {
-          // If it was active, you are deactivating
-          window.onbeforeunload = () => null; // Removes the exit confirmation
-          /* window.location.reload(); */
+          window.onbeforeunload = () => null;
         }
       })
       .finally(() => {
@@ -418,11 +410,7 @@ function FormUsuario({ usuario }: Props) {
                 ref={adminRef}
                 aria-label="Administrador"
                 defaultChecked={
-                  usuario &&
-                  usuario.roles &&
-                  usuario.roles.includes(ROLES.ADMINISTRADOR)
-                    ? true
-                    : undefined
+                  usuario?.roles?.includes(ROLES.ADMINISTRADOR)
                 }
               />
             </div>
@@ -439,11 +427,7 @@ function FormUsuario({ usuario }: Props) {
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={alterarAssistidoRef}
                 defaultChecked={
-                  usuario &&
-                  usuario.roles &&
-                  usuario.roles.includes(ROLES.ALTERAR_ASSISTIDO)
-                    ? true
-                    : undefined
+                  usuario?.roles?.includes(ROLES.ALTERAR_ASSISTIDO)
                 }
               />
             </div>
@@ -462,11 +446,7 @@ function FormUsuario({ usuario }: Props) {
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={consultarAssistidoRef}
                 defaultChecked={
-                  usuario &&
-                  usuario.roles &&
-                  usuario.roles.includes(ROLES.CONSULTAR_ASSISTIDO)
-                    ? true
-                    : undefined
+                  usuario?.roles?.includes(ROLES.CONSULTAR_ASSISTIDO)
                 }
               />
             </div>
@@ -485,11 +465,7 @@ function FormUsuario({ usuario }: Props) {
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={cadastrarAssistidoRef}
                 defaultChecked={
-                  usuario &&
-                  usuario.roles &&
-                  usuario.roles.includes(ROLES.CADASTRAR_ASSISTIDO)
-                    ? true
-                    : undefined
+                  usuario?.roles?.includes(ROLES.CADASTRAR_ASSISTIDO)
                 }
               />
             </div>
@@ -506,11 +482,7 @@ function FormUsuario({ usuario }: Props) {
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={realizarExameRef}
                 defaultChecked={
-                  usuario &&
-                  usuario.roles &&
-                  usuario.roles.includes(ROLES.REALIZAR_EXAME)
-                    ? true
-                    : undefined
+                  usuario?.roles?.includes(ROLES.REALIZAR_EXAME)
                 }
               />
             </div>
@@ -527,19 +499,29 @@ function FormUsuario({ usuario }: Props) {
                 onClick={(e) => handlePermissionCheck(e)}
                 ref={consultarExameRef}
                 defaultChecked={
-                  usuario &&
-                  usuario.roles &&
-                  usuario.roles.includes(ROLES.CONSULTAR_EXAME)
-                    ? true
-                    : undefined
+                  usuario?.roles?.includes(ROLES.CONSULTAR_EXAME)
+                }
+              />
+            </div>
+
+            <div className={styles.permission}>
+              <label htmlFor={ROLES.CONSULTAR_RELATORIOS}>Consultar relatórios</label>
+              <input
+                className={`${!isActive && "disable_input"}`}
+                disabled={!isActive}
+                type="checkbox"
+                id={ROLES.CONSULTAR_RELATORIOS}
+                name={ROLES.CONSULTAR_RELATORIOS}
+                value={ROLES.CONSULTAR_RELATORIOS}
+                onClick={(e) => handlePermissionCheck(e)}
+                ref={consultarRelatoriosRef}
+                defaultChecked={
+                  usuario?.roles?.includes(ROLES.CONSULTAR_RELATORIOS)
                 }
               />
             </div>
           </div>
         </div>
-        {/* {errors.roles && (
-          <p className={styles.error_message}>{String(errors.roles.message)}</p>
-        )} */}
 
         <div className={styles.buttons}>
           <button

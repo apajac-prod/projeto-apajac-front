@@ -62,12 +62,9 @@ export default function ConsultarUsuario() {
   }, []);
 
   useEffect(() => {
-    console.log(`Request, page=${page} ; sortBy=${sortBy}`);
-    console.log("isLastPage", isLastPage);
     if (isLastPage) return;
 
     setIsLoading(true);
-    console.log("searchByName:", searchByName);
 
     if (!!searchByName) {
       getListaUsuariosPorNome(searchByName, page, toastOptions)
@@ -81,7 +78,6 @@ export default function ConsultarUsuario() {
         .then(({ usuarios, isLastPage: lastPage }) => {
           setUsuarios((oldArray) => [...oldArray, ...usuarios]);
           setIslastPage(lastPage);
-          console.log("ROLES:", usuarios[0].roles);
         })
         .finally(() => setIsLoading(false));
     }

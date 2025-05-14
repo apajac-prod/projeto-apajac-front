@@ -29,7 +29,6 @@ export function assistidoToApi(
   assistido: AssistidoInput,
   sessionId: number
 ): ApiAssistido {
-
   let data: any = assistido.map((element: any, index: number) => {
     if (STEPS[index] == "composicaoFamiliar") {
       return element.familyComposition;
@@ -56,17 +55,6 @@ export function assistidoToApi(
     }
   });
 
-
-  // Parse Datestring to Date:
-  /* const birthdate = new Date(Date.parse(localDateFormatToDefaultFormat(data.assistido.birthdate)))
-    console.log(birthdate);
-
-    console.log("data:",data)
-    console.log("data.assistido.birthdate:", data.assistido.birthdate);
-    console.log("birthdate:", birthdate) */
-
-  // const dataToApi: { [key: string]: any} = {
-
   let dataToApi: ApiAssistido = {
     idResponsavelPeloCadastro: sessionId,
     cadastradoEm: data.assistido.registerDate.format("YYYY-MM-DD"),
@@ -74,6 +62,7 @@ export function assistidoToApi(
     statusAssistido: data.assistido.status ?? null,
     nome: data.assistido.name,
     dataNascimento: data.assistido.birthdate.format("YYYY-MM-DD"),
+    sexo: data.assistido.sex,
     escolaridade: data.assistido.educationLevel,
     escola: data.assistido.school,
     telEscola: data.assistido.schoolPhone,
@@ -171,11 +160,6 @@ export function apiToAssistido(data: ApiAssistido) {
     "ocupacao" | "salario" | "vinculoEmpregaticio" | "localTrabalho"
   >;
 
-  /*     let mae: Familiares = {
-        nome: null, contatos: null, tipoParentesco: null, ocupacao: null, salario: null, vinculoEmpregaticio: null,
-        localTrabalho: null
-    }, pai: Pais = {nome: null, contatos: [], tipoParentesco: null, ocupacao: null, salario: null, vinculoEmpregaticio: null, localTrabalho: null}; */
-
   let mae: Pais = {
       contatos: null,
       localTrabalho: null,
@@ -214,7 +198,7 @@ export function apiToAssistido(data: ApiAssistido) {
       pai.vinculoEmpregaticio = familiar.vinculoEmpregaticio;
       pai.localTrabalho = familiar.localTrabalho;
       pai.contatos = familiar.contatos!.map((phone: Contato) => {
-        return { value: phone.contato ?? "" }; // return {value: phone.contato}
+        return { value: phone.contato ?? "" };
       });
     }
   });
@@ -267,8 +251,8 @@ export function apiToAssistido(data: ApiAssistido) {
       address: data.endereco.endereco,
       addressNumber: data.endereco.numero,
       anyInstitutionRegister: data.cadastroInstituicao == true ? "yes" : "no",
-      /* birthdate: dateToOutputString(new Date(data.dataNascimento)), */
       birthdate: dayjs(data.dataNascimento),
+      sex: data.sexo,
       city: data.endereco.cidade,
       complement: data.endereco.complemento,
       district: data.endereco.bairro,
